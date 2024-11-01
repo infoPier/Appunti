@@ -302,5 +302,112 @@ La soluzione migliore è quella di realizzare un contenitore in cui far vivere l
 
 La soluzione così pensata è modulare e le funzionalità ripetitive vengono portate a fattor comune. Un ambiente di questo tipo si chiama **application server**.
 
+
+```{=latex}
+\begin{center}
+```
+
+![Esempio di architettura basata su application server](applicationServer.PNG){#appServ height=280px}
+
+```{=latex}
+\end{center}
+```
+
 ### MODELLI A CONTENIMENTO
 
+Molte funzionalità possono non essre controllate direttamente ma lasciate come respondabilità ad un entità deletagata supervisore (detta **contenitore**) che se ne occupa. Solitamente se ne occupa introducendo politiche di default, evitando che si verifichino errori e controllando gli eventi. I contenitori (detti anche container, engine o middleware) possono occuparsi di azioni automatiche sgravando l'utilizzatore che deve solo specificare la parte di alto livello, non ripetitiva e fortemente dipendente dalla logica applicativa. Si vedranno a titolo esemplificativo: CORBA (per gli aspetti C/S), Engine per framework a GUI e Container per servlet. Questi ultimi possono ospitare componenti più trasportabili, riutilizzabili e mobili.\
+Il container fornisce molte delle funzioni per supportare l'interazione con l'utente:
+
+* Supporto al ciclo di vita: 
+
+    - Attivazione/deattivazione del server
+    - Mantenimento di stato
+    - Persistenza trasparente e recupero delle informazioni
+
+* Supporto al sistema di nomi (DNS):
+
+    - Discovery del servizio
+    - Federazione con altri container
+
+* Supporto alla qualità del servizio:
+
+    - Tolleranza ai guasti, selezione tra possibili deployment
+    - Controllo della QoS richiesta e ottenuta
+
+* Sicurezza
+
+### APPLICATION SERVER E TECNOLOGIE SERVER SIDE
+
+Due tecnologie storicamente diffuse nell'ambito degli application server sono: 
+
+* .NET per componenti Microsoft ed evoluzioni
+* Java J2EE per componenti EJB e Web Java-oriented
+
+Altre tecnologie interessanti sono quelle basate su Perl, Python o JavaScript server side (node.js).\
+Altre soluzioni di struttura più semplice che però non sono application server ma spesso solo interpreti sono:
+
+- PHP o Ruby
+- Le vecchie tecnologie ISAPI e ASP di Microsoft
+
+In queste però si parla di moduli di estensione del Web server.
+
+### LO STATO
+
+L'interazione fra client e server può essere di 2 tipi:
+
+* **Stateful**: esiste il concetto di stato dell'interazione e quindi l'n-esimo messaggio può essere messo in relazione con gli n-1 precedenti
+* **Stateless**: non si tiene traccia dello stato, ogni messaggio è indipendente dagli altri
+
+#### INTERAZIONE STATELESS
+
+Un'interazione stateless è feasible senza generare grossi problemi solo se il protocollo applicativo è progettato con operazioni **idempotenti**. Le operazioni si dicono idempotenti se producono sempre lo stesso risultato indipendentemente dal numero di messaggi M ricevuti dal server stesso.
+
+#### INTERAZIONE STATEFUL
+
+In generale tutte le volte che abbiamo bisogno di personalizzazione delle richieste Web possiamo beneficiare di interazioni stateful. Per esempio se è prevista un'autenticazione è necessario tener traccia fra una chiamata e l'altra del fatto che l'utente si è autenticato in modo tale da non dover rifare l'autenticazione ad ogni request, e da qui nasce il concetto di **stato**.
+\
+Nelle applicazioni Web è possibili classificare precisamente lo stato:
+
+* **Stato di esecuzione** (insieme di dati parziali per una elaborazione): rappresenta un'avanzamento in stato di esecuzione, può essere mantenuto in memoria lato server come stato di uno o più oggetti. Per sua definizione è volatile.
+* **Stato di sessione** (insieme dei dati che caratterizzano una interazione con uno specifico utente): la sessione viene gestita di solito in modo unificato attraverso l'uso di istanze di oggetti specifici (supporto ad oggetti di sessione).
+* **Stato informativo persistente** (ad esempio gli ordini inseriti in un eCommerce): viene normalmente mantenuto in una struttura persistente tipo un database.
+
+\newpage
+### LA SESSIONE
+
+La sessione rappresenta lo stato associatoad una sequenza di pagine visualizzate dall'utente. Contiene tutte le informazioni necessarie durante l'esecuzione: le informazioni di sistema (IP di provenienza, lista delle pagine visualizzate, ...) e quelle di natura applicativa (nome e cognome, username, quanti e quali prodotti messi nel carrello ...). Lo **scope** di sessione è dato da:
+
+- Tempo di vita dell'interazione con l'utente (*lifespan*)
+- Accessibilità: usualmente concessa alla richiesta corrente e alle future provenienti dallo stesso processo browser
+
+La **conversazione** rappresenta una sequenza delle pagine di senso compiuto (ad esempio tutte le pagine necessarie per comprare un prodotto), è univocamente definita dall'insieme delle pagine che la compongono e dall'insieme delle interfacce di I/O per la comunicazione (flusso della conversazione).\
+Lo stato di sessione **deve** essere condiviso da client e server, inoltre è associato a uno o più conversazioni effettuate da ogni singolo utente, ne segue che ciascun user possiede il suo stato. Per gestire tutto ciò ci sono due tecniche: utilizzo dei **cookie** (storage lato client) e la gestione di uno stato sul server per ogni utente collegato (**session** e server side). Queste tecniche non sono necessariamente alternativa ma anche integrabili. La gestione della sessione è uno dei supporti orizzontali messi a disposizione di un application server.
+
+### ARCHITETTURA FREQUENTE DEI SISTEMI WEB
+
+```{=latex}
+\begin{center}
+```
+
+![Esempio di architettura a 3 tier](architetturaSistWeb.PNG){#arcSW height=280px}
+
+```{=latex}
+\end{center}
+```
+
+La struttura rappresentata in figura rispecchia i 3 principali servizi che realizzano un sistema Web, possono risiedere tutti sullo stesso HW oppure essere su macchine separate (**distribuzione verticale**). La distribuzione non necessita di nessun accorgimento specifico e solitamente viene realizzata per migliorare le performance soprattutto quando si separa il livello applicativo dal livello del DB. Così com'è rappresentata non prevede replicazione quindi non è utile per risolvere i problemi di fault tolerance.\
+Per provvedere a questo problema si distribuisce orizzontalmente ogni livello: si replica il servizio su diverse macchine, purtroppo questo comporta importanti accorgimenti strettamente dipendenti dalla tecnologia in uso. La **distribuzione orizzontale** non è fatta solo per gestire la fault tolerance ma anche per distribuire e bilanciare il carico computazionale al fine di migliorare le performance.
+
+```{=latex}
+\begin{center}
+```
+
+![Distribuzione verticale ed orizzontale](distrOV.PNG){#distrOV height=280px}
+
+```{=latex}
+\end{center}
+```
+
+Per la natura di HTTP il **Web server** è stateless e quindi molto facile da replicare. Il fatto che IP è embedded in URL può essere gestisto sia tramite soluzione HW che SW. Si possono inoltre applicare politiche di load balancing con diverse euristiche usando i dispositivi appositi.\
+Per la replicazione del livello di **application server** si parla principalmente di replicazione dello stato di sessione. Può però accedere che un application server utilizzi oggetti o componenti con stato per motivi di performance o altre necessità specifiche, alcuni framework permettono la replicazione con tecniche di clustering ma altri framework non sono in grado di replicare orizzontalmente. Tuttavia se si mantiene lo stato di sessione concentrato all'interno della sessione e la sessione viene gestita internamente attraverso i cookie è possibile realizzare un framework applicativo interamente stateless lato server, ottenendo così una realizzazione più semplice e primitiva di configurazione completamente replicabile orizzontalmente.\
+La replicazione del **database** è molto delicata perchè deve mantenere il principio di atomicità delle transazioni. In più il database server è normalmente stateful, il che può creare non poche complicazioni nella replicazione. I database commerciali come Oracle e Microsoft SQL Server prevedono delle configurazioni di clustering in grado di gestire in modo trasparente un numero variabile di CPU e macchine distinte, anche se generalmente in numero basso (qualche unità).
