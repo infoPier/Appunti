@@ -1,6 +1,6 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- TecWeb: Web Dinamico
+- TecWeb: da iniziare le Servlet
 - CAT: prima lezione
 - Reti: vuoto
