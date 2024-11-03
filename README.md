@@ -2,5 +2,5 @@
 
 Ultimi aggiornamenti:
 - TecWeb: da iniziare le Servlet
-- CAT: prima lezione
+- CAT: primo power point
 - Reti: vuoto
