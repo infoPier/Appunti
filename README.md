@@ -2,5 +2,5 @@
 
 Ultimi aggiornamenti:
 - TecWeb: da iniziare le Servlet
-- CAT: primo power point
+- CAT: SLTI (primo power point)
 - Reti: vuoto
