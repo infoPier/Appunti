@@ -149,3 +149,12 @@ Dove $A(t) \in \mathbb{R}^{n\times n}$, $B(t) \in \mathbb{R}^{n\times m}$, $C(t)
 Di conseguenza le equazioni di stato e di uscita diventano: $$ \dot x(t) = A(t)x(t) + B(t)u(t) $$ $$ y(t) = C(t)x(t) + D(t)u(t) $$
 
 ## SISTEMI LINEARI TEMPO INVARIANTI
+
+Un sistema si dice **lineare tempo invariante** se è lineare e le funzioni del movimento sono indipendenti dal tempo: $$ \dot x(t) = Ax(t) + Bu(t) $$ $$ y(t) = Cx(t) + Du(t) $$ $A(t) \in \mathbb{R}^{n\times n}$, $B(t) \in \mathbb{R}^{n\times m}$, $C(t) \in \mathbb{R}^{p\times n}$, $D(t) \in \mathbb{R}^{p \times m}$\
+Se **SISO**: $A(t) \in \mathbb{R}^{n\times n}$, $B(t) \in \mathbb{R}^{n\times 1}$, $C(t) \in \mathbb{R}^{1\times n}$, $D(t) \in \mathbb{R}^{1 \times 1} \Longrightarrow B$ è un vettore, $C$ è un vettore riga e $D$ è uno scalare.
+
+#### Principio di sovrapposizione degli effetti
+
+> Sia $(x_{a}(t), u_{a}(t)) traiettoria con $x_{a}(t_{0}) = x_{0a}$\ 
+Sia $(x_{b}(t), u_{b}(t)) traiettoria con $x_{b}(t_{0}) = x_{0b}$\ 
+Allora $\forall \alpha , \beta \in \mathbb{R} \textrm{dato lo stato iniziale } x_{ab}(t_0) = \alpha x_{0a} + \beta x_{0b}, \textrm{si ha che: }$ $$ (x_{ab}(t),u_{ab}(t)) = (\alpha x_{a}(t) + \beta x_{b}(t), \alpha u_{a}(t) + \beta u_{b}(t)) $$ è una **traiettoria del sistema**. Ovvero applicando in ingresso $u_{ab} = \alpha u_{a}(t) + \beta u_{b}(t) \textrm{la traiettoria di stato è} x_{ab}(t) = \alpha x_{a}(t) + \beta x_{b}(t)$
