@@ -155,6 +155,6 @@ Se **SISO**: $A(t) \in \mathbb{R}^{n\times n}$, $B(t) \in \mathbb{R}^{n\times 1}
 
 #### Principio di sovrapposizione degli effetti
 
-> Sia $(x_{a}(t), u_{a}(t)) traiettoria con $x_{a}(t_{0}) = x_{0a}$\ 
-Sia $(x_{b}(t), u_{b}(t)) traiettoria con $x_{b}(t_{0}) = x_{0b}$\ 
-Allora $\forall \alpha , \beta \in \mathbb{R} \textrm{dato lo stato iniziale } x_{ab}(t_0) = \alpha x_{0a} + \beta x_{0b}, \textrm{si ha che: }$ $$ (x_{ab}(t),u_{ab}(t)) = (\alpha x_{a}(t) + \beta x_{b}(t), \alpha u_{a}(t) + \beta u_{b}(t)) $$ è una **traiettoria del sistema**. Ovvero applicando in ingresso $u_{ab} = \alpha u_{a}(t) + \beta u_{b}(t) \textrm{la traiettoria di stato è} x_{ab}(t) = \alpha x_{a}(t) + \beta x_{b}(t)$
+> Sia $(x_{a}(t), u_{a}(t))$ traiettoria con $x_{a}(t_{0}) = x_{0a}$\
+Sia $(x_{b}(t), u_{b}(t))$ traiettoria con $x_{b}(t_{0}) = x_{0b}$\
+Allora $\forall \alpha , \beta \in \mathbb{R} \textrm{ dato lo stato iniziale } x_{ab}(t_0) = \alpha x_{0a} + \beta x_{0b}, \textrm{si ha che: }$ $$ (x_{ab}(t),u_{ab}(t)) = (\alpha x_{a}(t) + \beta x_{b}(t), \alpha u_{a}(t) + \beta u_{b}(t)) $$ è una **traiettoria del sistema**. Ovvero applicando in ingresso $u_{ab}(t) = \alpha u_{a}(t) + \beta u_{b}(t)$  la traiettoria di stato è $x_{ab}(t)=\alpha x_{a}(t) + \beta x_{b}(t)$

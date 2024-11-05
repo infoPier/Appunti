@@ -411,3 +411,83 @@ Per provvedere a questo problema si distribuisce orizzontalmente ogni livello: s
 Per la natura di HTTP il **Web server** è stateless e quindi molto facile da replicare. Il fatto che IP è embedded in URL può essere gestisto sia tramite soluzione HW che SW. Si possono inoltre applicare politiche di load balancing con diverse euristiche usando i dispositivi appositi.\
 Per la replicazione del livello di **application server** si parla principalmente di replicazione dello stato di sessione. Può però accedere che un application server utilizzi oggetti o componenti con stato per motivi di performance o altre necessità specifiche, alcuni framework permettono la replicazione con tecniche di clustering ma altri framework non sono in grado di replicare orizzontalmente. Tuttavia se si mantiene lo stato di sessione concentrato all'interno della sessione e la sessione viene gestita internamente attraverso i cookie è possibile realizzare un framework applicativo interamente stateless lato server, ottenendo così una realizzazione più semplice e primitiva di configurazione completamente replicabile orizzontalmente.\
 La replicazione del **database** è molto delicata perchè deve mantenere il principio di atomicità delle transazioni. In più il database server è normalmente stateful, il che può creare non poche complicazioni nella replicazione. I database commerciali come Oracle e Microsoft SQL Server prevedono delle configurazioni di clustering in grado di gestire in modo trasparente un numero variabile di CPU e macchine distinte, anche se generalmente in numero basso (qualche unità).
+\
+
+## SERVLET
+
+Prima di dare la definizione e le modalità d'uso delle servlet è necessario introdurre un po' di definizioni:
+
+* **Web application**: è un gruppo di risorse server-side che nel loro insieme creano un'applicazione interattiva fruibile via web
+* **Risorse server side**: includono classi server-side, JSP, risorse statiche (doc. html, css, immagini, ...), applet e JS e/o altri componenti che diventeranno attivi client-side, e informazioni di config e deployment
+* **Web container**: forniscono un ambiente di esecuzione per web application, in generale garantiscono servizi di base alle applicazioni sviluppate secondo paradigma a componenti
+
+\newpage
+Una **servlet** è una classe (java) che fornisce un servizio comunicando con il client mediante protocolli di tipo request/response, tra questi il più diffuso è HTTP. Le servlet estendono le funzionalità di un web server generando contenuti dinamici e superando i classici limiti delle applicazioni CGI. Esse eseguono direttamente in un web container.\
+A livello pratico tutte le servlet sono sottoclassi della classe `HttpServlet` che implementa vari metodi che si andranno a ridefinire. Tutte le classi che ci interessano si trovano all'interno del package `javax.servlet.http.*`.
+
+```{=latex}
+\begin{center}
+```
+
+![Gerarchia delle classi e interfacce per Servlet](servletUml.png){#servletUml height=280px}
+
+```{=latex}
+\end{center}
+```
+
+Gli oggetti **Request** rappresentano la chiamata fatta dal server al client. Sono caratterizzati da chi ha fatto la request e quali parametri e headers sono stati passati nella request.\
+Gli oggetti **Response** rappresentano le informazioni restituite al client (in risposta alla request). In particolare contengono: status line (status code e status phrase), gli headers e il response body. Ha come interfaccia tipo l'interfaccia `HttpResponse` che espone metodi per:
+
+* specificare lo status code
+* indicare il content type (es text/html)
+* ottenere un output stream
+* indicare se l'output è bufferizzato
+* gestire i cookie
+
+
+### Il ciclo di vita di una servlet
+
+Il Servlet container controlla e supporta automaticamente il ciclo di vita di una servlet.\
+Se non esiste un'istanza della classe servelet nel container:\
+\ \ Carica la classe della servlet\
+\ \ Crea un'istanza della classe\
+\ \ Inizializza la servlet (invocando `init()`)\
+A regime:\
+\ \ Invoca la servlet (`doGet()` o `doPost()`) passando gli oggetti di tipo `HttpServletRequest` e \
+\ \ `HttpServletResponse`\
+\newpage
+
+#### **Servlet e multithreading**
+
+In un modello normale c'è una sola istanza di servlet e un thread assegnato ad ogni request per la servlet anche se altre richieste sono già in esecuzione. Di conseguenza, avendo più thread che condividono una risorsa sola (servlet) si crea concorrenza: 
+
+- il metodo `init()` è invocato una sola volta quando il web container crea la servlet
+- `service()` e `destroy()` possono essere chiamati solo dopo il completamento di `init()`
+- il metodo `service()`, e quindi `doGet()` e `doPost()`, può essere invocato da numerosi client in modo concorrente ed è quindi necessario gestire le sezioni critiche (a carico del programmatore) tramite l'uso di blocchi `synchronized`, semafori e mutex
+
+Si può anche pensare ad un modello single-threaded ma è deprecato e altamente inefficiente. Per implementare ciò una servlet dovrebbe implementare l'interfaccia `SingleThreadModel`
+
+#### I metodi del controllo del ciclo di vita
+
+\
+\
+`init()`
+
+> Viene chiamato una sola volta al caricamento della servlet. In questo metodo si può inizializzare l'istanza (ad es. si crea la connessione ad un DB).\
+È definito nella classe `GenericServlet`
+
+`service()`
+
+> Viene chiamato ad ogni request. Chiama la `doGet()` o la `doPost()` a seconda della tipologia di request ricevuta.\
+È un metodo astratto definito nella classe `GenericServlet`\
+`HTTPServlet` fornisce un'implementazione di questo metodo che delega la richiesta a seconda del metodo:\
+    \ \ \ - `doGet()`\
+    \ \ \ - `doPost()`\
+    \ \ \ - `doPut()`\
+    \ \ \ - `doDelete()`
+
+`destroy()`
+
+> Viene chiamato una sola volta quando la servlet deve essere disattivata, solitamente serve per rilasciare le risorse acquisite.\
+È definito nella classe `GenericServlet`
+
