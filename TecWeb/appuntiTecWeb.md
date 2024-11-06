@@ -491,3 +491,121 @@ Si può anche pensare ad un modello single-threaded ma è deprecato e altamente 
 > Viene chiamato una sola volta quando la servlet deve essere disattivata, solitamente serve per rilasciare le risorse acquisite.\
 È definito nella classe `GenericServlet`
 
+#### Gestione dello status code
+
+\
+
+È possibile definire lo status code della response tramite:
+
+```java
+    public void setStatus(int statusCode);
+```
+
+Mentre per gli errori:
+
+```java
+    public void sendError(int statusCode);
+    public void sendError(int code, String message);
+```
+
+#### Gestione degli headers
+
+Ci sono le funzioni per gestire gli headers della response:
+
+```java
+public void setHeader(String headerName, String headerValue); //imposta un header arbitrario
+public void setDateHeader(String name, long millisec); // imposta la data
+public void setIntHeader(String name, int headerValue); // imposta un header con valore intero 
+```
+
+Quelle elencate sopra sono generali ma esistono anche:
+
+- `addHeader`, `addDateHeader`, `addIntHeader` aggiungono una nuova occorrenza dell'header dato
+- `setContentType` configura il content-type. **Si usa sempre**
+- `setContentLength` utile per la gestione di connessioni persistenti
+- `addCookie` consente di gestire i cookie nella risposta
+- `sendRedirect` imposta location header e cambia status code in modo da fare la redirezione
+
+#### Gestione del contenuto
+
+Per gestire il contenuto della response si possono utlizzare due metodi di `response`:
+
+```java
+public PrintWriter getWriter();
+public ServletOutputStream getOutputStream();
+```
+
+Il primo è solitamente utile per restituire un testo nella risposta perchè mette a disposizione uno stream di caratteri.\
+Il secondo mette a disposizione uno stream di byte quindi è più utile per l'invio di un'immagine ad esempio.
+
+#### **L'oggetto request**
+
+È un'istanza di una classe che implementa l'interfaccia `HttpServletRequest`, contiene i dati della request HTTP. Viene creato dal servlet container e passato come parametro ai metodi `doGet()` e `doPost()`. Fornisce metodi per accedere alle varie info (HTTP Request URL, HTTP Request headers, autenticazione, user info, cookie e session)\
+\
+**Ricorda!!**\
+L'URL HTTP ha la seguente sintassi: `http://[host]:[port]/[request path]?[query string]`: il request path è composto dal contesto e dal nome della web application, la query string è composta da un insieme di parametri se la richiesta è in get (il metodo `getParameter(...)` di request ci permette di avvedere ai vari parametri)
+\
+\
+Esistono tutti i vari metodi per accedere all'URL, agli headers e alle user info, autenticazione, cookie e sicurezza
+
+### Il Deployment
+
+Un'applicazione web deve essere installata sul server prima di poter essere utilizzata: questa operazione prende il nome di **deployment**. Esso comprende:
+
+* La definizione del runtime environment di una web app
+* La mappatura delle URL sulle servlet
+* La definizione delle impostazioni di default dell'applicazione come la welcome page o la error page
+* La configurazione delle caratteristiche di sicurezza dell'applicazione
+
+La modalità con cui avviene il deployment è rappresentata dagli Web Archives (.war), non sono altro che dei file .jar con una struttura particolare.\
+Per crearli si usa il comando jar ad esempio `jar -cvf newArchive.war myWebApp/*`
+
+```{=latex}
+\begin{center}
+```
+![Struttura interna del .war](warStructure.png){#warStructure height=150px}
+```{=latex}
+\end{center}
+```
+La struttura di dir delle Web app è basata su Servlet 2.4 specification.\
+web.xml è in sostanza un file di configurazione che contiene una serie di elementi descrittivi. Contiene l'elenco delle servlet attive sul server (nome e classe Java), il **loro mapping URL** e per ognuna permette di definire una serie di parametri nome-valore o di inizializzazione.\
+Esempio di mappatura della servlet
+
+```xml
+<web-app>
+<servlet>
+ <servlet-name>myServlet</servlet-name>
+ <servlet-class>myPackage.MyServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+ <servlet-name>myServlet</servlet-name>
+ <url-pattern>/myURL</url-pattern>
+</servlet-mapping>
+</web-app>
+```
+E l'URL mappato su myServlet è `http://MyHost:8080/MyWebApplication/myURL`
+
+### Servlet configuration
+
+Una servlet accede ai propri parametri di configurazione mediante l'interfaccia ServletConfig. Ci sono 2 modi per accedere a oggetti di questo tipo:
+
+- tramite il parametro passato al metodo `init()`
+- tramite il metodo `getServletConfig()` della servlet, invocabile in qualsiasi momento
+
+L'interfaccia `ServletConfig` espone un metodo per ottenere il valore di un parametro in base al nome: 
+
+```java 
+    String getInitParameter(String parName)
+```
+Esempio di parametro di configurazione:
+
+```xml
+<init-param>
+ <param-name>parName</param-name>
+ <param-value>parValue</param-value>
+</init-param>
+```
+
+### Servlet context
+
+Ogni Web application esegue in un contesto: corrispondenza 1:1 tra una Web-app e suo contesto. L'interfaccia `ServletContext` è la vista della Web application (del suo contesto) da parte della servlet
