@@ -1,6 +1,6 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- TecWeb: servlet context
-- CAT: SLTI (forma reale dei modi di un sistema)
+- TecWeb: la classe cookie (servlet)
+- CAT: Stabilità
 - Reti: vuoto

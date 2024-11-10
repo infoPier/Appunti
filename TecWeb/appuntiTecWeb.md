@@ -606,6 +606,44 @@ Esempio di parametro di configurazione:
 </init-param>
 ```
 
-### Servlet context
+### **Servlet context**
 
-Ogni Web application esegue in un contesto: corrispondenza 1:1 tra una Web-app e suo contesto. L'interfaccia `ServletContext` è la vista della Web application (del suo contesto) da parte della servlet. 
+Ogni Web application esegue in un contesto: corrispondenza 1:1 tra una Web-app e suo contesto. L'interfaccia `ServletContext` è la vista della Web application (del suo contesto) da parte della servlet. Si può ottenere un'istanza di tipo `ServletContext` all'interno della servlet utilizzando il metodo `getServletContext()`. L'istanza consente di accedere ai parametri di inizializzazione, agli attributi di contesto e alle risorse statiche della web app (ad es le immagini) mediante il metodo `getResourceAsStream(String path)`. Molto importante è ricordare che il servlet context è condiviso fra tutti gli utenti, tutte le richieste e tutti i componenti server-side della stessa web app.  
+
+#### Parametri di inizializzazione del contesto
+
+sono definiti all'interno di elementi di tipo `context-param` nel web.xml e sono accessibili in lettura a tutte le servlet della web app.\
+Nel web.xml:
+```xml
+<web-app>
+<context-param>
+<param-name>feedback</param-name>
+<param-value>feedback@deis.unibo.it</param-value>
+</context-param> ...
+</web-app>
+```
+Nelle servlet:
+```java
+ServletContext ctx = getServletContext();
+String feedback =
+ctx.getInitParameter(“feedback”);
+```
+
+#### Attributi di contesto
+
+sono accessibili a tutte le servlet e sono sostanzialmente delle variabili globali, possono essere creati, scritti e letti dalle servlet e possono contenere oggetti complessi (serializzazione/deserializzazione).
+```java
+//SCRITTURA                                          //LETTURA
+ServletContext ctx = getServletContext();            ServletContext ctx = getServletContext();
+User giorgio = new User("Giorgio Bianchi");          Enumeration aNames = ctx.getAttributeNames();
+User paolo = new User("Paolo Rossi");                while (aNames.hasMoreElements){
+User claudio = new User("Claudio Neri");                String aName = (String)aNames.nextElement();
+ctx.setAttribute(“utente1”, giorgio);                   User user = (User) ctx.getAttribute(aName);   
+ctx.setAttribute(“utente2”, paolo);                     ctx.removeAttribute(aName);
+ctx.setAttribute(“utente3”, claudio);                }
+```
+### Gestione dello stato (di sessione)
+
+Essendo HTTP un protocollo stateless non fornisce meccanismi nativi per la gestione dello stato, il problema sta nel fatto che la maggior parte delle web app attuali hanno bisogno di stato. Per questo si utilizzano i **cookie** (basso livello) oppure la **sessione** (alto livello). La sessione stessa è un'utile astrazione del concetto che rappresenta, per funzionare utilizza 2 meccanismi: i cookie e l'URL rewriting. Dei cookie si è gia parlato in precedenza ma sostanzialmente sono un'unità di informazione che il web server deposita sul web browser client-side, tuttavia possono essere rifiutati dal browser (per esempio se sono disabilitati o se l'utente non ne consente l'uso) e spesso sono considerati un fattore di rischio.
+
+#### La classe Cookie
