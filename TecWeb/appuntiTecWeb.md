@@ -633,17 +633,39 @@ ctx.getInitParameter(“feedback”);
 
 sono accessibili a tutte le servlet e sono sostanzialmente delle variabili globali, possono essere creati, scritti e letti dalle servlet e possono contenere oggetti complessi (serializzazione/deserializzazione).
 ```java
-//SCRITTURA                                          //LETTURA
-ServletContext ctx = getServletContext();            ServletContext ctx = getServletContext();
-User giorgio = new User("Giorgio Bianchi");          Enumeration aNames = ctx.getAttributeNames();
-User paolo = new User("Paolo Rossi");                while (aNames.hasMoreElements){
-User claudio = new User("Claudio Neri");                String aName = (String)aNames.nextElement();
-ctx.setAttribute(“utente1”, giorgio);                   User user = (User) ctx.getAttribute(aName);   
-ctx.setAttribute(“utente2”, paolo);                     ctx.removeAttribute(aName);
-ctx.setAttribute(“utente3”, claudio);                }
+//SCRITTURA                                    //LETTURA
+ServletContext ctx = getServletContext();      ServletContext ctx = getServletContext();
+User giorgio = new User("Giorgio Bianchi");    Enumeration aNames = ctx.getAttributeNames();
+User paolo = new User("Paolo Rossi");          while (aNames.hasMoreElements){
+User claudio = new User("Claudio Neri");          String aName = (String)aNames.nextElement();
+ctx.setAttribute("utente1", giorgio);             User user = (User) ctx.getAttribute(aName);   
+ctx.setAttribute("utente2", paolo);               ctx.removeAttribute(aName);
+ctx.setAttribute("utente3", claudio);          }
 ```
 ### Gestione dello stato (di sessione)
 
 Essendo HTTP un protocollo stateless non fornisce meccanismi nativi per la gestione dello stato, il problema sta nel fatto che la maggior parte delle web app attuali hanno bisogno di stato. Per questo si utilizzano i **cookie** (basso livello) oppure la **sessione** (alto livello). La sessione stessa è un'utile astrazione del concetto che rappresenta, per funzionare utilizza 2 meccanismi: i cookie e l'URL rewriting. Dei cookie si è gia parlato in precedenza ma sostanzialmente sono un'unità di informazione che il web server deposita sul web browser client-side, tuttavia possono essere rifiutati dal browser (per esempio se sono disabilitati o se l'utente non ne consente l'uso) e spesso sono considerati un fattore di rischio.
 
 #### La classe Cookie
+
+Modella il cookie HTTP, si recuperano i cookie della `request` utilizzando il metodo `getCookies()` e si aggiungono alla `response` usando `addCookie()`. Un cookie contiene un certo numero di informazioni, per esempio:
+
+* coppia nome-valore
+* il dominio internet che ne fa uso
+* path dell'applicazione 
+* una expiration date in secondi (-1 se il cookie non verrà memorizzato)
+* un valore boolean per definire il livello di sicurezza (usando `setSecure(true)` il client è forzato a inviare il cookie solo tramite protocollo HTTPS)
+
+
+```java
+//LETTURA                                            //CREAZIONE
+Cookie[] cookies = request.getCookies();             Cookie c = new Cookie("MyCookie", "test");
+if(cookies != null){                                 c.setSecure(true);
+    for(int j=0; j<cookies.length(); j++){           c.setMaxAge(-1);
+        Cookie c = cookies[j];                       c.setPath("/");
+        out.println("Un cookie: " +                  response.addCookie(c);
+        c.getName()+"="+c.getValue());
+    }
+}
+```
+
