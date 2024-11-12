@@ -714,3 +714,66 @@ session.invalidate();
 out.println(“Millisec:” + session.getCreationTime());
 out.println(session.getLastAccessedTime());
 ```
+
+Il **session ID** è usato per identificare le richieste provenienti dallo stesso utente e mapparle sulla corrispondente sessione. Ci sono due tecniche per trasmettere questo dato:
+
+* Tramite cookie che però non in tutti i browser sono attivi
+* Si include nell'URL: si parla di **URL rewriting**. È buona prassi codificare gli URL generate dalle servlet usando il metodo `encodeURL()` della `HttpServletResponse` (si usa sia per i tag `a href="...">` che per i form).
+
+### Scope differenziati
+
+Gli oggetti di tipo `ServletContext`, `HttpSession` e `HttpServletRequest` forniscono metodi per immagazzinare e ritrovare oggetti nei loro rispettivi **scope**. Lo scope è definito dal lifespan (tempo di vita) e dall'accessibilità da parte delle servlet:
+
++-------------+---------------------------+----------------------------+---------------------------------------+
+| **Ambito**  | **Interfaccia**           | **Tempo di vita**          | **Accessibilità**                     |
++=============+===========================+============================+=======================================+
+| Request     | `HttpServletRequest`      | Fino all'invio della       | Servelet corrente e ogni altra pagina |
+|             |                           | risposta                   | interrogata tramite include o forward |
++-------------+---------------------------+----------------------------+---------------------------------------+
+| Session     | `HttpSession`             | Durata della sessione      | Ogni richiesta dello stesso client    |
+|             |                           | utente                     |                                       |
++-------------+---------------------------+----------------------------+---------------------------------------+
+| Application | `ServletContext`          | Lo stesso                  | Ogni richiesta alla stessa web app    |
+|             |                           | dell'applicazione          | anche da client diversi per servlet   |
+|             |                           |                            | diverse                               |
++-------------+---------------------------+----------------------------+---------------------------------------+
+
+Gli oggetti scoped forniscono i seguenti metodi per immagazzinare e rirovare oggetti nei rispettivi ambiti:
+
+* `void setAttribute(String name, Object o)`
+* `Object getAttribute(String name)` per assegnarlo ad una variabile con chiarezza serve il cast
+* `void removeAttribute(String name)`
+* `Enumeration getAttributeNames()`
+
+### Inclusione di risorse web
+
+Includere risorse web può essere utile quando si vogliono aggiungere contenuti creati da un'altra risorsa. Si possono includere 2 tipi di risorse: 
+
+* risorse statiche, ad esempio un'altra pagina html
+* risorse dinamiche: la servlet inoltra una request ad un componente web che la elabora e restituisce il risultato che viene poi incluso nella pagina prodotta dalla servler
+
+La risorsa inclusa può lavorare con il responsive body.\
+Per **includere** una risorsa si ricorre ad un oggetto di tipo `RequestDispatcher` che può essere richiesto al contesto indicando la risorsa da includere. Per effettuare l'effettiva inclusione si utilizza il metodo `include(...)` e come parametri devono essere passati la request e la response che vengono così condivisi con la risorsa inclusa. Se necessario l'URL originale può essere salvato come un attributo di request. Un esempio:
+```java
+// come parametro si passa l'URL della risorsa da includere
+RequestDispatcher dispatcher =
+getServletContext().getRequestDispatcher("/inServlet"); 
+dispatcher.include(request, response);
+```
+Oltre all'inclusione si può fare anche l'**inoltro** ad un'altra risorsa. Solitamente si usa in situazioni in cui la servlet si occupa di parte dell'elaborazione della richiesta e delega a qualcun altro la gestione della risposta: è importante ricordare che in questo caso la response è di competenza esclusiva della risorsa che riceva l'inoltro, nel caso nella servlet che inoltra si faccia un accesso a `ServletOutputStream` o a `PrintWriter` si ottine una `IllegalStateException`. Anche in questo caso si ottiene un oggetto di tipo `RequestDispatcher` da request passando come parametro il nome della risorsa, e per effettuare l'inoltro si utilizza il metodo `forward(...)` passando anche qui request e response. Come per l'inclusione si può, se necessario, salvare l'URL originale come attributo di request. Un esempio:
+```java
+// come parametro si passa l'URL della risorsa a cui si inoltra
+RequestDispatcher dispatcher =
+getServletContext().getRequestDispatcher("/inServlet"); 
+dispatcher.forward(request, response);
+```
+**Attezione**: completamente diversa è la ridirezione del browser. Difatti è anche possibile inviare al browser una risposta che lo forza ad accedere ad un'altra pagina (ridirezione). Come visto in precedenza, si utilizza uno dei codici di stato HTTP dedicati a questo tipo di informazioni, in particolare si usa il 301 `Moved permanently`: URL non valida, il server indica la nuova posizione. Per ottenere questo risultato si può agire direttamente sull'oggetto response in due possibili modi:
+
+* invocando il metodo: `public void sendRedirect(String url)`
+* Lavorando a livello più basso tramite header:\
+    `response.setStatus(response.SC_MOVED_PERMANENTLY);`\
+    `response.setHeader("Location", "http://...");`
+
+
+\newpage
+## JSP

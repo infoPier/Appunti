@@ -1,6 +1,6 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- TecWeb: la classe cookie (servlet)
+- TecWeb: JSP
 - CAT: Stabilità
 - Reti: vuoto
