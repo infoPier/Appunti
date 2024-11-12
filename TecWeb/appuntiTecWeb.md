@@ -669,3 +669,48 @@ if(cookies != null){                                 c.setSecure(true);
 }
 ```
 
+#### Uso della sessione in web container
+
+\
+La sessione web è un'entità gestita dal web container, è condivisa da tutte le richieste provenienti da uno stesso client (consente di mantenere uno stato). Può contenere dati di varia natura ed è identificata da un **session id**. Viene utilizzata dai componenti della web app proprio per mantenere uno stato, che HTTP standard non prevede, durante le molteplici interazioni con l'utente.
+
+##### Accesso e gestione della sessione
+
+\
+L'accesso avviene mediante l'interfaccia `HttpSession`. Per ottenere l'accesso ad un oggetto di tipo `HttpSession` si utilizza il metodo dell'interfaccia `HttpServletRequest`:
+```java
+public HttpSession getSession(boolean createNew);
+//AD ESEMPIO
+HttpSession session = request.getSession(true);
+```
+Se `createNew` è a valore `true` ritorna la sessione esistente, se non esiste ne crea una nuova.\
+Se invece `createNew` è `false` ritorna, se esiste, la sessione esistente, altrimenti `null`.\
+Negli attributi di sessione si possono memorizzare dati specifici dell'utente (coppia nome-valore), simili agli attributi di contesto anche se con **scope** totalmente diverso.
+```java
+//Recupero di un oggetto dagli attributi
+Cart sc = (Cart)session.getAttribute("shoppingCart");
+sc.addItem(item);
+session.setAttribute("shoppingCart", new Cart());
+session.removeAttribute("shoppingCart");
+Enumeration e = session.getAttributeNames();
+while(e.hasMoreElements())
+    out.println("Key; " + (String)e.nextElements());
+```
+\newpage
+Ci sono altre operazioni che si possono compiere su un oggetto sessione:
+
+* `String getID()` Restituisce l'ID di sessione
+* `boolean isNew()` dice se la sessione è nuova
+* `void invalidate()` permetti di invalidare (distruggere) la sessione
+* `long getCreationTime()` dice da quanto tempo è attiva la sessione in millisecondi
+* `long getLastAccessTime()` dà informazioni su quando è stata utilizzata l'ultima volta
+
+Un esempio di utilizzo di queste funzioni (e metodi) è il seguente, dove si prende l'ID di sessione, si controlla se è nuova, si invalida e si mostrano da quanto tempo è attiva e l'ultima volta che si è fatto un accesso alla sessione:
+```java
+String sessionID = session.getId();
+if(session.isNew())
+    out.println(“La sessione e’ nuova”);
+session.invalidate();
+out.println(“Millisec:” + session.getCreationTime());
+out.println(session.getLastAccessedTime());
+```
