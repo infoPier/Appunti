@@ -284,3 +284,40 @@ Uno stato di equilibrio $x_e$ si dice attrattivo se $\exists \delta > 0$ tale ch
 
 Uno stato di equilibrio $x_e$ si dice asintoticamente stabile se è stabile e attrattivo
 
+#### Stabilità locale
+
+Le definizioni date sottointendono la parola locale, cioè la proprietà vale in un intorno di $x_e$
+
+#### Stabilità globale
+
+Le proprietà di stabilità ed asintotica stabilità sono globali se valgono $\forall x_{e} \in \mathbb{R}^n$
+
+#### Stabilità di una traiettoria
+
+Le definizioni di stabilità si possono generalizzare a una traiettoria $\bar x(t)$, $t \ge 0$
+
+## STABILITÀ INTERNA DI SLTI
+
+Nei sistemi lineari se $u=0$ allora $x=0$ è **sempre** un equilibrio. Nei sistemi lineari si può dimostrare che tutti gli equilibri e tutte le traiettorie hanno le stesse proprietà di stabilità, per questo motivo si parla di **stabilità del sistema**. \
+\
+**Teorema 1**
+
+> Un SLTI è asintoticamente stabile se e solo se tutti gli autovalori hanno parte reale strettamente negativa.
+
+**Teorema 2**
+
+> Un SLTI è stabile se e solo se tutti gli autovalori hanno parte reale minore o uguale a zero e tutti gli autovalori a parte reale nulla hanno molteplicità geometrica uguale alla molteplicità algebrica (i miniblocchi di Jordan associati hanno dimensione 1)
+
+Conseguenza immediata è che se si ha almeno un autovalore a parte reale positiva o se almeno un autovalore a parte reale nulla ha m.a. $>$ m.g.\
+\
+Prendendo in esame l'esempio del carrello, se $h^2 > 4Mk$ o se $h^2 < 4Mk$ gli autovalori, in entrambi i casi, sono a parte reale negativa, quindi il sistema è asintoticamente stabile. Se, invece, $h^{2} = 4Mk$, $\lambda _{1} = \lambda _{2} = - \frac{h}{2M}$ (m.a. $=2$), si può però dimostrare che m.g. $=2$ e che gli autovalori sono a parte reale negativa quindi il sistema è asintoticamente stabile.
+
+### RETROAZIONE DELLO STATO
+
+$$ \dot x(t) = Ax(t) + Bu(t) $$ $$ y(t) = Cx(t) + Du(t) $$ 
+Supponendo di misurare l'intero stato, ovvero se $y(t) = x(t)$ allora possiamo progettare $$ u(t)=Kx(t) + v(t) $$ con $K \in \mathbb{R}^{m\times n}$ una matrice di guadagni e $v(t)$ un ulteriore ingresso per il sistema retroazionato. Risulta quindi $$ \dot x(t) = (A+BK)x(t) + Bv(t) $$ Se vogliamo il sistema ad anello chiuso asintoticamente stabile dobbiamo progettare $K$ tale che $(A+BK)$ abbia autovalori tutti a parte reale negativa. La possibilità di scegliere gli autovalori di $(A+BK)$ dipende dalla coppia di matrici $(A,B)$ ed è legata alla proprietà di **raggiungibilità**.\
+Se non è possibile misurare l'intero stato, ovvero se $x(t)\ne y(t)$, esistono tecniche per ricostruire lo stato a partire dalle misure mediante sistemi ausiliari detti **osservatori**. Se si possa ricostruire o meno lo stato dipende dalla coppia $(A,C)$ ed è legato alla proprietà di osservabilità.
+
+## LINEARIZZAZIONE DI SISTEMI NON LINEARI (tempo invarianti)
+
+$$ \dot x(t) = f(x(t), u(t)) $$ $$ y(t) = h(x(t), u(t)) $$ Sia $(x_{e}, u_{e})$ una coppia di equilibrio, $f(x_{e}, u_{e}) = 0$, consideriamo una traiettoria a partire da stato iniziale $x(0) = x_{e} + \tilde x_{0}$ $$ x(t) = x_{e} + \tilde x(t) $$ $$ u(t) = u_{e} + \tilde u(t) $$ $$ y(t) = h(x_{e}, u_{e}) + \tilde y(t) = y_{e} + \tilde y(t) $$ Essendo una traiettoria vale $$ \frac{d}{dt} (x_{e} + \tilde x(t)) = f(x_{e} + \tilde x(t), u_{e} + \tilde u(t)) $$ $$ y_{e} + \tilde y(t) = h(x_{e} + \tilde x(t), u_{e} + \tilde u(t)) $$
