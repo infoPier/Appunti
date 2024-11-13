@@ -4,6 +4,8 @@ geometry: margin=2.5cm
 
 # TECNOLOGIE AVANZATE PER FRONTEND
 
+## REACT.JS
+
 React è una **libreria JS** per la creazione di interfacce utente (GUI) web. L'obiettivo è diventare la soluzione semplice, intuitiva e definitiva per sviluppatori front-end e app basate su HTML5.\
 Essendo una libreria JS viene eseguito all'interno del browser ne consegue che React.js NON è uno strumento per lo sviluppo lato back-end. Quindi React non interagisce con DB o qualsiasi altra sorgente di dati si trovi su back-end, tuttavia permette di invocare delle API lato server. Può interagire con diverse tecnologie back-end in Python/Flask, Ruby on Rails, Java/Sping, PHP ecc
 
@@ -30,8 +32,8 @@ I vantaggi per lo sviluppatori sono:
 * Un altro vantaggio dell'approccio a componenti è la possibilità di riuso in modo semplice
 * Lo sviluppatore definisce la logica dei componenti e la loro posizione all'interno della GUI. La gestione del virtual DOM, delle sue trasformazioni e della comunicazione con il DOM del browser è completamente a carico di React.js
 
-Per l'utente finale invece l'impiego del virtual DOM alleggerisce il processo di rendering dell'interfaccia sul browser con conseguente aumento delle prestazioni percettibili dall'utilizzatore.\
-\
+Per l'utente finale invece l'impiego del virtual DOM alleggerisce il processo di rendering dell'interfaccia sul browser con conseguente aumento delle prestazioni percettibili dall'utilizzatore.
+\newpage
 Un primo approccio con React può essere:
 
 ```html
@@ -63,3 +65,237 @@ Un primo approccio con React può essere:
 </html>
 
 ```
+Nell'esempio è stato definito un _React Element_ e successivamente è stato chiesto al DOM del browser di visualizzare l'elemento in una specifica posizione. Un **React Element** è un oggetto semplice ed immutabile che descrive cosa si vuole visualizzare sullo schermo. Solitamente un element è un nodo html ma può anche avere al suo interno istanze di componenti.\
+La notazione ` const elem = <p>Hello <strong>React</strong>!</p>;` è un esempio di JSX (JavaScript XML), difatti in JS vanilla non si può fare.
+
+Un altro esempio:
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Primi passi con React</title>
+        <script
+        src="https://unpkg.com/react@15/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@15/dist/reactdom.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/babelcore/5.8.24/browser.js"></script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="text/babel">
+            // SI POSSONO DEFINIRE DEI COMPONENT DI TIPO CLASS
+            class HelloWorld extends React.Component{
+                render() { // Funzione che ritorna l'elemento da visualizzare
+                    return <p>Hello <strong>React</strong>!</p>;
+                }
+            };
+            ReactDOM.render(<HelloWorld />,document.getElementById('root'));
+        </script>
+    </body>
+</html>
+```
+Nell'esempio precendente il risultato è lo stesso di quello che lo precede ma è fatto tramite una classe.\
+Si noti che quando vado a fare il `ReactDOM.render(...)` metto un tag "nuovo" che ha lo stesso nome della classe.\
+La differenza sostanziale fra i due esempi sta nel fatto che nel primo ho usato un **React Element** mentre nel secondo ho usato un **React Component**. I _React component_ possono essere di tipo class (come nell'esempio) o di tipo function. Questi componenti sono oggetti complessi e dinamici che ricevono input dall'esterno e forgiano l'elemento grafico da restituire. Sostanzialmente ricevono dei dati in ingresso come delle funzioni e restituiscono l'elemento grafico da visualizzare.
+
+### JSX
+
+Negli esempi visualizzati è stata usata una sintassi particolare che mescola JS e HTML: **JSX**. JSX sta per JavaScript XML e permette allo sviluppatore di scrivere facilmente tag HTML all'interno di codice JS e di piazzarli all'interno del DOM senza l'uso di `createElement()` e/o `appendChild()`.\
+Non è obbligatorio usare JSX però semplifica molto la vita del developer. React però mette comunque a disposizione funzioni per la creazione di elementi HTML.\
+Un esempio dell'utilità di JSX (creazione di una lista di 3 elementi):
+
+* Con JSX:
+
+    ```javascript
+    // Creazione della lista degli elementi -->
+    const listElement = <ul className="list-of-items">
+            <li className="item-1" key="key-1">Item 1</li>
+            <li className="item-2" key="key-2">Item 2</li>
+            <li className="item-3" key="key-3">Item 3</li>
+        </ul>;
+    // Esecuzione del rendering nella pagina
+    ReactDOM.render(listElement, document.getElementById("container"));
+    ```
+* Senza JSX:
+
+    ```javascript
+    // Creazione degli elementi da inserire in una lista non ordinata
+    var item1 = React.DOM.li({ className: "item-1", key: "key-1"}, "Item 1");
+    var item2 = React.DOM.li({ className: "item-2", key: "key-2"}, "Item 2");
+    var item3 = React.DOM.li({ className: "item-3", key: "key-3"}, "Item 3");
+    // Creazione di un array degli elementi
+    var itemArray = [item1, item2, item3];
+    // Creazione della lista degli elementi
+    var listElement = React.DOM.ul({ className: "list-of-items" }, itemArray);
+    // Avvio del rendering nella pagina
+    ReactDOM.render(listElement, document.getElementById("container"));
+    ```
+
+Si possono inserire delle variabili all'interno della notazione JSX come segue:
+
+```javascript
+const nome = 'Giuseppe Verdi';
+const element = <h1>Hello, {nome}</h1>;
+ReactDOM.render(element, document.getElementById('root'));
+```
+Per inserire le variabili, espressioni di ogni tipo e funzioni che restituiscono valori si mettono fra parentesi graffe `{}`.\
+Ma come fa a funzionare?
+
+> Funziona perchè prima di essere interpretato dal browser, il codice che include JSX, viene pre-compilato da un interprete che è in grado di tradurre il codice JSX in JavaScript. In questo corso si usa **babel** (open source). Babel mette a disposizione tool per tradurre molti linguaggi in JS.
+
+A runtime sostanzialmente viene eseguito un compilato che corrisponde al javascript che è stato dedotto dal codice scritto in React.
+
+### I componenti
+
+I **React Components** sono i mattoncini fondamentali che consentono di passare da una pagina statica a un'applicazione web dinamica la cui interfaccia è in grado di ripondere agli eventi che si verificano nella pagina, ossia reagire (e da qui il nome React) e aggiornare se stessa di conseguenza. Ognuno di questi ha un ruolo ben definito dal punto di vista di ciò che rappresenta graficamente e si fa carico di gestire le interazioni con l'utente su quella particolare interfaccia.
+
+```{=latex}
+\begin{center}
+```
+![](componentsReact.png){#esComp height=200px}
+
+```{=latex}
+\end{center}
+```
+
+* La sezione più esterna, quella col bordo giallo, è il componente React che rappresenta l’applicazione e contiene tutti gli altri componenti.
+* A "livello" più basso, il riquadro blu contiene il pannello per la ricerca incrementale dei prodotti
+* Allo stesso livello, con colore verde, c'è la lista dei prodotti che a sua volta è formata da altri componenti interni
+* Per ogni riquadro di colore diverso sarà stato dichiarato un componente React
+
+#### Tipi di componenti
+
+\
+In React i componenti sono pezzi di codice indipendenti e riusabili. Esistono 2 tipi di componenti: 
+
+* il tipo **class**
+* il tipo **function**
+
+Entrambe devono reindirizzare del codice HTML. La cosa che li differenzia è che quelli di tipo function non salvano lo stato, se si necessita di salvare lo stato bisogna usare i componenti di tipo class.\
+\
+Regola generale per la definizione di un componente è che il nome del componente deve avere la lettera maiuscola.\
+Per definire un componente di tipo function:
+
+```javascript
+function Car() {
+    return <h2>I am a Car!</h2>;
+}
+ReactDOM.render(<Car />, document.getElementById('root'));
+```
+La funzione deve restituire l'elemento di cui fare il rendering tramite `return`. Come già visto `ReactDOM.render(...)` è l'istruzione che attiva la manipolazione del DOM e il successivo rendering del browser.\
+\
+Per definire un componente (uguale) di tipo class:
+
+```javascript
+class Car extends React.Component {
+    render() {
+        return <h2>Hi, I am a Car!</h2>;
+    }
+}
+ReactDOM.render(<Car />, document.getElementById('root'));
+```
+Per creare un componente di tipo class, occorre creare una classe che estenda da React.Component e implementi obbligatoriamente il metodo `render()`. Così come per i componenti di tipo function, occorre che questo metodo restituisca l'elemento da renderizzare attraverso la parola chiave `return`. Come si vede il metodo di visualizzazione sul DOM è uguale.
+\
+\
+Sia per i componenti di tipo class che quelli di tipo function si possono definire delle **props** (proprietà). Sono dei parametri in sola lettura che si passano all'oggetto, sono immutabili e sono utili per configurare, per esempio, il comportamento grafico del componente. L'oggetto built-in che contiene queste proprietà prende il nome di props (keyword riservata). Quando si fa il rendering si può accedere alle props di un component richiamandole come se fossero attributi di un tag HTML.
+```javascript
+function Car(props) {
+    //props.colore è READ ONLY per Car
+    return <h2>I am a {props.colore} Car!</h2>;
+}
+ReactDOM.render(<Car colore="red"/> /*qua colore lo posso cambiare*/, 
+    document.getElementById('root'));
+```
+```javascript
+class Car extends React.Component {
+    render() {
+        //Per le class si usa this.props
+        return <h2>Hi, I am a Car. My name is {this.props.nome}</h2>;
+    }
+}
+ReactDOM.render(<Car nome="Saetta McQueen"/>, document.getElementById('root'));
+```
+Essendo un oggetto JS che punta ad un'area di memoria che può non contenere dei campi con determinati nomi se non sono stati definiti nel rendering (si rischia che sia un puntatore a nullo).\
+Ogni volta che si mette un tag si crea un oggetto diverso quindi si possono definire diversi valori delle props.\
+Ma perchè questa scelta?
+
+> Se ho tanti componenti il passaggio per valore (e non per indirizzo) è utile sapere che se le proprietà cambiano inaspettatamente non è perchè è scritto male il componente.
+
+\
+Eventualmente si può utilizzare una factory per la creazione inline delle classi:
+```javascript
+var Car = React.createClass({
+    render: function() {
+        return <h2>Hi, I am a Car!</h2>;
+    }
+});
+```
+
+#### Il concetto di state
+
+\
+\
+Tutti i componenti di tipo **class** possiedono un oggetto built-in che prede il nome di **state**. A differenza delle _props_ le proprietà definite nell'oggetto state SONO mutabili, infatti state è pensato proprio per contenere proprietà che possono cambiare nel tempo. Quando si cambia un attributo all'interno di state viene invocata la ri-renderizzazione del relativo componente.\
+**N.B.**: le componenti **function** sono stateless, ovvero l'oggetto state non lo possiedono.
+\
+Come per tutti i linguaggi ad oggetti anche per il tipo class si può definire un costruttore che viene invocato prima del rendering e funge da inizializzatore delle proprietà del componente. Il costruttore in generale serve per inizializzare lo stato del componente e per inizializzare la gestione degli eventi.\
+Nel costruttore si può invocare il metodo `super()` per invocare il costruttore dell'oggetto padre e per inizializzare correttamente il componente stesso. Se non si usa non si potrà utilizzare la keyword `this`.
+```javascript
+class Car extends React.Component {
+    constructor() {
+        super();
+        this.state = {brand: "Ford", model: "Mustang", color: "red", year: 1964};
+    }
+    render() {
+        return (
+            <div>
+            <h1>My {this.state.brand}</h1>
+            <p> It is a {this.state.color} {this.state.model} from {this.state.year}</p>
+            </div>
+        );
+    }
+}
+ReactDOM.render(<Car />, document.getElementById('root'));
+```
+Si possono includere anche componenti in altri componenti, e quando verrà fatto il render del componente che ne contiene altri, viene fatto anche di tutti i sotto componenti.\
+\
+L'oggetto state di un componente class può essere modificato attraverso la funzione `setState()` che viene definita nella classe `React.Component` e quindi viene ereditata dai componenti class. L'invocazione di tale funzione scatena la re-invocazione della funzione `render()` del componente e di tutti i suoi componenti nested. L'oggetto state è incapsulato all'interno di un componente, il quale è l'unico ad avere diritto e responsabilità di mutarlo, nessun altro può modificarlo: ciò è utile per quando si debugga, sapendo che lo stato è stato modificato in modo errato allora l'errore sta per forza nel componente a cui appartiene lo stato sbagliato.
+\newpage
+Esempio di un componente per il lancio di un dado:
+```javascript
+class Dado extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {numeroEstratto: 0};
+    }
+    randomNumber() {
+        return Math.round(Math.random() * 5) + 1;
+    }
+    lanciaDado() {
+        this.setState({numeroEstratto: this.randomNumber()});
+    }
+    render() {
+        let valore;
+        if (this.state.numeroEstratto === 0) {
+            valore = <small>Lancia il dado cliccando <br /> sul pulsante
+            ottostante</small>;
+        }else{
+            valore = <span>{this.state.numeroEstratto}</span>;
+        }
+        return (
+            <div className="card" >
+                <p className="card__number">{valore}</p>
+                <button className="card__button" onClick={() => this.lanciaDado()}>
+                    Lancia il Dado
+                <button>
+            </div>
+        )
+    }
+}
+```
+Nell'esempio, per farlo funzionare correttamente, bisogna inserire tutto il resto:
+
+* Tag html, head, body
+* Inclusione delle librerie di React e JSX
+* Rendering del componente all'interno di un div contenitore
