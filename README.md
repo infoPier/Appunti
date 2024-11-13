@@ -2,5 +2,5 @@
 
 Ultimi aggiornamenti:
 - TecWeb: JSP
-- CAT: Stabilità
+- CAT: linearizzazione di sist. non lineari (slide 10)
 - Reti: vuoto
