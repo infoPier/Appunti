@@ -2,5 +2,5 @@
 
 Ultimi aggiornamenti:
 - TecWeb: JSP
-- CAT: linearizzazione di sist. non lineari (slide 10)
+- CAT: da iniziare ppt su trasformata di Laplace
 - Reti: vuoto

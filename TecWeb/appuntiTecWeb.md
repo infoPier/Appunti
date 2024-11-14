@@ -2,6 +2,8 @@
 title: TECNOLOGIE WEB
 author: Pierluca Pevere
 geometry: margin=2.5cm
+include-headers: |
+    \usepackage{graphicx}
 ---
 ```{=latex}
 \begin{center}
@@ -778,3 +780,29 @@ dispatcher.forward(request, response);
 \newpage
 
 ## JSP
+
+Le JSP, Java Server Pages, sono uno dei due componenti di base della tecnologia J2EE, relativamente alla parte web hanno template per la generazione di contenuto dinamico ed estendono HTML con codice Jaava custom.\
+Quando viene effettuata una richiesta a una JSP (in sintesi): 
+
+1. la parte in HTML vanilla viene direttamente trascritta sullo stream di output
+2. il codice Java viene eseguito sul server per la generaione del contenuto HTML dinamico
+3. la pagina HTML finale (parte statica + parte generata dinamicamente) viene restituita al client
+
+Per certi versi le JSP sono assimilabili a linguaggi di scripting come PHP o Perl, ma in realtà vengono trasformate in servlet dal container.\
+Le richieste JSP sono gestite da una particolare servlet (ad es. su Tomcat si chiama JspServlet) che effettua le seguenti operazioni: 
+
+- come detto in precedenza, la JSP viene tradotta in servlet
+- compilazione della servlet risultate in un .class
+- esecuzione
+
+I primi due passi vengono eseguiti soltanto quando il codice della JSP cambia. \
+Dal momento che le JSP sono compilate in servlet, il ciclo di vita delle JSP, dopo la compilazione, è controllato sempre dal medesimo web container.
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.6\linewidth]{creazioneJSP.png}
+\includegraphics[width=0.7\linewidth]{cicloVitaJSP.png}
+\caption{Sopra la creazione di una JSP e sotto il ciclo di vita}
+\label{fig_turbulent_wake_vehicles}
+\end{figure}
+```

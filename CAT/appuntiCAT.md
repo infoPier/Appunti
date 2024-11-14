@@ -322,6 +322,43 @@ Se non è possibile misurare l'intero stato, ovvero se $x(t)\ne y(t)$, esistono 
 
 $$ \dot x(t) = f(x(t), u(t)) $$ $$ y(t) = h(x(t), u(t)) $$ Sia $(x_{e}, u_{e})$ una coppia di equilibrio, $f(x_{e}, u_{e}) = 0$, consideriamo una traiettoria a partire da stato iniziale $x(0) = x_{e} + \tilde x_{0}$ $$ x(t) = x_{e} + \tilde x(t) $$ $$ u(t) = u_{e} + \tilde u(t) $$ $$ y(t) = h(x_{e}, u_{e}) + \tilde y(t) = y_{e} + \tilde y(t) $$ Essendo una traiettoria vale $$ \frac{d}{dt} (x_{e} + \tilde x(t)) = f(x_{e} + \tilde x(t), u_{e} + \tilde u(t)) $$ $$ y_{e} + \tilde y(t) = h(x_{e} + \tilde x(t), u_{e} + \tilde u(t)) $$
 Sviluppando in serie di Taylor ($f$ e $h$ suff. regolari) in $(x_{e}, u_{e})$ $$ \frac{d}{dt} (x_{e} + \tilde x(t)) = f(x_{e}, u_{e}) + \frac{\partial}{\partial x} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \frac{\partial}{\partial u} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \textrm{term. ord. sup.} = $$ $$ = f(x_{e}, u_{e}) + A_{e}\tilde x(t) + B_{e}\tilde u(t)+ \textrm{term. ord. sup.} = $$ $$ = A_{e}\tilde x(t) + B_{e}\tilde u(t) $$ \
-$$ y_{e} + \tilde y(t) = h(x_{e}, u_{e}) + \frac{\partial}{\partial x} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \frac{\partial}{\partial u} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \textrm{term. ord. sup.} $$ \
-\
-Quindi $$ \dot {\tilde x}(t) = \frac{\partial}{\partial x} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde x(t) + \frac{\partial}{\partial u} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde u(t) + \textrm{term. ord. sup.} $$ $$ \tilde y(t) = \frac{\partial}{\partial x} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde x(t) + \frac{\partial}{\partial u} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde u(t)+ \textrm{term. ord. sup.} $$
+$$ y_{e} + \tilde y(t) = h(x_{e}, u_{e}) + \frac{\partial}{\partial x} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \frac{\partial}{\partial u} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} + \textrm{term. ord. sup.} $$ 
+\newpage
+Quindi $$ \dot {\tilde x}(t) = \frac{\partial}{\partial x} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde x(t) + \frac{\partial}{\partial u} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde u(t) + \textrm{term. ord. sup.} $$ $$ \tilde y(t) = \frac{\partial}{\partial x} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde x(t) + \frac{\partial}{\partial u} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} \tilde u(t)+ \textrm{term. ord. sup.} $$ Conseguentemente ponendo $$ \frac{\partial}{\partial x} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} = A_{e} \in \mathbb{R}^{n\times n} \quad \quad \quad  \frac{\partial}{\partial u} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} = B_{e} \in \mathbb{R}^{n\times m} $$ $$ \frac{\partial}{\partial x} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} = C_{e} \quad  \quad \quad \frac{\partial}{\partial u} h(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}} = D_{e} $$ \
+$$ \dot {\tilde x}(t) = A_{e}\tilde x(t) + B_{e}\tilde u(t) + \textrm{term. ord. sup.} \quad \quad \tilde x(0) = \tilde x_{0} $$ $$ \tilde y(t) = C_{e}\tilde x(t) + D_{e}\tilde u(t) + \textrm{term. ord. sup.} $$ Approssimando $$ \dot {\tilde x}(t) \approx A_{e}\tilde x(t) + B_{e}\tilde u(t) $$ $$ \tilde y(t) \approx C_{e}\tilde x(t) + D_{e}\tilde u(t) $$ Quindi il sistema linearizzato risulta $$ \dot {\Delta x}(t) = A_{e}\Delta x(t) + B_{e}\Delta u(t) $$ $$ \Delta y(t) = C_{e}\Delta x(t) + D_{e}\Delta u(t) $$ Con $(\Delta x(t), \Delta u(t)), t\ge 0,$ traiettoria del linearizzato.\
+Le traiettorie del sistema linearizzato soddisfano $$ x(t) = x_{e} + \tilde x(t) \approx x_{e} + \Delta x(t) $$ $$ u(t) = u_{e} + \tilde u(t) \approx u_{e} + \Delta u(t) $$ $$ y(t) = y_{e} + \tilde y(t) \approx y_{e} + \Delta y(t) $$ per variazioni sufficientemente piccole ($\Delta$ sufficientemente piccolo).
+```{=latex}
+\begin{center}
+```
+
+![](traiettorialinearizzata.jpg){#traitLin height=150px}
+
+```{=latex}
+\end{center}
+```
+
+**Teorema**
+
+> Dato un sistema non lineare tempo invatiante, $\dot x(t) = f(x(t), u(t))$, sia $(x_{e}, u_{e})$ una coppia di equilibrio. Se il sistema linearizzato intorno a $(x_{e}, u_{e})$ è asintoticamente stabile, allora l'equilibrio $x_e$, relativo all'ingresso $u_e$ è (localmente) asintoticamente stabile.\
+**Ricorda**: per vedere se il sistema linearizzato è asintoticamente stabile in un intorno della coppia di equilibrio si guardano gli autovalori di $A$ (o di $A+BK$ se è retroazionato).
+
+**Teorema**
+
+> Dato un sistema non lineare tempo invariante, $\dot x(t) = f(x(t), u(t))$, sia $(x_{e}, u_{e})$ una coppia di equilibrio. Se il linearizzato intorno a $(x_{e}, u_{e})$ ha almeno un autovalore a parte reale positiva, allora l'equilibrio $x_{e}$, relativa all'ingresso $u_{e}$, è instabile.
+
+**N.B.**: non si può dire nulla in caso abbiano solo autovalori a parte reale minore o uguale a zero con almeno un autovalore a parte reale nulla.
+
+### Controllo non lineare mediante linearizzazione
+
+Consideriamo il sistema non lineare $$ \dot x(t) = f(x(t), u(t)) $$ Linearizzazione intorno all'equilibrio $(x_{e}, u_{e})$ $(A_{e} = \frac{\partial}{\partial x} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}}, \quad B_{e} = \frac{\partial}{\partial u} f(x,u)\bigg|_{\substack{x=x_{e}\\ u=u_{e}}})$ $$ \dot {\Delta x}(t) = A_{e}\Delta x(t) + B_{e}\Delta u(t) $$
+_Obiettivo_: portare $\Delta x(t)$ a zero, ovvero $x(t)$ a $x_{e}$ "in modo approssimato". Usando retroazione dello stato $\Delta u(t) = K\Delta x(t) + \Delta v(t)$ otteniamo il sistema in anello chiuso: $$ \dot {\Delta x}(t) = (A_{e} + B_{e}K)\Delta x(t) + B_{e}\Delta v(t) $$ Posso progettare $K$ in modo che $(A_{e} + B_{e}K)$ sia asintoticamente stabile. Grazie ai teoremi sulla linearizzazione $x_e$ risulta un equilibrio (localmente asintoticamente stabile per il sistema lineare non in anello chiuso retroazionato).\
+Visto che $\Delta x(t) \approx x(t) - x_{e}$: $$ u(t) = u_{e} + K(x(t) - x_{e}) + \tilde v(t) \approx u_{e} + K\Delta x(t) + \tilde v(t) $$ Perciò la legge di controllo finale sarà: $$ u(t) = u_{e} + K(x(t) - x_{e}) + \tilde v(t) \quad \quad \textrm{\textcolor{red}{feedback (retroazione) per il sistema non lineare}} $$ Con la $K$ progettata sul sistema linearizzato.
+```{=latex}
+\begin{center}
+```
+
+![](feedback.png){#feedback width=500px}
+
+```{=latex}
+\end{center}
+```
