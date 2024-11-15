@@ -785,7 +785,7 @@ Le JSP, Java Server Pages, sono uno dei due componenti di base della tecnologia 
 Quando viene effettuata una richiesta a una JSP (in sintesi): 
 
 1. la parte in HTML vanilla viene direttamente trascritta sullo stream di output
-2. il codice Java viene eseguito sul server per la generaione del contenuto HTML dinamico
+2. il codice Java viene eseguito sul server per la generazione del contenuto HTML dinamico
 3. la pagina HTML finale (parte statica + parte generata dinamicamente) viene restituita al client
 
 Per certi versi le JSP sono assimilabili a linguaggi di scripting come PHP o Perl, ma in realtà vengono trasformate in servlet dal container.\
@@ -806,3 +806,39 @@ Dal momento che le JSP sono compilate in servlet, il ciclo di vita delle JSP, do
 \label{fig_turbulent_wake_vehicles}
 \end{figure}
 ```
+\newpage
+Ma quindi perchè usare JSP invece delle servlet?
+
+> Nelle servlet la generazione del documento HTML è completamente implementata in Java, infatti il processo di generazione è time-consuming, ripetitivo e soggetto a errori, in più l'aggiornamento delle pagine è scomodo. Le JSP invece nascono per facilitare la progettazione grafica e l'aggiornamento delle pagine: si può separare facilmente il lavoro fra grafici e programmatori, gli web designer possono produrre pagine senza dover conoscere i dettagli della logica server-side e, infine, la generazione del codice dinamico è implementata in Java.
+
+E allora quale devo usare?
+
+> La risposta giusta a questa domanda è: dipende. Le servlet forniscono il completo controllo della web app agli sviluppatori, inoltre se si vogliono fornire contenuti differenziati a seconda di diversi parametri (ad es. identità dell'utente, condizioni date dalla businness logic ecc.). JSP invece si usa quando si devono fare pagine dinamiche HTML o XML e di uso frequente in quanto sono molto semplici da implementare tramite questo linguaggio di scripting. Tuttavia JSP, come tutti i linguaggi di scripting che generano codice, rende più problematico il testing e il controllo della correttezza.
+
+### Come funzionano le JSP
+
+Prima di cominciare con la trattazione sulla sintassi e gli esempi è utile fare un paio di considerazioni sul flusso. Ricordando come funziona HTTP e la struttura delle pagine HTML: il client si aspetta di ricevere prima tutto il response header e poi solo successivamente il body, quindi JSP prima deve effettuare le modifiche all'header prima di cominciare con il body.\
+Una volta che il web server comincia a restituire la response non può più interrompere il processo, altrimenti il browser visualizzerebbe solo la frazione parziale che ha ricevuto, ne consegue che una volta che JSP ha cominciato a produrre output non si può più effettuare la forward ad un'altra JSP (proprio come le servlet).\
+\
+Ogni volta che arriva una request il server compone dinamicamente il contenuto della pagina. Ogni volta che incontra un tag JSP valuta l'espressione Java contenuta all'interno e inserisce il risultato nell'output. Come è facile immaginare questo meccanismo permette di creare dinamicamente le pagine.
+
+#### I tag
+
+\
+I tag sono le parti variabili della pagina, valutate ad hoc per ogni request. Esistono 2 tipi di tag: 
+
+* Scripting-oriented tags,\
+    sono definiti da delimitatori entro cui è presente lo script (self-contained):
+    
+    - `<%!  %>` Dichiarazione
+    - `<%=  %>` Espressione
+    - `<%   %>` Scriptlet
+    - `<%@  %>` Direttiva
+
+* XML-oriented tags,\
+    seguono la sintassi XML, esistono tags equivalenti a quelli elencati sopra (ma si usano prevalentemente gli scripting-oriented tags):
+
+    - `<jsp:declaration>`declaration`</jsp:declaration>`
+    - `<jsp:expression>`expression`</jsp: expression>`
+    - `<jsp:scriptlet>`java_code`</jsp:scriptlet>`
+    - `<jsp:directive.dir_type dir_attribute />`
