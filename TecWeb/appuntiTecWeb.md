@@ -842,3 +842,214 @@ I tag sono le parti variabili della pagina, valutate ad hoc per ogni request. Es
     - `<jsp:expression>`expression`</jsp: expression>`
     - `<jsp:scriptlet>`java_code`</jsp:scriptlet>`
     - `<jsp:directive.dir_type dir_attribute />`
+
+
+Ecco un esempio di Hello World con possibile nome del visitatore della pagina:
+```jsp
+<html>
+    <body>
+    <% String visitor=request.getParameter("name");
+    if (visitor == null) visitor = "World"; %>
+    Hello, <%= visitor %>!
+    </body>
+</html>
+```
+Se chiamassi questa pagina con URL del tipo `http://hostname:port/webAppName/helloworld.jsp` il risultato sarebbe:
+```html
+<html>
+    <body>
+    Hello, World!
+    </body>
+</html>
+```
+Se invece l'URL fosse `http://hostname:port/webAppName/helloworld.jsp?name=Pier` il risultato sarebbe:
+```html
+<html>
+    <body>
+    Hello, Pier!
+    </body>
+</html>
+```
+
+**Le Dichiarazioni**: come definito in precedenza si usa il tag `<%!  >` per dichiarare variabili e metodi. Le variabili e i metodi dichiarati possono essere referenziati in ogni punto del codice JSP. I metodi diventano metodi della servlet quando la JSP viene tradotta.\
+Ad es.:
+```jsp
+<%! String name = “Paolo Rossi”;
+    double[] prices = {1.5, 76.8, 21.5};
+    double getTotal() {
+    double total = 0.0;
+    for (int i=0; i<prices.length; i++)
+        total += prices[i];
+        return total;
+    }
+%>
+```
+
+**Le espressioni**: si usano i delimitatori `<%=` e `%>` per valutare le espressioni java. Il risultato viene convertito in stringa ed inserito al posto del tag nella pagina.\
+Ad es.:
+```jsp
+<p>Sig. <%=name%>,</p>
+<p>l’ammontare del suo acquisto è: <%=getTotal()%> euro.</p>
+<p>La data di oggi è: <%=new Date()%></p>
+```
+Diventa una cosa del tipo:
+```html
+<p>Sig. Paolo Rossi,</p>
+<p>l’ammontare del suo acquisto è: 99.8 euro.</p>
+<p>La data di oggi è: Tue Feb 20 11:23:02 2010</p>
+```
+
+**Le Scriptlet**: si usa il tag `<%  %>` per aggiungere un frammento di codice Java eseguibile dalla JSP. Solitamente permette di inserire logiche di controllo di flusso nella produzione della pagina. L'insieme di tutti gli scriptlet in una JSP devono definire un blocco logino completo di codice Java.\
+Ad es.:
+```jsp
+<% if (userIsLogged) { %>
+    <h1>Benvenuto Sig. <%=name%></h1>
+<% } else { %>
+    <h1>Per accedere al sito devi fare il login</h1>
+<% } %>
+```
+
+**Le direttive**: sono comandi JSP valutati a tempo di compilazione. Le più importati e di cui si farà una trattazione più dettagliata in seguito sono: page, include e taglib. È importante segnalare che non producono alcun output visibile.\
+Ad es.:
+```jsp
+<%@ page info=“Esempio di direttive” %>
+<%@ page language=“java” import="java.net.*” %>
+<%@ page import=“java.util.List, java.util.ArrayList” %>
+<%@ include file=“myHeaderFile.html” %>
+```
+
+**_La direttiva page_**\
+Permette di importare di importare package, dichiarare pagine di errore, definire modello di esecuzione JSP relativamente alla concorrenza, ecc.\
+La sintassi:
+```jsp
+<%@ page
+    [ language="java" ]
+    [ extends="package.class" ]
+    [ import="{package.class | package.*}, ..." ]
+    [ session="true | false" ]
+    [ buffer="none | 8kb | sizekb" ]
+    [ autoFlush="true | false" ]
+    [ isThreadSafe="true | false" ]
+    [ info="text" ]
+    [ errorPage="relativeURL" ]
+    [ contentType="mimeType [ ;charset=characterSet ]"|"text/html ; charset=ISO-8859-1" ]
+    [ isErrorPage="true | false" ]
+%>
+```
+
+* `language="`**`java`**`"` definisce il linguaggio di scripting nelle parti dinamiche, l'unico valore ammesso è Java (allo stato attuale)
+* `import="{package.class|package.*},..."` lista di package da importare. Gli import più comuni sono impliciti (`java.lang.*`, `javax.servlet.*`, `javax.servlet.jsp.*`, `javax.servlet.http.*`)
+* `session="`**`true`**`|false"` indica se la pagina fa uso o no della sessione (se è a `false` non si può usare l'oggetto session)
+* `buffer="none|`**`8kb`**`|sizekb"` dimensione in KB del buffer di uscita
+* `autoFlush="`**`true`**`|false"` dice se il buffer viene svuotato automaticamente quando è pieno. Se è `false` e il buffer è pieno viene lanciata un'eccezione.
+* `isThreadSafe="`**`true`**`|false"` indica se il codice della pagina è thread-safe. Se vale `false` le chiamate alla JSP vengono serializzate
+* `info="text"` testo di commento (può essere letto con `Servlet.getServletInfo()`)
+* `error-page="relativeURL"` indirizzo della pagina a cui vengono inviate le eccezioni 
+* `isErrorPage="true|`**`false`**`"` indica se la JSP corrente è una pagina di errore (si può utilizzare l'oggetto eccezione solo se l'attributo è `true`)
+* `contentType="mimeType [;charset=charSet ]" | "text/html;charset=ISO-8859-1"` indica il tipo MIME e il codice di caratteri usato nella risposta
+
+I valori in grassetto indicano i valori di default.\
+\
+**_La direttiva include_**\
+Serve ad includere il contenuto del file specificato. È possibili nidificare un numero qualsiasi di inclusioni, l'inclusione viene fatta a tempo di compilazione (eventuali modifiche al file incluso non determinano una ricompilazione della pagina corrente).\
+Ad es.:
+```jsp
+<%@ include file="/shared/copyright.html"%>
+```
+
+**_La direttiva taglib_**\
+Le JSP permettono di definire dei tag custom oltre a quelli predefiniti. Una taglib è una collezione di questi tag non standard realizzata mediante classe Java.\
+La sintassi è: `<%@ taglib uri=“tagLibraryURI" prefix="tagPrefix"%>`
+
+### Built-in objects
+
+Le specifiche JSP forniscono 9 oggetti built-in utilizzabili senza dover creare istanze, rappresentano utili riferimenti ai corrispondenti oggetti Java.
+
++-----------+------------------------------------------+
+|**Oggetto**| **Classe/interfaccia**                   |
++===========+==========================================+
+|page       | `javax.servlet.jsp.HttpJspPage`          |
++-----------+------------------------------------------+
+|config     | `javax.servlet.ServletConfig`            |
++-----------+------------------------------------------+
+|request    | `javax.servlet.http.HttpServletRequest`  |
++-----------+------------------------------------------+
+|response   | `javax.servlet.http.HttpServletResponse` |
++-----------+------------------------------------------+
+|out        | `javax.servlet.jsp.JspWriter`            |
++-----------+------------------------------------------+
+|session    | `javax.servlet.http.HttpSession`         |
++-----------+------------------------------------------+
+|application| `javax.servlet.ServletContext`           |
++-----------+------------------------------------------+
+|pageContext| `javax.servlet.jsp.PageContext`          |
++-----------+------------------------------------------+
+|exception  | `Java.lang.Throwable`                    |
++-----------+------------------------------------------+
+
+#### L'oggetto page
+
+rappresenta l'istanza corrente della servlet, ha come tipo l'interfaccia `HTTPJspPage` che discende da JSP page, la quale a sua volta estende Servlet, quindi può essere utilizzato per accedere a tutti i metodi definiti nelle servlet. Ad es.:
+```jsp
+<%@ page info=“Esempio di uso page." %>
+<p>Page info:
+<%=page.getServletInfo() %>
+</p>
+```
+Risulta:
+```html
+<p>Page info: Esempio di uso di page</p>
+```
+
+#### L'oggetto config
+
+contiene la configurazione della servlet (parametri di inizializzazione), è un oggetto poco usato in quanto nelle JSP sono poco usati i parametri di inizializzazione. I metodi referenziabili tramite l'oggetto `config` sono: 
+
+* `getInitParameterName()` restituisce tutti i nomi dei parametri di inizializzazione
+* `getInitParameter(name)` restituisce il valore del parametro passato per nome
+
+#### L'oggetto request
+
+È l'oggetto request che viene passato al metodo `service()` della servlet. Rappresenta la richiesta alla pagina JSP, consente l'accesso a tutte le informazioni relative alla richiesta HTTP. Ad es.:
+```jsp
+<%  String xStr = request.getParameter("num");
+    try{
+        long x = Long.parseLong(xStr); %>
+        Fattoriale: <%= x %>! = <%= fact(x) %>
+    <%}
+    catch (NumberFormatException e) { %>
+        Il parametro <b>num</b>non contiene un valore intero.
+    <%} %>
+```
+Alcuni metodi di questo oggetto sono:
+
+* `String getParameter(String parName)` restituisce valore di un parametro individuato per nome
+* `Enumeration getParameterNames()` restituisce l’elenco dei nomi dei parametri
+* `String getHeader(String name)` restituisce il valore di un header individuato per nome sotto forma di stringa
+* `Enumeration getHeaderNames()` elenco nomi di tutti gli header presenti nella richiesta
+* `Cookie[] getCookies()` restituisce un array di oggetti cookie che client ha inviato alla request
+
+I metodi sono gli stessi identici dell'oggetto request delle Servlet
+
+#### L'oggetto response
+
+è l'oggetto legato all'I/O della pagina JSP. Rappresenta la risposta che viene restituita al client. Consente di inserire nella risposta diverse informazioni, per esempio: content type ed encoding, eventuali header di risposta, URL Rewriting e i cookie. I metodi associati a questo oggetto sono gli stessi legati all'oggetto response passato alla Servlet nel metodo `service()`: 
+
+* `public void setHeader(String headerName, String headerValue)` imposta header
+* `public void setDateHeader(String name, long millisecs)` imposta data
+* `addHeader`, `addDateHeader`, `addIntHeader` aggiungono nuova occorrenza di un dato header
+* `setContentType` determina content-type
+* `addCookie` consente di gestire i cookie nella risposta
+* `public PrintWriter getWriter()` restituisce uno stream di caratteri (un’istanza di `PrintWriter`)
+* `public ServletOutputStream getOuputStream()` restituisce uno stream di byte (un’istanza di `ServletOutputStream`) 
+
+Ad es.:
+```jsp
+<%  
+    response.setDateHeader("Expires", 0);
+    response.setHeader("Pragma", "no-cache");
+    if (request.getProtocol().equals("HTTP/1.1")){
+        response.setHeader("Cache-Control", "no-cache");
+    }
+%>
+```
