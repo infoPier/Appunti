@@ -500,5 +500,35 @@ Backbones non è un vero e proprio framework ma, piuttosto, un ottimo strumento 
 
 ## JAVA MODEL 2
 
+Nel progetto di applicazioni web in Java esistono 2 modelli di ampio uso e riferimento: **Model 1** e **Model 2**.\
+Per quanto riguarda **Model 1** si può dire che è un pattern semplice in cui codice il codice responsabile per presentazione contenuti è mescolato alla logica di business (suggerito solo per applicazioni piccole).\
+**Model 2** è design pattern più complesso e articolato che separa chiaramente il livello di presentazione dei contenuti dalla logica utilizzata per manipolare e processare contenuti stessi (suggerito per applicazioni medio-grandi). Usualmente questo design pattern è associato al paradigma MVC (Model View Controller).
+
+### ARCHITETTURA MVC
+
+Architettura adatta per le web app interattive (ma non solo). È composto da:
+
+* **Model**: rappresenta il livello dei dati, incluse le operazione per accesso e modifica. Model deve notificare view associate quando modello viene modificato e deve supportare:
+
+    - possibilità per view di interrogare lo stato di model
+    - Possibilità per controller di accedere alle funzionalità incapsulate da model
+
+* **View**: si occupa del rendering dei contenuti di model. Accede ai dati tramite model e specifica come i dati debbano essere presentati:
+
+    - aggiorna presentazione dei dati quando model cambia
+    - gira input utente verso controller
+
+* **Controller**: definisce comportamento dell'applicazione (contiene la logica di business):
+
+    - fa dispatching di richieste utente e seleziona view per presentazione
+    - interpreta input utente e lo mappa su azioni che devono essere eseguite dal model
 
 
+```{=latex}
+\begin{center}
+```
+![Model View Controller](mvc.png){#esComp height=250px}
+
+```{=latex}
+\end{center}
+```
