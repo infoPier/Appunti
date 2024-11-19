@@ -146,7 +146,7 @@ Ma come fa a funzionare?
 
 A runtime sostanzialmente viene eseguito un compilato che corrisponde al javascript che è stato dedotto dal codice scritto in React.
 
-### I componenti
+### I COMPONENTI
 
 I **React Components** sono i mattoncini fondamentali che consentono di passare da una pagina statica a un'applicazione web dinamica la cui interfaccia è in grado di ripondere agli eventi che si verificano nella pagina, ossia reagire (e da qui il nome React) e aggiornare se stessa di conseguenza. Ognuno di questi ha un ruolo ben definito dal punto di vista di ciò che rappresenta graficamente e si fa carico di gestire le interazioni con l'utente su quella particolare interfaccia.
 
@@ -299,3 +299,206 @@ Nell'esempio, per farlo funzionare correttamente, bisogna inserire tutto il rest
 * Tag html, head, body
 * Inclusione delle librerie di React e JSX
 * Rendering del componente all'interno di un div contenitore
+
+#### Uso raccomandato di state e props
+
+Non tutti i componenti dovranno avere state, al contrario è consigliato costruire componenti **stateless**. Solitamente l'applicazione React è realizzata come una gerarchia di componenti: ci sono componenti ai vertici che saranno resposabili di mantenere lo stato dell'applicazione e di passare le informazioni giù ai componenti figli tramite *props*.
+
+### GESTIONE DEGLI EVENTI
+
+Gli eventi sono solitamente gestiti da un **handler** realizzato attraverso un metodo della classe.\
+Facciamo subito un esempio pratico:
+
+```javascript
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    /*HANDLER DELL'EVENTO*/
+    handleClick(e) {
+        console.log("Pulsante premuto - Evento click");
+    }
+    render() {
+        return (
+            <button onClick={this.handleClick} >Pulsante</button>
+        )
+    }
+}
+```
+
+Il parametro *e* (nella firma dell'handler) è un evento sintetico, React definisce questo tipo di eventi in base alle specifiche W3C, quindi non ci sono problemi di compatibilità tra browser.\
+È utile sapere che gli eventi React sono lievemente diversi rispetto agli eventi nativi di JS.\
+**N.B.**: se l'handler dell'evento deve fare accesso allo *state* del componente occorre apportare accorgimenti al codice di gestione dell'evento.\
+\
+Per accedere allo state da parte dei metodi di classe innanzitutto è necessario che l'oggetto che invoca l'handler dell'evento sia il componente: a tal fine si ricorrerà alla keyword *this*. Ci sono 2 alternative:
+
+* All'interno del costruttore, forzare bind di this del metodo a this del componente.\
+    Ad esempio:
+
+    ```javascript
+    class Interruttore extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {acceso: true};
+            this.handleClick =
+                this.handleClick.bind(this);
+        }
+        handleClick() {
+            this.setState({acceso: !this.state.acceso}
+            // in alternativa
+            // this.setState(state => ({
+            // acceso: !state.acceso
+            // }));
+        }
+        render() {
+            return (
+                <button onClick={this.handleClick}>
+                    {this.state.acceso ? 'Acceso' : 'Spento'}
+                </button>
+            );
+        }
+    }
+
+    ```
+
+\newpage
+
+* Invocare l'handler come arrow function.\
+    Ad esempio:
+
+    ```javascript
+    class Interruttore extends
+        React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {acceso: true};
+            }
+            handleClick() {
+                this.setState({acceso:
+                !this.state.acceso})
+                // in alternativa
+                // this.setState(state => ({
+                // acceso: !state.acceso
+                // }));
+            }
+            render() {
+                return (
+                    <button onClick = {() = >
+                        this.handleClick()}>
+                        {this.state.acceso ? 'Acceso' : 'Spento'}
+                    </button>
+                );
+            }
+        }
+
+    ```
+
+### I FORM
+
+È utile sottolineare che gli elementi dei **form** in React funzionano in modo leggermente differente rispetto ad HTML, e la motivazione fondamentale è che gli elementi di un form mantengono, naturlamente, uno stato interno. Infatti gli elementi di un form (`<input>`, `<texarea>`, ...) mantengono e aggiornano il proprio stato in base all'input dell'utente.\
+Nel seguente esempio si creerà un input in react:
+
+```javascript
+class EsempioForm extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value: ''};
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    handleChange(event) {
+        this.setState({value: event.target.value});
+        console.log('onChange: lo stato ora vale ' +
+        event.target.value);
+    }
+    handleSubmit(event) {
+        alert('E\' stato inserito un nome: ' + this.state.value);
+        //previene l'esecuzione del comportamento predefinito 
+        event.preventDefault();
+    }
+```
+\newpage
+```javascript
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                    Nome:
+                    <input type="text" value={this.state.value} onChange={this.handleChange} />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
+        );
+    }
+
+```
+#### Invocazione risorsa sul server
+
+In React si possono effettuare HTTP request in diversi modi: uno dei più eleganti e semplici fa uso di *Fetch API* fornite da JS nativo. Esse forniscono un'interfaccia JS per accedere e manipolare parti della pipeline HTTP (request e response), inoltre mettono a disposizione un metodo che fornisce un modo semplice e logico per recuperare le risorse in modo asincrono. Nell'esempio seguente viene mostrata la composizione di una request HTTP di tipo POST all'interno di un handler (`FormData` è un'interfaccia JS nativa supportata da tutti i browser):
+
+```javascript
+class MyForm extends
+React.Component {
+    constructor() {
+        super();
+        this.handleSubmit =
+        this.handleSubmit.bind(this);
+    }
+    handleSubmit(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        fetch('/api/form-submit-url', {
+            method: 'POST',
+            body: data,
+        });
+    }
+    render() { 
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <label htmlFor="username">Enter username</label>
+                    <input id="username" name="username" type="text" />
+                <label htmlFor="email">Enter your email</label>
+                    <input id="email" name="email" type="email" />
+                <label htmlFor="birthdate">Enter your birth date</label>
+                    <input id="birthdate" name="birthdate" type="text" />
+                <button>Send data!</button>
+            </form>
+        );
+    }
+}
+```
+
+\newpage
+
+### LIBRERIE E FRAMEWORK ALTERNATIVI A REACT.JS
+
+Oltre a React esistono numerose iniziative che propongono librerie e framework basate su javascript. L'obiettivo di ciascuna iniziativa è quello di fornire allo sviluppatore uno strumento/ambiente di sviluppo lato front-end più "comodo" rispetto a javascript (soprattutto per la gestione del DOM) e che possa abbattere i tempi di sviluppo delle interfacce delle applicazioni Web. Di seguito proponiamo alcune tra librerie/framework più popolari e più utilizzati, elencandone le caratteristiche principali.
+
+#### JQUERY
+
+La libreria opensource jQuery è in assoluto la più utilizzata e conosciuta dalla comunità degli sviluppatori. JQuery semplifica molto la gestione degli elementi DOM e presenta diverse funzioni per questo scopo: con i selettori del CSS3 si possono selezionare facilmente e manipolare gli elementi della pagina. Inoltre, offre una gestione semplificata delle richieste Ajax. Il codice è compatibile con tutti i browser ed esistono molti plug-in. È una componente essenziale di molti CMS come WordPress, Drupal o Joomla! La sua estension jQuery UI è particolarmente adatta per realizzare effetti semplici ed elementi interattivi come drag&drop, ingrandimento e ridimensionamento degli elementi del sito, animazioni ed effetti vari.
+
+#### Angular
+
+Creato e mantenuto da Google, è il successore di AngularJS. Insieme a React.js, dispone di una grande community di sviluppatori. È riconosciuto come l'antagonista principale di React.js. Analogamente a React.js, serve per realizzare Single Page Application. Implementa il design pattern MVVM (Model View ViewModel). Si basa su jQuery Lite, una variante compatta della altrettanto famosa libreria js jQuery. Rispetto al suo antecedente (AngularJS) la differenza principale è che per la programmazione non viene più utilizzato JavaScript, ma TypeScript, un linguaggio di programmazione sviluppato da Microsoft che si basa su javascript. Punto di forza è la facilità di sviluppo delle applicazioni per diversi dispositivi (desktop, mobile, tablet).
+
+#### VUE.JS
+
+Analogamente ad Angular e React, Vue.js è un framework js per lo sviluppo di Single Page Application. Adotta il design pattern Model–View–ViewModel. L’intento degli sviluppatori di Vue.js è stato quello di creare uno strumento più facile per i principianti rispetto agli altri framework. Ciò, però, va a discapito della completezza di funzionalità (in cui i competitor eccellono), per le quali però è comunque possibile integrare un numero ristretto di librerie aggiuntive opzionali.
+
+#### METEOR
+
+Meteor, chiamato a volte MeteorJS, è un framework javascript particolarmente adatto per lo sviluppo su diverse piattaforme. Consente agli sviluppatori di creare con lo stesso codice sia applicazioni Web sia app per i dispositivi mobili. Un altro vantaggio consiste nel fatto che le modifiche al codice possono essere inoltrate direttamente ai client grazie al protocollo proprietario Distributed Data Protocol (DDP). Questo framework js funziona su una base Node.js (ne parleremo presto), pertanto può essere impiegato sia per sviluppo front-end che per sviluppo back-end Risulta molto utile disporre di conoscenze su Node.js. per lavorare con Meteor.
+
+#### BACKBONES
+
+Backbones non è un vero e proprio framework ma, piuttosto, un ottimo strumento per modellare e strutturare il codice. Grazie a questa caratteristica, backbones lascia più spazio al programmatore. Per contro, impiegato da solo non fornisce un framework completo, quindi lo si deve abbinare obbligatoriamente ad altre librerie quali underscore.js e jquery. È nato per sviluppare applicazioni single-page ed adotta il design pattern Model-View-Presenter (MVP).
+
+/newpage
+
+# TECNOLOGIE AVANZATE PER BACKEND
+
+## JAVA MODEL 2
+
+
+
