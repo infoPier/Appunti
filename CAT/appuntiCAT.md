@@ -362,3 +362,24 @@ Visto che $\Delta x(t) \approx x(t) - x_{e}$: $$ u(t) = u_{e} + K(x(t) - x_{e}) 
 ```{=latex}
 \end{center}
 ```
+
+\newpage
+
+# TRASFORMATA DI LAPLACE 
+
+### Richiami sui numeri complessi
+
+Un numero complesso può essere rappresentato in 2 modi:
+
+* **Forma cartesiana**:
+    $$ s = \sigma + j\omega \quad \quad \textrm{$\sigma$ parte reale , $\omega$ parte immaginaria} $$
+* **Forma polare**:
+    $$ s = \rho e^{j\varphi} \quad \quad \quad \textrm{$\rho$ modulo , $\varphi$ argomento} $$
+
+Ovviamente esistono le formule per il passaggio fra l'una e l'altra: $$ \rho = \sqrt{\sigma^2 + \omega^2} \quad \quad \varphi = atan(\frac{\omega}{\sigma}) $$ $$ \sigma = \rho cos(\varphi) \quad \quad \omega = \rho sin(\varphi) $$
+
+## TRASFORMATA DI LAPLACE
+
+Data una funzione complessa $f$ di variabile reale $t$, $f:\mathbb{R}\longrightarrow\mathbb{C}$\
+Sia $s=\sigma + j\omega$ una varaibile complessa, allora: $$ F(s) = \int_{0^{-}}^{+\infty} f(t)e^{-st} dt \quad \quad \quad \textrm{Trasformata di Laplace di $f(t)$} $$ Se esiste per qualche $s$, ossia se l'integrale converge.\
+**Notazione**: Trasformazione di Laplace $\mathcal{L}$\ \ \ \ \ $f(t) 
