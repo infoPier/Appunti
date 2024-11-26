@@ -1,6 +1,8 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- TecWeb: Tecnologie avanzate per il backend
+- TecWeb: 
+    * appuntiTecWeb.md: JSP l'oggetto response
+    * react.md: da finire architettura MVC, da fare EJB
 - CAT: da iniziare ppt su trasformata di Laplace
 - Reti: slide 10 Java RMI

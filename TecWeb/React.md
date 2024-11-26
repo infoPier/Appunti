@@ -532,3 +532,307 @@ Architettura adatta per le web app interattive (ma non solo). È composto da:
 ```{=latex}
 \end{center}
 ```
+
+DA FINIRE
+
+## EJB
+
+DA FINIRE
+
+## SPRING FRAMEWORK
+
+Spring è um'implementazione di modello a container leggero per la costruzione di applicazioni Java SE e Java EE. Molti dei concetti chiave alla base di Spring soni stati di successo così rilevante da essere diventati linee guida per l'evoluzione di EJB 3.0.
+
+### FUNZIONALITÀ CHIAVE
+
+Le funzionalità chiave sono:
+
+* Inversion of Control (IoC) e Dependency injection
+* Supporto alla persistenza
+* Integrazione con Web tier
+* Aspect Oriented Programming (AOP)
+
+#### DEPENDENCY INJECTION (e Persistenza)
+
+\
+La gestione della configurazione dei componenti applica principi di **Inversion-of-Control** e utilizza **Dependency Injection**, quindi c'è un'eliminazione della necessità di binding manuale fra componenti.\
+L'idea fondamentale è quella di una factory per componenti (BeanFactory) utilizzabile globalmente. Si occupa fondamentalmente del ritrovamento di oggetti per nome e della gestione delle relazioni fra oggetti (configuration management).\
+\
+Per quanto riguarda la **persistenza** c'è un livello di astrazione generico per la gestione delle transazioni con i DB (senza essere forzati a lavorare dentro un EJB container). In più è presente un'integrazione con framework di persistenza con Hibernate, JDO, JPA.
+
+#### WEB TIER E AOP
+
+\
+Per l'**integrazione con Web tier** Spring è un framework MVC per applicazioni WEB, costruito sulle funzionalità base di Spring, con supporto per diverse tecnologie per la generazione di viste, ad es. JSP, FreeMarker, Velocity, Tiles, iText e POI (Java API per l'accesso a file in formato MS). È presente un Web Flow per la navigazione a grana fine.\
+\
+Anche per il **supporto ad Aspect Oriented Programming** c'è un framework di supporto a servizi di sistema, come la gestione delle transazioni, tramite tecniche AOP, che porta un miglioramento in termini di modularità, parzialmente correlata è anche la facilità di testing.
+
+
+Ma quindi è un altro Container/Framework?
+
+> NO. Spring rappresenta un approccio unico (che poi influenzò anche i container futuri perchè va verso tecnologie a microcontainer).
+
+Sostanzialmente ha delle _proprietà originali_:
+
+* Spring come framework modulare. Architettura a layer, possibilità di utilizzare anche solo alcune parti in isolamento: anche la possibilità di introdurre Spring incrementalmente in progetti esistenti e di imparare a utilizzare la tecnologia pezzo per pezzo
+* Supporto a importanti aree non coperte da altri framework diffusi, come la gestione degli oggetti di business
+* Tecnologia di integrazione di soluzioni esistenti
+* Facilità di testing
+
+### ARCHITETTURA DI SPRING
+
+```{=latex}
+\begin{center}
+```
+![Architettura di spring](springArch.png)
+
+```{=latex}
+\end{center}
+```
+
+I soli moduli che ci interessano sono:
+* **Core package**: parte fondamentale del framework. Consiste in un container leggero che si occupa di _Inversion of Control_ (Dependency Injection).L'elemento fondamentale è _BeanFactory_ che fornisce una implementazione estesa del pattern factory ed elimina la necessità di gestione di singleton a livello di programmazione, permettendo di disaccoppiare configurazione e dipendenze dalla logica applicativa
+* **MVC package**: Ampio supporto a progettazione e sviluppo secondo architettura MVC per applicazioni Web
+
+### DEPENDENCY INJECTION IN SPRING
+
+Applicazione più nota e di maggiore successo del principio di Inversion of Control è l'Hollywood Principle: in breve se un attore non ha provini e parti in film o serie tv e quotidianamente chiama il proprio agente cercando di sapere se ci sono parti per lui ma un giorno l'agente gli dice che lo chiamerà lui se avrà una parte a disposizione.\
+A livello più professionale, il container si occupa di risolvere (injection) le dipendenze dei componenti attraverso l'opportuna configurazione dell'implementazione dell'oggetto (push). Questo è del tutto opposto ai pattern più classici di istanziazione di componenti o Service Locator, dove è il componente che deve determinare l'implementazione della risorsa desiderata (pull).\
+I principali benefici sono:
+
+* **Flessibilità**: eliminazione del codice di lookup nella logica di business
+* **Possibilità e facilità di testing**: nessun bisogno di dipendere da risorse esterne o da container in fase di testing. Inoltre esiste la possibilità di abilitare il _testing automatico_
+* **Manutenibilità**: permette il riutilizzo in diversi ambienti applicativi cambiando semplicemente i file di configurazione (o in generale le specifiche dependency injection) e non il codice
+
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.48\linewidth]{senzaDepInj.png}
+\includegraphics[width=0.48\linewidth]{conDepInj.png}
+\label{dependecy injection}
+\end{figure}
+```
+
+**Senza Dependecy Injection** (a sinistra): un oggetto/componente deve esplicitamente istanziare gli oggetti/componenti di cui ha necessità (le sue dipendenze). C'è un accoppiamento stretto tra oggetti/componenti.\
+**Con Dependency Injection** (a destra): il supporto a Dependency Injection si occupa di creare oggetti/componenti quando necessario e di passarli automaticamente agli oggetti/componenti che li devono utilizzare. Un'idea base per l'implementazione può essere: costruttori in oggetto A che accettano B e C come parametri in ingresso, oppure A contiene metodi setter che accettano interfacce B e C come parametri in ingresso.
+
+#### Implementazione
+
+\
+Ci sono due modi per implementare la Dependency Injection:
+
+* A livello **costruttore**: dipendenze fornite attraverso i costruttori dei componenti
+```java
+public class ConstructorInjection {
+    private Dependency dep;
+    public ConstructorInjection(Dependency dep) {
+        this.dep = dep; 
+    } 
+}
+```
+* A livello di metodi **setter**: dipendeze fornite attraverso i metodi di configurazione dei componenti (metodi setter in stile JavaBean). Nella comunità degli sviluppatori è la più usata.
+```java
+public class SetterInjection {
+    private Dependency dep;
+    public void setMyDependency(Dependency dep) {
+        this.dep = dep; 
+    } 
+}
+```
+
+#### BEANFACTORY
+
+\
+L'oggetto BeanFactory è responsabile della gestione dei bean che usano Spring e delle loro dipendenze.\
+Ogni applicazione interagisce con la dependency injection di Spring (IoC container) tramite l'interfaccia `BeanFactory`: l'oggetto `BeanFactory` viene creato dall'applicazione nella forma di `XmlBeanFactory`, una volta creato l'oggetto legge un file di configurazione e si occupa di fare l'injection (wiring).\
+`XmlBeanFactory` è un'estensione di `DeafultBeanFactory` per leggere definizioni di bean da un oggetto XML.\
+Ad esempio:
+```java
+public class XmlConfigWithBeanFactory {
+    public static void main(String[] args) {
+        XmlBeanFactory factory = new XmlBeanFactory(new FileSystemResource("beans.xml"));
+        SomeBeanInterface b = (SomeBeanInterface) factory.getBean(“nameOftheBean”); 
+    } 
+}
+```
+
+#### File di configurazione
+
+\
+\
+A livello di metodo **setter**:
+```xml
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+    "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="renderer" class="StandardOutMessageRenderer">
+        <property name="messageProvider">
+            <ref local="provider"/>
+        </property>
+    </bean>
+    <bean id="provider" class="HelloWorldMessageProvider"/>
+</beans>
+```
+
+Oppure a livello di **costruttore**:
+```xml
+...
+<beans>
+    <bean id="provider" class="ConfigurableMessageProvider">
+        <constructor-arg>
+            <value> Questo è il messaggio configurabile</value>
+        </constructor-arg>
+    </bean> 
+</beans>
+```
+
+#### Uso della Dependency Injection
+
+```java
+public class ConfigurableMessageProvider implements MessageProvider {
+    private String message;
+    // usa dependency injection per config. del messaggio
+    public ConfigurableMessageProvider(String message) {
+        this.message = message;
+    }
+    public String getMessage() { return message; }
+}
+```
+
+\
+\
+Per chiarezza a livello grafico ecco la differenza fra modello a container pesante e leggero:
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.6\linewidth]{conPes.png}
+\includegraphics[width=0.6\linewidth]{conLegg.png}
+\caption{Sopra il modello a container pesante, sotto il modello a container leggero (BF = BeanFactory)}
+\label{fig_turbulent_wake_vehicles}
+\end{figure}
+```
+Logicamente ci sono svantaggi e vantaggi (alcuni elencati sotto):
+
+* Prestazioni
+
+    - il modello a container leggero è leggermente più veloce
+    - il modello a container pesante è più lento
+
+* Passaggio per proxy
+
+    - nel modello a container leggero il client passa attraverso un proxy solo la prima volta, dopo è difficile controllare che cosa fa il client tramite il link diretto fornito
+    - nel modello a container pesante il client è obbligato a passare tramite un proxy, quindi è facile controllare l'accesso a determinate risorse
+
+* Livello
+
+    - il modello a container leggero è un modello a più basso livello, ciò può essere un vantaggio se usato nel modo giusto, ma risulta più complicato se non lo si usa nella maniera corretta
+    - il modello a container pesante è più ad alto livello
+
+* Overhead
+
+    - il modello a container leggero presenta poco overhead
+    - il modello a container pesante presenta molto più overhead
+
+* Trasparenza
+
+    - il modello a container leggero è poco trasparente quindi è più facile vedere l'implementazione di determinate cose
+    - il modello a container pesante è molto trasparente
+
+#### Tipo di parametri di Injection
+
+Spring supporta diversi tipi di parametri con cui fare injection:
+
+1. Valori semplici
+2. Bean all'interno della stessa factory
+3. Bean anche in diverse factory
+4. Collezioni (collection)
+5. Proprietà definite esternamente
+
+Tutti questi tipi possono essere usati sia per injection sui costruttori che sui metodi setter. Ad esempio:
+```xml
+<beans>
+    <bean id="injectSimple" class="InjectSimple">
+        <property name="name"> <value>John Smith</value></property>
+        <property name="age"> <value>35</value> </property>
+        <property name="height"> <value>1.78</value> </property>
+    </bean>
+</beans>
+```
+Se le dipendenze scritte a loro volta hanno delle dipendeze da altri bean le injection vengono fatte ricorsivamente fino all'ultima: se un bean dipende da un altro bean automaticamente viene fatta l'injection anche del secondo bean e così via.\
+\
+Si può fare l'injection di bean dalla stessa factory. È usata quando è necessario fare injection di un bean all'interno di un bean (target bean).\
+Si usa il tag `<ref>` in `<property>` o `<constructor-arg>` del target bean.\
+Viene fatto un controllo lasco sul tipo del bean iniettato rispetto a quanto definito dal target: se il tipo definito nel target è **un'interfaccia** il bean injected deve essere un'implementazione di tale interfaccia, se il tipo nel terget è una **classe** il bean injected deve essere della stessa classe o di una sottoclasse.\
+Ad esempio: 
+```xml
+<beans>
+    <bean id="injectRef" class="InjectRef">
+        <property name="oracle">
+            <ref local="oracle"/>
+        </property>
+    </bean>
+</beans>
+```
+
+#### Naming dei componenti Spring
+
+\
+Come fa BeanFactory a trovare il bean richiesto (pattern singleton come comportamento di default)?
+
+> Ogni bean deve avere un nome unico all'interno della BeanFactory contenente.
+
+La procedura per la risoluzione dei nomi è: 
+
+* Se un tag `<bean>` ha un attributo di nome **_id_**, il valore di questo attributo viene usato come nome
+* Se non c'è l'attributo id, Spring cerca un attributo **_name_**
+* Se non è definito né id né name, Spring usa il nome della classe del bean come suo nome 
+
+### SUPPORTO A MVC IN SPRING
+
+Supporto a componenti "controller", responsabili per interpretare richieste utente e interagire con business object application.\
+Una volta che il controller ha ottenuto i risultati (parte model), decide a quale view fare forwarding del model; view utilzza i dati in model per creare una presentazione verso l'utente.\
+I vantaggi sono:
+
+* Chiara separazione ruoli: controller, validator, oggetti command/form/model, DispatcherServlet, handler mapping, view resolver, ...
+* Adattabilità e riutilizzabilità: possibilità di utilizzare qualsiasi classe per controller purché implementi interfacciapredefinita
+* Flessibilità nel trasferimento model: via un Map nome/valore, quindi possibilità di integrazione con svariate tecnologie per view
+* Facilità di configurazione: grazie al meccanismo standard di dependency injection di Spring
+* Handler mapping e view resolution configurabili
+* Potente libreria di JSP tag (Spring tag library): supporto a varie possibilità di temi (theme)
+* Componenti con ciclo di vita scoped e associati automaticam a HTTPrequest o HTTPsession (grazie a WebApplicationContext di Spring)
+
+#### Spring DispatcherServlet
+
+\
+\
+È progettato attorno ad una servlet centrale che fa da dispatcher delle richieste (DispatcherServlet) completamente integrata con _IoC container_ di Spring. La DispatcherServlet può essere viso come "Front Controller". Essendo DispatcherServlet una normalissima servlet e quindi serve URL mapping tramite `web.xml`.\
+La devo scrivere io?
+
+> No. È già presente all'interno di Spring
+
+Come funziona?
+
+* Intercetta le HTTP Request in ingresso che giungono al web container
+* Cerca un controller che sappia gestire la richiesta
+* Invoca il controller ricevendo un model (output business logic) e una view
+* Cerca un View Resolver opportuno tramite cui scegliere la view e creare una HTTP response
+
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.6\linewidth]{dispatcherServlet.png}
+\includegraphics[width=0.7\linewidth]{dispServlFunz.png}
+\caption{Sopra com'è fatta una DispatcherServlet e sotto come lavora}
+\label{dispatcherservlet}
+\end{figure}
+```
+
+In sintesi le operazioni svolte da DispatcherServlet sono:
+
+* WebApplicationContext è associato alla richiesta (controller e altri componenti potranno utilizzarlo) `DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE`
+* "locale" resolver associato alla richiesta (può servire nel processamento richiesta e view rendering)
+* theme resolver associato alla richiesta (view potranno determinare quale theme usare)
+* Viene cercato un handler appropriato. Se trovato, viene configurata una catena di esecuzione associata all’handler (preprocessori, postprocessori e controller); risultato è preparazione di model
+* Se restituito un model, viene girato alla view associata (perché un model potrebbe non essere ricevuto?)
+
+#### Spring Controller

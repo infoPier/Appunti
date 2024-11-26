@@ -382,4 +382,69 @@ Ovviamente esistono le formule per il passaggio fra l'una e l'altra: $$ \rho = \
 
 Data una funzione complessa $f$ di variabile reale $t$, $f:\mathbb{R}\longrightarrow\mathbb{C}$\
 Sia $s=\sigma + j\omega$ una varaibile complessa, allora: $$ F(s) = \int_{0^{-}}^{+\infty} f(t)e^{-st} dt \quad \quad \quad \textrm{Trasformata di Laplace di $f(t)$} $$ Se esiste per qualche $s$, ossia se l'integrale converge.\
-**Notazione**: Trasformazione di Laplace $\mathcal{L}$\ \ \ \ \ $f(t) 
+**Notazione**: Trasformazione di Laplace $\mathcal{L}$\ \ \ \ \ $f(t) \xrightarrow[\ \ \ \ \ \ \ ]{\mathcal{L}} F(s)$ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $F(s) = \mathcal{L}[f(t)]$
+
+### OSSERVAZIONI
+
+#### Ascissa di convergenza
+
+Sia $\bar \sigma > -\infty$ estremo inferiore di $s = \sigma + j \omega$ per cui l'integrale converge. Allora la trasformata esiste nel semipiano $Re(s) > \bar \sigma$. $\bar \sigma$ è detta ascissa di convergenza. La definizione si estende anche a $Re(s) \le \bar \sigma$.\
+**N.B.**: solo i valori di $f(t)$ per $t\ge 0$ determinano la trasformata.\
+**N.B.**: L'integrale va da $0^{-}$ a $+\infty$ quindi gli impulsi in 0 sono considerati nell'integrazione.
+
+#### Trasformate razionali
+
+$$ F(s) = \frac{N(s)}{D(s)} $$ dove $N(s)$ e $D(s)$ sono polinomi primi fra loro.\
+Se $f$ reale allora $N(s)$ e $D(s)$ a coefficienti reali.\
+Gli **zeri** sono le radici di $N(s) = 0$\
+I **poli** sono le radici di $D(s) = 0$
+
+### ANTITRASFORMAZIONE
+
+$$ f(t) = \frac{1}{2\pi j}\int_{\sigma - j\infty}^{\sigma + j\infty} F(s)e^{st}ds $$ con $\sigma > \bar \sigma$.\
+**Notazione**: antitrasformazione di Laplace $\mathcal{L}^{-1}$\ \ \ \ \ $F(s) \xrightarrow[\ \ \ \ \ \ \ ]{\mathcal{L}^{-1}} f(t)$ \
+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $f(t) = \mathcal{L}^{-1}[F(s)]$ \
+**N.B.**: $f(t)$ fornita solo per $t\ge 0$. Si assume $f(t)=0$ per $t<0$.\
+**N.B.**: Considerando solo $f(t)$ t.c. $f(t)=0$ per $t<0$ allora c'è corrispondenza biunivoca tra $f(t)$ e $F(s)$, quindi hanno lo stesso contenuto informativo.\
+**N.B.**: la definizione è poco usata per l'antitrasformazione.
+
+### PROPRIETÀ
+
+#### Linearità
+
+$$ \mathcal{L}[\alpha f(t) + \beta g(t)] = \alpha \mathcal{L}[f(t)] + \beta \mathcal{L}[g(t)] = \alpha F(s) + \beta G(s) \quad \quad \quad \forall \alpha,\beta \in \mathbb{C} $$
+
+#### Traslazione temporale
+
+$$ \mathcal{L}[f(t-\tau)]=e^{-\tau s}F(s) \quad \quad \quad \forall \tau > 0 $$
+
+#### Traslazione nel dominio della variabile complessa
+
+$$ \mathcal{L}[e^{\alpha t}f(t)]=F(s-a) \quad \quad \quad \forall \alpha \in \mathbb{C} $$
+
+#### Derivazione nel tempo
+
+$$ \mathcal{L}\left[\frac{d}{dt}f(t)\right] = sF(s)-f(0) $$ Ne consegue iterando $$ \mathcal{L}\left[\frac{d^n}{dt^n}f(t)\right] = s^{n}F(s) - \sum_{i=1}^{n} s^{n-i}\frac{d^{i-1}}{dt^{i-1}}f(t)\big|_{t=0} $$
+
+#### Integrazione nel tempo
+
+$$ \mathcal{L}\left[\int_{0}^{t}f(\tau)d\tau \right] = \frac{1}{s}F(s) $$
+
+#### Convoluzione nel tempo
+
+$$ \mathcal{L}\left[\int_{0}^{t}f_{1}(t-\tau)f_{2}(\tau)d\tau \right] = F_{1}(s)F_{2}(s) $$
+
+
+### TEOREMI DEL VALORE INIZIALE E FINALE
+
+#### Teorema del valore iniziale
+
+> Se $f(t)$ reale con trasformata razione $F(s)$ con grado del denominatore maggiore del grado del numeratore allora $$ f(0) = \lim_{s\to \infty} sF(s) $$
+
+#### Teorema del valore finale
+
+> Se $f(t)$ reale con trasformata razionale $F(s)$ con grado del denominatore maggiore del grado del numeratore e poli nulli o a parte reale negativa allora $$ \lim_{t\to \infty} f(t) = \lim_{s\to 0} sF(s) $$
+
+### TRASFORMATA DI SEGNALI ELEMENTARI
+
