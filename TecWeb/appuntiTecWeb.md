@@ -815,7 +815,7 @@ E allora quale devo usare?
 
 > La risposta giusta a questa domanda è: dipende. Le servlet forniscono il completo controllo della web app agli sviluppatori, inoltre se si vogliono fornire contenuti differenziati a seconda di diversi parametri (ad es. identità dell'utente, condizioni date dalla businness logic ecc.). JSP invece si usa quando si devono fare pagine dinamiche HTML o XML e di uso frequente in quanto sono molto semplici da implementare tramite questo linguaggio di scripting. Tuttavia JSP, come tutti i linguaggi di scripting che generano codice, rende più problematico il testing e il controllo della correttezza.
 
-### Come funzionano le JSP
+### COME FUNZIONANO LE JSP
 
 Prima di cominciare con la trattazione sulla sintassi e gli esempi è utile fare un paio di considerazioni sul flusso. Ricordando come funziona HTTP e la struttura delle pagine HTML: il client si aspetta di ricevere prima tutto il response header e poi solo successivamente il body, quindi JSP prima deve effettuare le modifiche all'header prima di cominciare con il body.\
 Una volta che il web server comincia a restituire la response non può più interrompere il processo, altrimenti il browser visualizzerebbe solo la frazione parziale che ha ricevuto, ne consegue che una volta che JSP ha cominciato a produrre output non si può più effettuare la forward ad un'altra JSP (proprio come le servlet).\
@@ -961,7 +961,7 @@ Ad es.:
 Le JSP permettono di definire dei tag custom oltre a quelli predefiniti. Una taglib è una collezione di questi tag non standard realizzata mediante classe Java.\
 La sintassi è: `<%@ taglib uri=“tagLibraryURI" prefix="tagPrefix"%>`
 
-### Built-in objects
+### BUILT-IN OBJECTS
 
 Le specifiche JSP forniscono 9 oggetti built-in utilizzabili senza dover creare istanze, rappresentano utili riferimenti ai corrispondenti oggetti Java.
 
@@ -1053,3 +1053,171 @@ Ad es.:
     }
 %>
 ```
+
+#### L'oggetto out
+
+È legato all'I/O della pagina JSP: è uno stream di caratteri e rappresenta lo stream di output della pagina. I metodi associati a quest'oggetto sono:
+
+* `isAutoFlush()`: dice se l'output buffer è stato impostato in modalità autoFlush o meno
+* `getBufferedSize()`: restituisce dimensioni del buffer
+* `getRemaining()`: indica quanti byte liberi ci sono nel buffer
+* `clearBuffer()`: ripulisce il buffer
+* `flush()`: forza l’emissione del contenuto del buffer
+* `close()`: fa flush e chiude stream
+
+Esempio di uso dell'oggetto out:
+```jsp
+<p>Conto delle uova
+    <%
+        int count = 0;
+        while (carton.hasNext()){
+            count++;
+            out.print(".");
+        }
+    %>
+<br/>
+Ci sono <%= count %> uova.
+</p>
+```
+
+#### L'oggetto session
+
+Fornisce informazioni sul contesto di esecuzione della JSP in termini di sessione utente. Ricorda che l'attributo `session` della direttiva `page` deve essere true affinchè JSP partecipi alla sessione. I metodi associati a quest'oggetto sono:
+
+* `String getID()`: restituisce ID di una sessione
+* `boolean isNew()`: dice se sessione è nuova
+* `void invalidate()`: permette di invalidare (distruggere) una sessione
+* `long getCreationTime()`: ci dice da quanto tempo è attiva la sessione (in ms)
+* `long getLastAccessedTime()`: ci dice quando è stata utilizzata l’ultima volta
+
+Un esempio dell'uso dell'oggetto session:
+
+```jsp
+<% 
+    UserLogin userData = new UserLogin(name, password);
+    session.setAttribute("login", userData);
+%>
+<%
+    UserLogin userData=(UserLogin)session.getAttribute("login");
+    if (userData.isGroupMember("admin")) {
+        session.setMaxInactiveInterval(60*60*8);
+    } else {
+        session.setMaxInactiveInterval(60*15);
+    }
+%>
+```
+
+#### L'oggetto application
+
+Fornisce informazioni su contesto di esecuzione della JSP con scope di visibilità comune a tutti gli utenti (è `ServletContext`). Rappresenta la web app a cui JSP appartiene. Consente di interagire con l'ambiente di esecuzione: 
+
+* fornisce la versione di JSP Container
+* garantisce l'accesso a risorse server-side
+* permette accesso ai parametri di inizializzazione relativi all'applicazione
+* consente di gestire gli attributi di un'applicazione
+
+#### L'oggetto pageContext
+
+Fornisce informazione sul contesto di esecuzione della pagina JSP, rappresenta l'insieme degli oggetti built-in di una JSP: consente l'accesso a tutti gli oggetti impliciti e ai loro attributi, inoltre consente il trasferimento del controllo ad altre pagine.
+
+#### L'oggetto exception
+
+È l'oggetto connesso alla gestione degli errori, rappresenta l'eccezione che non viene gestita in un blocco catch. Non è automaticamente disponibile in tutte le pagine ma solo nelle Error Page (quelle dichiarate con l'attributo `errorPage` settato a true).\
+Ad esempio:
+
+```jsp
+<%@ page isErrorPage="true" %>
+    <h1>Attenzione!</h1>
+    E’ stato rilevato il seguente errore:<br/>
+    <b><%= exception %></b><br/>
+    <%
+        exception.printStackTrace(out);
+    %>
+```
+
+### AZIONI
+
+Le azioni sono comandi JSP tipicamente per l’interazione con altre pagine JSP, servlet, o componenti JavaBean; sono espresse usando sintassi XML. Sono previsti 6 tipi di azioni definite dai seguenti tag:
+
+* `useBean`: istanzia JavaBean e gli associa un identificativo
+* `getProperty`: ritorna property indicata come oggetto
+* `setProperty`: imposta valore della property indicata per nome
+* `include`: include nella JSP contenuto generato dinamicamente da un’altra pagina locale
+* `forward`: cede controllo ad un’altra JSP o servlet
+* `plugin`: genera contenuto per scaricare plug-in Java se necessario
+
+Ad esempio:
+
+```jsp
+<html>
+    <body>
+    <jsp:useBean id="myBean" class=“it.unibo.deis.my.HelloBean"/>
+    <jsp:setProperty name="myBean" property="nameProp" param=“value"/>
+    Hello, <jsp:getProperty name="myBean" property="nameProp"/>!
+    </body>
+</html>
+```
+
+#### Forward
+
+Consente il trasferimento del controllo dalla pagina JSP corrente ad un'altra pagina sul server locale: l'attributo `page` definisce l'URL della pagina a cui trasferire il controllo, la request viene completamente trasferita in modo trasparente per il client.\
+La sintassi è: `<jsp:forward page="localURL" />`\
+L'attributo `page` è anche generabile dinamicamente: `<jsp:forward page=’<%="message"+statusCode+".html"%>’/>`\
+Gli oggetti `request`, `response` e `session` della pagina d'arrivo sono gli stessi della pagina chiamante, ma viene istanziato un nuovo oggetto `pageContext`.\
+_Attenzione_: forward è possibile solo se non è stato prodotto alcun output.\
+È possibile aggiungere parametri all'oggetto request della pagina chiamata utilizzando il tag `<jsp:param>`, ad esempio:
+
+```jsp
+<jsp:forward page="localURL">
+    <jsp:param name="parName1" value="parValue1"/>
+        ...
+    <jsp:param name="parNameN" value="parValueN"/>
+</jsp:forward>
+```
+
+#### Include
+
+Consente di includere il contenuto generato dinamicamente da un’altra pagina locale all’interno dell’output della pagina corrente.\
+Trasferisce temporaneamente controllo ad un’altra pagina.\
+L'attributo page definisce l’URL della pagina da includere.\
+L'attributo flush stabilisce se sul buffer della pagina corrente debba essere eseguito flush prima di effettuare l’inclusione.\
+Gli oggetti session e request per pagina da includere sono gli stessi della pagina chiamante, ma viene istanziato un nuovo contesto di pagina.\
+La sintassi è: `<jsp:include page="localURL" flush="true" />`
+Come per la forward si possono aggiungere dei parametri all'oggetto request tramite `<jsp:param>`. Ad esempio:
+
+```jsp
+<jsp:include page="localURL" flush=“true”>
+    <jsp:param name="parName1" value="parValue1"/>
+        ...
+    <jsp:param name="parNameN" value="parValueN"/>
+</jsp:include>
+```
+
+```{=latex}
+\begin{center}
+```
+
+![](include.png){height=150px}
+
+```{=latex}
+\end{center}
+```
+
+### JAVABEAN
+
+Scriptlet ed espressioni consentono uno sviluppo centrato sulla pagina, il che è uno svantaggio quando si vuole dividere la logica applicativa e la presentazione dei contenuti in quanto questo tipo di modello non lo consente e putroppo le applicazioni complesse necessitano di maggiore modularità ed estensibilità tramite un'architettura a più livelli.\
+A tal fine le JSP consentono anche lo sviluppo basato su un modello a componenti.\
+Il modello a componenti di base Java è basato sui **JavaBeans**.\
+Un **_JavaBean_**, o più semplicemente un bean, non è altro che una classe Java dotata di alcune caratteristiche:
+
+* Classe public
+* Ha un contruttore public di default senza argomenti
+* Espone proprietà sotto forma di coppie di metodi di accesso (accessors) costruiti secondo le regole che abbiamo appena esposto (getters e setters)
+* Espone eventi con metodi di registrazione che seguono regole precise
+
+#### Le Proprietà
+
+\
+\
+Le proprietà sono elementi dello stato del componente che vengono esposti in modo protetto. In Java sono solo una convenzione: sono coppie di metodi di accesso che seguono regole di denominazione.\
+La proprietà (per esempio) `prop` è definita da due metodi `getProp()` e `setProp()`, logicamente il tipo del parametro passato a `setProp()` e il valore di ritorno di `getProp()` devono essere uguali  
