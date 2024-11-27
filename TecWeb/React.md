@@ -702,15 +702,25 @@ public class ConfigurableMessageProvider implements MessageProvider {
 \
 \
 Per chiarezza a livello grafico ecco la differenza fra modello a container pesante e leggero:
+
 ```{=latex}
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.6\linewidth]{conPes.png}
-\includegraphics[width=0.6\linewidth]{conLegg.png}
-\caption{Sopra il modello a container pesante, sotto il modello a container leggero (BF = BeanFactory)}
-\label{fig_turbulent_wake_vehicles}
-\end{figure}
+\begin{center}
 ```
+![Modello a Container pesante](conPes.png){width=300px}
+
+```{=latex}
+\end{center}
+```
+
+```{=latex}
+\begin{center}
+```
+![Modello a Container leggero](conLegg.png){width=300px}
+
+```{=latex}
+\end{center}
+```
+
 Logicamente ci sono svantaggi e vantaggi (alcuni elencati sotto):
 
 * Prestazioni
@@ -818,13 +828,14 @@ Come funziona?
 * Cerca un View Resolver opportuno tramite cui scegliere la view e creare una HTTP response
 
 ```{=latex}
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.6\linewidth]{dispatcherServlet.png}
-\includegraphics[width=0.7\linewidth]{dispServlFunz.png}
-\caption{Sopra com'è fatta una DispatcherServlet e sotto come lavora}
-\label{dispatcherservlet}
-\end{figure}
+\begin{center}
+```
+![Com'è fatta una DispatcherServlet](dispatcherServlet.png){width=320px}
+
+![Come lavora una DispatcherServlet](dispServlFunz.png){width=400px}
+
+```{=latex}
+\end{center}
 ```
 
 In sintesi le operazioni svolte da DispatcherServlet sono:
@@ -836,3 +847,142 @@ In sintesi le operazioni svolte da DispatcherServlet sono:
 * Se restituito un model, viene girato alla view associata (perché un model potrebbe non essere ricevuto?)
 
 #### Spring Controller
+
+\
+\
+Spring supporta la nozione di controller in modo astratto permettendo creazione di ampia varietà di controller: form-specific controller, command-based controller, controller che eseguono come wizard ecc.\
+La base di partenza è un'interfaccia:
+```java
+org.springframework.web.servlet.mvc.Controller
+public interface Controller {
+    ModelAndView handleRequest( HttpServletRequest request,
+            HttpServletResponse response) throws Exception; 
+} 
+```
+Molte implementazioni di questa interfaccia sono già disponibili: ad esempio l'`AbstractController`. Questa classe offre già supporto per il caching: quando lo si usa come baseclass è necessario fare l'overriding di metodo: `handleRequestInternal(HttpServletRequest, HttpServletResponse)`. Una possibile implementazione è:
+```java
+public class SampleController extends AbstractController {
+    public ModelAndView handleRequestInternal( HttpServletRequest request,
+                    HttpServletResponse response) throws Exception {
+        ModelAndView mav = new ModelAndView("hello");
+        mav.addObject("message", "Hello World!");
+        return mav; 
+    } 
+}
+```
+`AbstractController` opera automaticamente direttive di caching verso il cliente per obbligarlo a caching locale. Nell'esempio di config XML seguente per esempio il tempo è di 2 minuti:
+```xml
+<bean id="sampleController" class="samples.SampleController">
+    <property name="cacheSeconds" value="120"/> 
+</bean>
+```
+
+Altri implementazioni possibili sono:
+
+* ParameterizableViewController: simile all’esempio precedente, con possibilità di specificare nome view in Web application context (senza bisogno di farne hard-code nella classe Java del controllore)
+* UrlFilenameViewController: esamina URL passato, estrae filename del file richiesto e lo usa automaticam. come nome di view
+
+#### Command Controller
+
+\
+\
+Command controller permettono di associare dinamicam. parametri di `HttpServletRequest` verso oggetti dati specificati. Alcuni controller disponibili sono:
+
+* AbstractCommandController: \
+    nessuna funzionalità form, solo consente di specificare che fare con
+    oggetto command (JavaBean) popolato automaticam. coi parametri richiesta
+* AbstractFormController: \
+    offre supporto per form; dopo che utente ha compilato form, mette i
+    campi in oggetto command. Il programmatore deve specificare metodi
+    per determinare quali view utilizzare per presentazione form
+* SimpleFormController:\
+    oltre al precedente, anche nome view per form, nome view per pagina
+    da mostrare all’utente quando form submission completata con successo, ecc
+* AbstractWizardFormController:\
+    il programmatore deve implementare metodi (abstract) `validatePage()`,
+    `processFinish()` e `processCancel()`; altri metodi di cui fare overriding sono
+    referenceData (per passare model ad una vista sotto forma di oggetto Map);
+    getTargetPage (se wizard vuole cambiare ordine pagine o omettere pagine
+    dinamicamente), onBindAndValidate(se si desidera overriding del flusso usuale di
+    associazione valori e validazione form)
+
+
+#### Spring Handler
+
+\
+\
+Funzionalità base: fornitura di HandlerExecutionChain, che contiene un handler per la richiesta e può contenere una lista di handler interceptor da applicare alla richiesta, prima o dopo esecuzione dell'handler.\
+All’arrivo di una richiesta, DispatcherServlet la gira a handler per ottenere un HandlerExecutionChain appropriato; poi DispatcherServlet esegue i vari passi specificati nella chain.\
+Concetto potente e molto generale: si pensi ad un handler custom che determina una specifica catena non solo sulla base dell’URL della richiesta ma anche dello stato di sessione associata.\
+Diverse possibilità per handler mapping in Spring. Maggior parte estendono AbstractHandlerMapping e condividono le proprietà seguenti:
+
+* _interceptors_: lista degli intercettori 
+* _defaultHandler_: default da utilizzare quando no matching specifico possibile
+* _order_: basandosi su questa proprietà (org.springframework.core.Ordered), Spring ordina tutti handler mapping disponibile e sceglie il primo in lista
+
+#### Spring View
+
+\
+\
+Spring mette a disposizione anche componenti detti "view resolver" per semplificare rendering di un model su browser, senza legarsi a una specifica tecnologia per view (ad es. collegandosi a JSP, Velocity template, ecc).\
+Due interfacce fondamentali sono ViewResolver e View:
+
+* _ViewResolver_: per effettuare mapping fra nomi view e reale implementazione di view
+* _View_: per preparazione richieste e gestione richiesta verso una tecnologia di view
+
+Possibili ViewResolver sono:
+
+* AbstractCachingViewResolver:\
+    realizza trasparentemente caching di view per ridurre tempi preparazione
+* XmlViewResolver:\
+Accetta file di configurazione XML con stessa DTD della classica bean factory Spring. File di configurazione /WEB-INF/views.xml
+* UrlBasedViewResolver:\
+Risolve direttamente nomi simbolici di view verso URL
+
+### SPRING TAG E GESTIONE ECCEZIONI
+
+#### Spring tag library
+
+Ampio set di tag specifici per Spring per gestire elementi di form quando si utilizzano JSP e Spring MVC:
+
+* Accesso a oggetto command
+* Accesso a dati su cui lavora controller
+
+Libreria di tag contenuta in spring.jar, descrittore chiamato spring-form.tld, per utilizzarla:
+```tld
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+```
+dove `form` è prefisso che si vuole utilizzare per indicare tag nella libreria
+
+#### Gestione eccezioni
+
+`HandlerExceptionResolver` per semplificare gestione di eccezioni inattese durante esecuzione controller; eccezioni contengono info su handler che stava eseguendo al momento dell’eccezione.\
+Implementazione di interfaccia `HandlerExceptionResolver` (metodo `resolveException(Exception, Handler)` e restituzione di oggetto `ModelAndView`).\
+Possibilità di uso di classe `SimpleMappingExceptionResolver`, con mapping automatico fra nome classe eccezione e nome view
+
+### Convenzioni e configurazione di default
+
+In molti casi è sufficiente usare convenzioni pre-stabilite e ragionevoli default per fare mapping senza bisogno di configurazione. Approccio basato su **Convention-over-configuration**: Riduzione quantità di configurazioni necessarie per configurare handler mapping, view resolver, istanze ModelAndView, ecc. Vantaggi soprattutto in termini di prototipazione rapida.\
+Ad esempio, per `Controller`, la classe `ControllerClassNameHandlerMapping` usa convenzione per determinare mapping fra URL e istanze controller. Ad es.:
+```java
+public class ViewShoppingCartController implements Controller {
+    public ModelAndView handleRequest(HttpServletRequest request,
+        HttpServletResponse response) { ... } 
+} 
+```
+```xml
+<bean
+    class="org.springframework.web.servlet.mvc.support.ControllerClassNa
+    meHandlerMapping"/>
+<bean id="viewShoppingCart"
+class="x.y.z.ViewShoppingCartController"> 
+    ...
+</bean>
+```
+
+ControllerClassNameHandlerMapping trova vari bean controller definiti e toglie
+"Controller" dal nome per definire automaticamente mapping. Ad es:
+
+* WelcomeController si mappa su URL: /welcome*
+* HomeController si mappa su URL: /home*
+* IndexController si mappa su URL: /index*
