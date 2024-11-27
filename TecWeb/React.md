@@ -986,3 +986,83 @@ ControllerClassNameHandlerMapping trova vari bean controller definiti e toglie
 * WelcomeController si mappa su URL: /welcome*
 * HomeController si mappa su URL: /home*
 * IndexController si mappa su URL: /index*
+
+# WEBSOCKET E JSF
+
+## WEB SOCKET
+
+I limiti del modello HTTP si presentano quando si ha bisogno di usare HTTP per comunicazione 2-way:
+
+* Pollimg
+* Long polling
+* Streaming/forever response
+* Connessioni multiple
+
+Allora è stata ideata un'estensione (proprietaria) e la tecnologia Web Socket.\
+Le Web Socket possono servire a migliorare lo sviluppo (più facile e naturale) ed esecuzione runtime di applicazioni web bidirezionali e non strettamente request-response.\
+\
+La prima soluzione proprietaria integrata con JS in alcuni browser e poi supportata da specifici Web server. Grazie al fatto che le web socket hanno avuto molto successo sono state standardizzate:
+
+* Protocollo Web Socket (basato su TCP/IP) - RFC 6455
+* Integrazione di Web Socket in HTML 5 (via JS) e in JEE (a partire da v7)
+* Web Socket API per Java definite in JSR 356 (equivalente di un RFC ma della Java community)
+
+### I LIMITI DI HTTP
+
+I limiti di HTTP si vedono subito quando si tratta di un'interazione 2-way. Ci sono alcuni metodi per ovviare a ciò che però sono MOLTO poco efficienti e altamente sconsigliati (per questo sono state inventate le web socket):
+
+#### Polling
+
+```{=latex}
+\begin{center}
+```
+![Polling](polling.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+Realizzabile anche in JS per esempio.\
+Il client fa polling a intervalli prefissati e server risponde immediatamente, il che è una soluzione ragionevole quando periodicità nota e costante, e logicamente è inefficiente quando il server non ha dati da trasferire.
+
+#### Long Polling
+
+```{=latex}
+\begin{center}
+```
+![Long polling](longpolling.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+Client manda la richiesta iniziale e il server attende fino a che ah dati da inviare, quando il client riceve la risposta reagisce mandando immediatamente una nuova richiesta. Ogni request/response si appoggia a una nuova connessione.
+
+#### Streaming/forever response
+
+```{=latex}
+\begin{center}
+```
+![Streaming/forever response](streforresp.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+Il cliente manda la richiesta iniziale e il server attende fino a che ha dati da inviare. Il server risponde con streaming su una connessione mantenuta sempre aperta per aggiornamenti push (risposte parziali). La comunicazione diventa sostanzialmente half-duplex: solo server to client dopo la prima request del client.\
+Uno dei tanti problemi può essere che i proxy intermedi potrebbero avere difficoltà con le risposte parziali.
+
+#### Connessioni multiple
+
+```{=latex}
+\begin{center}
+```
+![Connessioni multiple](multiconn.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+È long polling su due connessioni HTTP separate:
+
+* Una per long polling tradizionale
+* Una per dati da cliente verso servitore
+
+Complesso è il coordinamento e la gestione connessioni e logicamente c'è overhead di due connessioni per ogni cliente.
