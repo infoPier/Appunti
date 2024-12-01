@@ -1220,4 +1220,152 @@ Un **_JavaBean_**, o più semplicemente un bean, non è altro che una classe Jav
 \
 \
 Le proprietà sono elementi dello stato del componente che vengono esposti in modo protetto. In Java sono solo una convenzione: sono coppie di metodi di accesso che seguono regole di denominazione.\
-La proprietà (per esempio) `prop` è definita da due metodi `getProp()` e `setProp()`, logicamente il tipo del parametro passato a `setProp()` e il valore di ritorno di `getProp()` devono essere uguali  
+La proprietà (per esempio) `prop` è definita da due metodi `getProp()` e `setProp()`, logicamente il tipo del parametro passato a `setProp()` e il valore di ritorno di `getProp()` devono essere uguali. Se si definisse solo il metodo get si avrebbe una proprietà in sola lettura.\
+Per le proprietà di tipo `boolean` la regola è leggermente diversa: il metodo in scrittura rimane uguale, mentre il metodo in lettura invece che essere `getProp()` è `isProp()`.\
+Esiste, inoltre, la possibilità di definire proprietà indicizzate per rappresentare collezioni di valori. In questi casi sia get che set prevedono il paramentro che fa da indice. Ad esempio `String getItem(int index)` e `String setItem(int index, String value)` definiscono la proprietà indicizzata `String item[]`.
+
+#### Componenti e container
+
+\
+\
+I componenti vivono all'interno di contenitori che gestiscono il tempo di vita dei singoli componenti e i collegamenti fra componenti e il resto del sistema.\
+I container non conoscono a priori i componenti che devono gestire quindi interagiscono con loro mediante meccanismi di tipo dinamico (spesso reflection).\
+Un container per un JavaBean prende il nome di **bean container**, esso è in grado di interfacciarsi con i bean utilizzando Java Reflection che fornisce strumenti di instrospezione e di dispatching.\
+L'obbligo del costruttore di default ha proprio lo scopo di consentire la creazione dinamica delle istanze.\
+\
+\
+Un esempio di JavaBean che espone l'ora corrente in ore e minuti (in sola lettura):
+
+```java
+import java.util.*;
+public class CurrentTimeBean{
+    private int hours;
+    private int minutes;
+    public CurrentTimeBean(){
+        Calendar now = Calendar.getInstance();
+        this.hours = now.get(Calendar.HOUR_OF_DAY);
+        this.minutes = now.get(Calendar.MINUTE);
+    }
+    public int getHours() { return hours; }
+    public int getMinutes() { return minutes; }
+}
+```
+
+#### JSP e JavaBean
+
+\
+Le JSP prevedono una serie di tag per agganciare un bean e utilizzare le sue proprietà all'interno della pagina. I tag sono di 3 tipi:
+
+* Tag per creare un riferimento al bean (creazione di un'istanza)
+* Tag per impostare il valore delle proprietà del bean
+* Tag per leggere il valore delle proprietà del bean e inserirlo nel flusso della pagina
+
+Esempio dell'uso di un bean:
+
+```jsp
+<jsp:useBean id="user" class="RegisteredUser" scope="session"/>
+<jsp:useBean id="news" class="NewsReports" scope="request">
+    <jsp:setProperty name="news" property="category" value="fin."/>
+    <jsp:setProperty name="news" property="maxItems" value="5"/>
+</jsp:useBean>
+<html>
+    <body>
+    <p>Bentornato
+    <jsp:getProperty name="user" property="fullName"/>,
+    la tua ultima visita è stata il
+    <jsp:getProperty name="user" property="lastVisitDate"/>.
+    </p>
+    <p>
+    Ci sono <jsp:getProperty name="news" property="newItems"/>
+    nuove notizie da leggere.</p>
+    </body>
+</html>
+```
+
+#### Tempo di vita di un bean
+
+\
+
++-------------+----------------------------------+---------------------------------------+
+| **Scope**   | **Tempo di vita**                | **Accessibilità**                     |
++=============+==================================+=======================================+
+| page        | Fino a quando la pagina viene    | Solo nella pagina corrente            |
+|             | completata o fino al forward     |                                       |
++-------------+----------------------------------+---------------------------------------+
+| request     | Fino alla fine dell'elaborazione | La pagina corrente, quelle incluse    |
+|             | della richiestae restituzione    | e quelle a cui si fa forward          |
+|             | della risposta                   |                                       |
++-------------+----------------------------------+---------------------------------------+
+| session     | Tempo di vita della sessione     | Richiesta corrente e tutte le altre   |
+|             |                                  | richieste dello stesso client         |
++-------------+----------------------------------+---------------------------------------+
+| application | Tempo di vita dell'applicazione  | Richiesta corrente e ogni altra       |
+|             |                                  | richiesta che fa parte della stessa   |
+|             |                                  | applicazione                          |
++-------------+----------------------------------+---------------------------------------+
+
+#### Tag jsp:useBean
+
+Inizializza e crea il riferimento al bean. Gli attributi principali sono: l'_id_ che rappresenta il nome con cui l'istanza del bean verrà indicata nel resto della pagina, la _class_ è la classe Java che definisce il bean e lo _scope_ che definisce l'ambito di accessibilità dell'oggetto (di default è `page`). Sintassi:
+```jsp
+<jsp:useBean id="beanName" class="class" scope="page|request|session|application"/>
+```
+
+#### Tag jsp:getProperty
+
+Consente l'accesso alle proprietà del bean. Produce come output il valore della proprietà del bean. Non ha mai body e ha solo 2 attributi: _name_ che rappresenta il nome del bean a cui fa riferimento e _property_ che è il nome della proprietà di cui si vuole leggere il valore. Sintassi:
+```jsp
+<jsp:getProperty name="beanName" property="propName"/>
+```
+
+#### Tag jsp:setProperty
+
+Consente di modificare il valore delle proprietà del bean. Gli attributi di questo tag sono il _name_ del bean, la _property_ da modificare e il _value_ da impostare. Sintassi:
+```jsp
+<jsp:setProperty name="beanName" property="propName" value="propValue"/>
+```
+
+#### Proprietà indicizzate
+
+I tag per JavaBean non supportano proprietà indicizzate però un bean è un normalissimo oggetto Java ed è quindi possibile accedere a metodi e variabili. Ad es:
+```jsp
+<jsp:useBean id="weather" class="weatherForecasts"/>
+<p>
+    <b>Previsioni per domani:</b>:
+    <%= weather.getForecasts(0)%>
+</p>
+<p>
+    <b>Resto della settimana:</b>
+    <ul>
+        <% 
+        for (int index=1; index < 5; index++) { %>
+            <li><%= weather.getForecasts(index) %></li>
+        <% } 
+        %>
+    </ul>
+</p>
+```
+
+## AJAX
+
+L'utilizzo di DHTML (JS/Eventi + DOM + CSS) delinea un nuovo modello per applicazioni web, ci si avvicina a un modello a eventi simile a quello delle app tradizionali.\
+A livello concettuale abbiamo, però, due livelli di eventi:
+
+* **Eventi locali** che portano ad una modifica diretta DOM da parte di Javascript e quindi a cambiamento locale della pagina
+* **Eventi remoti** ottenuti tramite ricaricamento della pagina che viene modificata lato server in base ai parametri passati in GET o POST
+
+Il ricaricamento della pagina per rispondere ad un'interazione con l'utente pre il nome di **postback**.\
+Quando si lavora con applicazioni desktop siamo abituati a un livello elevato di interattività e le applicazioni sono in grado di reagire in modo rapido ed intuitivo ai comandi. Le applicazioni web tradizionali, invece, espongono un modello di interazione rigido: questo tipo di modello prende il nome di "click, wait and refresh" proprio perchè è necessario il refresh della pagina da parte del server per la gestione di un qualunque evento. È ancora un modello **sincrono**: l'utente effettua una richiesta e deve attendere la risposta dal server.
+
+```{=latex}
+\begin{center}
+```
+
+![Modello di interazione classico](modelloIntClass.png){height=190px}
+
+```{=latex}
+\end{center}
+```
+
+### AJAX E ASINCRONICITÀ
+
