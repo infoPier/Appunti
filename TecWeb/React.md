@@ -1066,3 +1066,300 @@ Uno dei tanti problemi può essere che i proxy intermedi potrebbero avere diffic
 * Una per dati da cliente verso servitore
 
 Complesso è il coordinamento e la gestione connessioni e logicamente c'è overhead di due connessioni per ogni cliente.
+
+### LE PRINCIPALI CARATTERISTICHE DELLE WEBSOCKET
+
+Le principali caratteristiche delle websocket sono:
+
+* **Bi-direzionali**: client e server possono scambiarsi messaggi quando desiderano
+* **Full-duplex**: nessun requisito di interazione solo come coppia request/response e di ordinamento messaggi
+* **Unica connessione long running**
+* **Visto come «upgrade» di HTTP**: nessuno sfruttamento di protocollo completamente nuovo, nessun bisogno di nuova «infrastruttura»
+* **Uso efficiente di banda e CPU**: messaggi possono essere del tutto dedicati a dati applicativi
+* **Handshake**: cliente comincia connessione e servitore risponde accettando upgrade
+* **Una volta stabilita connessione Web Socket**: entrambi endpoint notificati che socket è aperta ed entrambi endpoint possono inviare messaggi e chiudere socket in ogni istante
+
+```{=latex}
+\begin{center}
+```
+![Headers HTTP per le WebSocket](headerHTTPWS.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+#### Metodi per ottimizzare i messaggi
+
+Per l'ottimizzazione dei messaggi si è deciso che i dati vengono trasmessi con un minimo overhead in termini di header, e vie è, inoltre, la possibilità di frammentare un messaggio in più frame (però un frame NON può contenere più messaggi).
+
+```{=latex}
+\begin{center}
+```
+![Messaggio web socket](messaggioWS.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+### WEBSOCKET API LATO SERVER
+
+Approccio delle websocket è integrato con JS lato client e la programmazione JEE lato server.\
+Le API lato server (JSR-356) sono:
+
+* Per la gestione del ciclo di vita:
+    - `onOpen`
+    - `onClose`
+    - `onError`
+* Per la comunicazione tramite messaggio:
+    - `onMessage`
+    - `send`
+* Possibilità dell'uso della sessione
+* Encoder e decoder per la formattazione dei messaggi
+
+Ad esempio:
+```java
+@ServerEndpoint("/actions")
+public class WebSocketServer{
+    @OnOpen
+    public void open(Session session){ ... }
+
+    @OnClose
+    public void close(Session session){ ... }
+
+    @OnError
+    public void onError(Throwable error){ ... }
+
+    @OnMessage
+    public void handleMessage(String message, Session session){
+        // message processing
+    }
+}
+```
+
+### INVIO E RICEZIONE MESSAGGI
+
+Gli endpoint WebSocket possono inviare/ricevere messaggi sotto forma di testo o binary.
+
+#### Invio
+
+\
+\
+Per l'invio serve seguire i seguenti passi:
+
+1. Ottenere oggetto Session dalla connessione: disponibile come parametro in molti metodi. Ad esempio, nel metodo che ha ricevuto un messaggio (metodo annotato con `@OnMessage`); oppure, come variabile di istanza della classe endpoint nel metodo `@OnOpen`
+2. Usare oggetto Session per ottenere un RemoteEndpoint: Session.getBasicRemote e Session.getAsyncRemote restituiscono RemoteEndpoint.Basic e RemoteEndpoint.Async rispettivamente:
+    * `void RemoteEndpoint.Basic.sendText(String text)`
+    * `void RemoteEndpoint.Basic.sendBinary(ByteBuffer data)`
+    * `void RemoteEndpoint.Basic.sendPing(ByteBuffer appData)`
+3. Inviare messaggi a tutti i peer connessi a un Endpoint: ogni istanza di classe endpoint class è normalmente associata con una connessione e un peer; tuttavia, è possible anche associare una istanza a una pluralità di peer connessi, per esempio per applicazioni di chat, quindi si usa l'interfaccia session e il metodo `getOpenSessions`
+
+```java
+@ServerEndpoint("/echoall")
+public class EchoAllEndpoint {
+    @OnMessage
+    public void onMessage(Session session, String msg) {
+        try {
+            for (Session sess : session.getOpenSessions()){ 
+                if (sess.isOpen())
+                    sess.getBasicRemote().sendText(msg); 
+            } 
+        }
+    catch (IOException e) { ... } 
+    } 
+}
+```
+
+#### Ricevere
+
+\
+\
+Per quanto riguarda la ricezione è utile sapere che si possono avere al massimo 3 metodi annotati con `@OnMessage` in un endpoint, uno per ogni tipo di messaggio: text, binary o ping.
+
+```java
+@ServerEndpoint("/receive")
+public class ReceiveEndpoint {
+    @OnMessage
+    public void textMessage(Session session, String msg) {
+        System.out.println("Text message: " + msg); 
+    }
+    @OnMessage
+    public void binaryMessage(Session session, ByteBuffer msg) {
+        System.out.println("Binary message: " + msg.toString()); 
+    }
+    @OnMessage
+    public void pingMessage(Session session, PongMessage msg) {
+        System.out.println("Pong message: " + msg.getApplicationData().toString()); 
+    } 
+}
+```
+
+### MANTENIMENTO DELLO STATO DEL CLIENT
+
+Il container lato server crea una istanza della classe endpoint per ogni connessione, quindi si possono usare variabili di istanza per salvare stato cliente.\
+Inoltre, il metodo `Session.getUserProperties` restituisce una modifiable map per memorizzare proprietà utente.
+```java
+@ServerEndpoint("/delayedecho")
+public class DelayedEchoEndpoint {
+    @OnOpen 
+    public void open(Session session) {
+        session.getUserProperties().put("previousMsg", " "); 
+    }
+    @OnMessage 
+    public void message(Session session, String msg) {
+        String prev = (String) session.getUserProperties().get("previousMsg");
+        session.getUserProperties().put("previousMsg", msg);
+        try { session.getBasicRemote().sendText(prev); }
+        catch (IOException e) { ... } 
+    } 
+} 
+```
+In realtà per le info comuni a tutti i clienti si possono usare le variabili di classe (static), in tal caso la responsabilità di assicurare la thread-safety ricade sullo sviluppatore.
+
+### USO DI ENCODER E DECODER
+
+Le Java API per le WebSocket forniscono supporto per la conversione di messaggi WebSocket se e solo se sono oggetti Java su cui è stato usato un encoder e per decifrarlo un decoder.\
+Lo sviluppatore non deve preoccuparsi della serializzazione e deserializzazione dei processi perchè è tutto automatico.\
+Encoder tipici generano rappresentazioni JSON, XML o binarie a partire da oggetti Java.
+
+#### Uso di encoder
+
+\
+\
+Per utilizzare l'encoder bisogna prima realizzarlo.\
+Per realizzare l'encoder bisogna creare una classe che implementi una delle due interfaccie:
+
+* `Encoder.Text<T>` per messaggi testuali
+* `Encoder.Binary<T>` per messaggi binary
+
+Queste interfacce specificano il metodo `encode`. Occorre quindi implementare una encoder class per ogni tipo Java custom che si vuole inviare come messaggio WebSocket.\
+Inoltre, serve aggiungere il nome delle classi encoder al parametro opzionale della annotazione `@ServerEndpoint`.\
+Infine per fare l'encoding dell'oggetto e mandarlo serve utilizzare il metodo `sendObject(Object data)` di `RemoteEndpoint.Basic` o di `RemoteEndpoint.Async`, così facendo il container cerca un encoder che faccia il match con il tipo e lo usa per la conversione verso un messaggio WebSocket.\
+Ad esempio se volessi inviare 2 tipi Java (`MessageA` e `MessageB`) come messaggi testuali:
+
+```java
+public class MessageATextEncoder implements Encoder.Text<MessageA> {
+    @Override public void init(EndpointConfig ec) { }
+    @Override public void destroy() { }
+    @Override
+    public String encode(MessageA msgA) throws EncodeException {
+        // Access msgA's properties and convert to JSON text...
+        return msgAJsonString;
+    }
+}
+
+public class MessageBTextEncoder implements Encoder.Text<MessageA> {
+    @Override public void init(EndpointConfig ec) { }
+    @Override public void destroy() { }
+    @Override
+    public String encode(MessageA msgB) throws EncodeException {
+        // Access msgB's properties and convert to JSON text...
+        return msgBJsonString;
+    }
+}
+
+@ServerEndpoint(
+ value = "/myendpoint",
+ encoders = { MessageATextEncoder.class, MessageBTextEncoder.class }
+)
+public class EncEndpoint { ... }
+...
+MessageA msgA = new MessageA(...);
+MessageB msgB = new MessageB(...);
+session.getBasicRemote.sendObject(msgA);
+session.getBasicRemote.sendObject(msgB);
+```
+
+Come per gli endpoint, le istanze di encoder sono associate con una connessione e un peer WebSocket, quindi c'è solo 1 thread ad eseguire il codice di un'istanza di encoder ad ogni istante.
+
+#### Uso di decoder
+
+\
+\
+La procedura per il decoder è identica, solo che le interfaccie da implementare sono (una delle 2):
+
+* `Decoder.Text<T>` per i messaggi testuali
+* `Decoder.Binary<T>` per i messaggi binary
+
+Come detto la procedura è identica tranne per il fatto che non serve creare una decoder class per ogni tipo Java custom che si vuole ricevere.\
+Passando direttamente all'esempio:
+```java
+public class MessageTextDecoder implements Decoder.Text<Message> {
+    @Override public void init(EndpointConfig ec) { }
+    @Override public void destroy() { }
+    @Override public Message decode(String string) throws DecodeException {
+        // Read message...
+        if ( /* message is an A message */ )
+            return new MessageA(...);
+        else if ( /* message is a B message */ )
+            return new MessageB(...);
+    }
+    @Override
+    public boolean willDecode(String string) {
+        return canDecode;
+    } 
+}
+
+@ServerEndpoint(
+ value = "/myendpoint",
+ encoders = { MessageATextEncoder.class, MessageBTextEncoder.class },
+ decoders = { MessageTextDecoder.class }
+)
+public class EncDecEndpoint { ... }
+
+...
+@OnMessage
+public void message(Session session, Message msg) {
+    if (msg instanceof MessageA) {
+        // We received a MessageA object...
+    } else if (msg instanceof MessageB) {
+        // We received a MessageB object...
+    }
+}
+```
+
+Come per gli endpoint, le istanze di decoder sono associate con una sola connessione e un solo peer WebSocket, quindi un solo thread esegue il codice di una istanza di decoder in ogni istante.
+
+### INTEGRAZIONE CON JAVASCRIPT E WEBSOCKET API LATO CLIENT
+
+Un esempio introduttivo:
+```javascript
+var socket = new WebSocket("ws://server.org/wsendpoint");
+socket.message = (event) => {
+    var data = JSON.parse(event.data);
+    if(data.action === "addMessage"){
+        //message processing...
+    }
+    if(data.action === "removeMessage"){
+        //message processing...
+    }
+}
+```
+
+#### WebSocket in JS
+
+\
+\
+_Costruttore_: `WebSocket(url[, protocols])`\
+Alcune delle **proprietà** principali:
+
+* `WebSocket.bufferedAmount`: sola lettura, numero di byte di dati accodati
+* `WebSocket.onclose`: listener all’evento di chiusura della connessione
+* `WebSocket.onerror`: listener all’evento di errore sull’uso della WebSocket
+* `WebSocket.onmessage`: listener all’evento di ricezione di un messaggio dal server
+* `WebSocket.onopen`: listener all’evento di connessione aperta
+* `WebSocket.protocol`: sola lettura, sub-protocol selezionato dal servitore
+* `WebSocket.readyState`: sola lettura, stato corrente della connessione (WebSocket.CONNECTING 0, WebSocket.OPEN 1, WebSocket.CLOSING 2, WebSocket.CLOSED 3) 
+* `WebSocket.url`: sola lettura, URL assoluto associato
+
+**Metodi**:
+
+* `WebSocket.close([code[, reason]])`: chiude la connessione
+* `WebSocket.send(data)`: accoda nuovi dati per l’invio
+
+**Eventi**: \
+è possibile agganciarsi a questi eventi usando addEventListener() o assegnando un event listener alla proprietà onNomeEvento
+
+* `close`: evento di chiusura connessione, anche disponibile tramite proprietà onclose
+* `error`: evento di errore che ha prodotto la chiusura di WebSocket, ad esempio con mancato invio di un dato; anche disponibile tramite proprietà onerror
+* `message`: evento associato alla ricezione di un messaggio dal server, anche disponibile tramite proprietà onmessage
+* `open`: evento di apertura di una connessione WebSocket, anche disponibile tramite proprietà onopen
