@@ -1369,3 +1369,154 @@ Quando si lavora con applicazioni desktop siamo abituati a un livello elevato di
 
 ### AJAX E ASINCRONICITÀ
 
+AJAX non è un acronimo ma spesso viene interpretato come Asynchronous Javascript And Xml. Non è una tecnologia per se ma è basato ssu tecnologie standard e combinate insieme per realizzare un modello di interazione più ricco.\
+AJAX punta a supportare applicazioni user friendly con elevata interattività (RIA, Rich Interface Application), infatti l'idea di base di AJAX è quella di consentire agli script JS di interagire direttamente con il server.\
+L'elemento centrale è l'utilizzo di un oggetto JS: `XMLHttpRequest`, il quale consente di ottenere dati dal server senza ricaricare l'intera pagina, difatti realizza una comunicazione **asincrona** fra client e server (il client non interrompe l'interazione con l'utente anche quando è in attesa di risposte dal server).
+
+```{=latex}
+\begin{center}
+```
+
+![Modello di interazione tramite AJAX](modelloIntAJAX.PNG){height=190px}
+
+```{=latex}
+\end{center}
+```
+
+Una tipica **sequenza AJAX** consta di:
+
+1. Si verifica un evento determinato dall'interazione fra utente e pagina web
+2. L'evento comporta l'esecuzione di una funzione JS in cui:
+    * Si istanzia un oggetto della classe `XMLHttpRequest`
+    * Lo si configura: si associa una funzione di callback, ...
+    * Si effettua la chiamata asincrona al server
+3. Il server elabora la richiesta e risponde al client
+4. Il browser invoca la funzione di callback che:
+    * Elabora il risultato
+    * Aggiorna il DOM della pagina per mostrare i risultati dell'elaborazione
+
+### FOCUS SU XMLHTTPREQUEST
+
+È l'oggetto `XMLHttpRequest` che effettua la richiesta di una risorsa via HTTP al server web. È importante sottolineare che NON sostituisce URI corrente con quello della richiesta e NON provoca cambio di pagina, in più può inviare parametri sotto forma di variabili (come nei form).\
+Può effettuare richieste sia di tipo POST che di tipo GET, esse possono essere:
+
+* Sincrone: bloccano il flusso di esecuzione del codice JS
+* Asincrone: NON interrompono il flusso di esecuzione del codice JS né le operazioni dell'utente sulla pagina (quindi hanno un thread dedicato)
+
+I browser recenti supportano `XMLHttpRequest` come oggetto nativo quindi per crearlo basta scrivere: 
+
+```javascript
+var xhr = new XMLHttpRequest();
+```
+
+Invece la gestione della compatibilità con browser molto vecchi complica le cose: difatti alcune versioni di IE lo supportano come oggetto ActiveX (e non nativo), in più solo dalla versione 4 e, per altro, in modi differenti. Per essere compatibili con ogni versione di browser ancora istallata bisogna procedere nel seguente modo:
+
+```javascript
+function myGetXmlHttpRequest(){
+    var xhr = false;
+    var activeXopt = new Array("Microsoft.XmlHttp", "MSXML4.XmlHttp",
+    "MSXML3.XmlHttp", "MSXML2.XmlHttp", "MSXML.XmlHttp" );
+    // prima come oggetto nativo
+    try
+        xhr = new XMLHttpRequest();
+    catch (e) { }
+    // poi come oggetto activeX dal più al meno recente
+    if (! xhr){
+        var created = false;
+        for (var i = 0;i < activeXopt.length && !created;i++){
+            try {
+                xhr = new ActiveXObject( activeXopt[i] );
+                created = true; 
+            }
+            catch (e) { }
+        }
+    }
+    return xhr;
+}
+```
+
+**Attenzione**: per motivi di sicurezza `XMLHttpRequest` può essere utilizzata solo verso il dominio da cui proviene la risorsa che la utilizza.\
+\
+La lista dei metodi disponibili dipende da browser a browser ma in generale si usano quelli presenti in Safari (sottoinsieme più limitato ma comune a tutti i browser che supportano AJAX):
+
+* `open()`
+* `setRequestHeader()`
+* `send()`
+* `getResponseHeader()`
+* `getAllResponseHeaders()`
+* `abort()`
+
+#### Metodo open()
+
+Ha lo scopo di inizializzare la richiesta da formulare al server. Lo standard W3C prevede 5 parametri di cui 3 opzionali: `open (method, uri [,async][,user][,password])`.\
+L'uso più comune è: `open (method, uri, true)` dove `method` è una stringa e assume i valori "get" o "post", `uri` è una stringa che identifica la risorsa da ottenere ed, infine, `async` è un booleano che deve essere impostato a `true` per indicare al metodo che la richiesta da fare è di tipo asincrono.
+
+#### Metodo setRequestHeader()
+
+Consente di impostare gli header HTTP della richiesta da inviare: 
+
+* viene invocato più volte (una per ogni header da impostare)
+* per una richiesta GET gli header sono opzionali
+* sono, invece, necessari per impostare la codifica utilizzata nelle richieste post
+* è comunque importante impostare l'header `connection` di solito al valore `close`
+
+Sintassi: `setRequestHeader(nomeheader, valore)`
+
+#### Metodo send()
+
+Consente di inviare la richiesta al server. Non è bloccate in attesa della risposta se il parametro `async` di open è stato impostato a `true`. Prende come parametro una stringa che costituisce il body.`\
+Sintassi: `send(body)`
+
+Un esempio di richiesta di tipo GET potrebbe essere:
+
+```javascript
+var xhr = new XMLHttpRequest();
+xhr.open("get", "pagina.html?p1=v1&p2=v2", true );
+xhr.setRequestHeader("connection", "close");
+xhr.send(null);
+```
+
+Mentre una di tipo POST:
+
+```javascript
+var xhr = new XMLHttpRequest();
+xhr.open("POST", "pagina.html", true);
+xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+xhr.setRequestHeader("connection", "close"); 
+xhr.send("p1=v1&p2=v2");
+```
+
+Stato e risultati della richiesta vengono memorizzati dall'interprete JS all'interno dell'oggetto `XmlHttpRequest` durante la sua esecuzione. Le proprietà comuni a vari browser sono: 
+
+* `readyState`
+* `onreadystatechange`
+* `status`
+* `statusText`
+* `responseText`
+* `responseXML`
+
+#### Proprietà readyState
+
+Proprietà in sola lettura di tipo intero che consente di leggere in ogni momento lo stato della richiesta. Ammette 5 valori:
+
+* 0: uninitialized - l'oggetto esiste, ma non è stato ancora richiamato `open()`
+* 1: open - è stato invocato il metodo `open()`, ma `send()` non ha ancora effettuato l'invio dati
+* 2: sent - metodo `send()` è stato eseguito e ha effettuato la richiesta
+* 3: receiving – la risposta ha cominciato ad arrivare
+* 4: loaded - l'operazione è stata completata
+
+Attenzione, però, che questo ordine non è sempre identico e sfruttabile allo stesso modo su tutti i browser. L'unico stato supportato da tutti i browser è il 4.
+
+#### Proprietà onreadystatechange
+
+Come si è detto l'esecuzione del codice non si blocca sulla `send` in attesa di risultati, quindi per gestire la risposta si adotta un approccio ad eventi. Occorre registrare la funzione di callback che viene richiamata in modo asincrono ad ogni cambio di stato della proprietà `readyState`. Bisogna fare attenzione ad evitare comportamenti imprevedibili, per fare ciò basta fare l'assegnamento prima della `send()`.`
+La sintassi è: 
+```javascript
+//METODI EQUIVALENTI:
+/*1*/
+xhr.onreadystatechange = nomefunzione
+/*2*/
+xhr.onreadystatechange = function(){istruzioni}
+/*3*/
+xhr.onreadystatechange = () => {istruzioni}
+```
