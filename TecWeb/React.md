@@ -533,11 +533,96 @@ Architettura adatta per le web app interattive (ma non solo). È composto da:
 \end{center}
 ```
 
-DA FINIRE
+Mapping possibile su applicazioni web Java-based: in applicazioni conformi a Model 2, richieste del browser cliente vengono passate a controller (usualmente implementato da servlet o EJB session bean).\
+Il **controller** si occupa di eseguire logica la business necessaria per ottenere il contenuto da mostrare. Controller mette il contenuto (usualmente sotto forma di JavaBean o Plain Old Java Object - POJO) in un messaggio e decide a quale view (usualmente implementata da JSP) passare la richiesta.\
+La **view** si occupa del rendering contenuto (ad es. stampa dei valori contenuti in struttura dati o bean, ma anche operazioni più complesse come invocazione metodi per ottenere dati)
+
+### PERCHÈ APPLICATION SERVER?
+
+* Complessità del middle tier
+* Duplicazione dei servizi di sistema per la maggior parte delle applicazioni enterprise:
+    - controllo concorrenza e transazioni
+    - load-balancing e sicurezza
+    - gestione delle risorse e connection pooling
+
+Come si possono risolvere questi problemi?
+
+* Container condiviso che gestisce i servizi di sistema
+* Si può optare per una soluzione proprietaria o basata su standard aperti
+
+#### Soluzioni a Container: Proprietarie vs. Standard-based
+
+\
+Soluzioni proprietarie:
+
+* Usano il modello componente-container
+    - Componenti per la business logic
+    - Container per fornire servizi di sistema
+* Il contratto componenti-container è ben definito, ma in modo proprietario (problema di vendor lock-in)
+    - Esempi: Tuxedo, .NET
+
+Le soluzioni basate su standard aperti usano il modello componente-container e il container fornisce i servizi di sistema in modo ben definito in accordo a standard industriali (ad esempio J2EE e Java Specification Request, JSR).\
+\
+\
+
+Cos'è l'application server JEE?
+
+> È una piattaforma _open_ e standard per lo sviluppo, il deployment e la gestione di applicazioni enterprise n-tier, web-enabled, server-centric e basate su componenti
+
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.48\linewidth]{applServJEE1.png}
+\includegraphics[width=0.48\linewidth]{applServJEE2.png}
+\label{Application server JEE}
+\caption{Application server e le varie edizioni della piattaforma Java}
+\end{figure}
+```
+
+### ARCHITETTURA J2EE PER APPLICATION SERVER
+
+È importante capire L'architettura per capire alcune direzioni di Java Model 2, di che cosa si occupa il container J2EE, e le differenze rispetto ad approcci a container leggero come Spring, almeno dobbiamo avere parziale comprensione del modello.
+
+```{=latex}
+\begin{center}
+```
+![Architettura J2EE per application server](j2eeApplServ.png){#j2eeAS height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### J2EE per applicazioni n-tier
+
+* Modello 4-tier e applicazioni J2EE: Cliente HTML, JSP/Servlet, EJB, JDBC/Connector
+* Modello 3-tier e applicazioni J2EE: Cliente HTML, JSP/Servlet, JDBC
+* Modello 3-tier e applicazioni J2EE: Applicazioni standalone EJB client-side, EJB, JDBC/Connector
+* Applicazioni enterprise B2B:  Interazioni tra piattaforme J2EE tramite messaggi JMS o XML-based
+
+#### Delega al container
+
+Il container può fornire "automaticamente" molte delle funzioni per supportare il servizio applicativo verso l’utente:
+
+* Supporto al ciclo di vita\
+    Attivazione/deattivazione del servitore\
+    Mantenimento dello stato\
+    Persistenza trasparente e recupero delle informazioni (interfaccia DB)\
+* Supporto al sistema dei nomi\
+    Discovery del servitore/servizio\
+    Federazione con altri container\
+* Supporto alla qualità del servizio\
+    Tolleranza ai guasti, selezione tra possibili deployment\
+    Controllo della QoS richiesta e ottenuta\
+* Sicurezza
 
 ## EJB
 
-DA FINIRE
+In breve è una tecnologia per componenti server-side e per lo sviluppo e deployment semplificato di applicazioni Java (distribuite, con supporto alle transazioni, multi-tier, portabili, scalabili, sicure, ecc).\
+Porta e aplifica i benefici del modello a componenti sul lato server.\
+Un altro vantaggio è la separazione fra logica di business e codice di sistema, infatti utlizza il container per la fornitura dei servizi di sistema. È un modello a container **pesante** contrapposto a modelli alternativi a container leggero come Spring (vedi dopo).\
+Rende possibile e semplice la configurazione a deployment time tramite il deployment descriptor.
+
+#### EJB: principi di design
 
 ## SPRING FRAMEWORK
 
@@ -1363,3 +1448,336 @@ Alcune delle **proprietà** principali:
 * `error`: evento di errore che ha prodotto la chiusura di WebSocket, ad esempio con mancato invio di un dato; anche disponibile tramite proprietà onerror
 * `message`: evento associato alla ricezione di un messaggio dal server, anche disponibile tramite proprietà onmessage
 * `open`: evento di apertura di una connessione WebSocket, anche disponibile tramite proprietà onopen
+
+## JSF
+
+È una tecnologia fortemente basata su componenti, sia da inserire nelle pagine web sia collegati tramite essi a componenti server-side (backend bean). Sono ricche di API per la rappresentazione di componenti, per la gestione del loro stato, per la gestione degli eventi, validazione e conversione dati server-side, definizione di percorso di navigazione delle pagine e supporto all'internaionalizzazione.\
+Ha un'ampia libreria di tag per aggiungere componenti a pagine web e per collegarli a componenti server side.\
+Può essere considerato on top del supporto Java Servlet e come alternativa a JSP.
+
+```{=latex}
+\begin{center}
+```
+![JSF come supporto on top di Java Servlet](jsf1.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+### ESEMPIO INIZIALE
+
+Per iniziare si può costruire un backend bean (o managed bean) in modo semplice.
+
+```java
+package hello;
+import javax.faces.bean.ManagedBean;
+@ManagedBean
+public class Hello {
+    final String world = "Hello World!";
+    public String getworld() {
+        return world; 
+    }
+}
+```
+La notazione `@ManagedBean` registra automaticamente il componente come risorsa utilizzabile all'interno del container JSF, da parte di tutte le pagine che conoscano come riferirlo.\
+Il bean creato (se pur semplice) contiene il cui risultato finale è, in modo diretto o tramite invocazione di altri componenti, di produrre dati _model_.\
+Si procede creando una pagina web scritta in XHTML che usi il backing bean. La connessione tramite pagina web e componente avviene tramite espressioni in Expression Language (EL).
+```xml
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>Facelets Hello World</title>
+    </h:head>
+    <h:body>
+        #{hello.world}
+    </h:body>
+</html>
+```
+Il linguaggio per la costruzione di view JSF e di alberi di componenti si chiama **Facelets** (supporto a XHTML, tag library per Facelets/JSF, supporto per EL, templating per componenti e pagine Web).\
+Nella tecnologia JSF è inclusa una servlet predefinita chiamata **FacesServlet** che si occupa della gestione delle richieste per pagine JSF (serve mapping tramite solito descrittore di deployment, web.xml).
+```xml
+<servlet>
+    <servlet-name>Faces Servlet</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+<servlet-mapping>
+    <servlet-name>Faces Servlet</servlet-name>
+    <url-pattern>/faces/*</url-pattern>
+</servlet-mapping>
+```
+
+### CICLO DI VITA DI UNA FACELETS APP
+
+Prima di specificare il ciclo di vita è importante notare che il programmatore può non voler avere la visibilità della gestione del ciclo di vita dell'applicazione Facelets che è svolta, infatti, automaticamente dal container per JSF (che è il solito container JSP/Servlet, ma con il supporto a JSF).\
+\
+Il ciclo di vita tipico, quindi, è:
+
+1. Deployment dell’applicazione su server; prima che arrivi prima richiesta utente, applicazione in stato non inizializzato (anche non compilato)
+2. Quando arriva una richiesta, viene creato un albero dei componenti contenuti nella pagina (messo in FacesContext), con validazione e conversione dati automatizzata
+3. Albero dei componenti viene popolato con valori da backing bean (uso di espressioni EL), con possibile gestione eventi e handler
+4. Viene costruita una view sulla base dell’albero dei componenti
+5. Rendering della vista al cliente, basato su albero componenti
+6. Albero componenti deallocato automaticamente
+7. In caso di richieste successive (anche postback), l’albero viene ri-allocato
+
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.48\linewidth]{lifecycleJSF1.png}
+\includegraphics[width=0.48\linewidth]{lifecycleJSF2.png}
+\label{Prima parte del ciclo di vita delle JSF}
+\caption{Prima parte del ciclo di vita delle JSF}
+\end{figure}
+```
+
+```{=latex}
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.48\linewidth]{lifecycleJSF3.png}
+\includegraphics[width=0.48\linewidth]{lifecycleJSF4.png}
+\label{Seconda parte del ciclo di vita delle JSF}
+\caption{Seconda parte del ciclo di vita delle JSF}
+\end{figure}
+```
+
+### JSF MANAGED BEAN
+
+Sono configurati nella seconda parte di faces-config.xml\
+Sono dei semplici JavaBean che seguono delle regole standard:
+
+* Costruttore senza argomenti (empty)
+* No variabili di istanza public
+* Metodi "accessor" per evitare accesso diretto a campi
+* Metodi `getXxx()` e `setXxx()`
+
+I JSF Managed Beans hanno anche metodi cosiddetti "action": sono metodi invocati automaticamente in risposta ad un'azione utente o ad un evento (sono simili a classi Action di STRUTS).\
+Gli scope possibili per questo tipo di bean sono:
+
+* Application – singola istanza per applicazione
+* Session – nuova istanza per ogni nuova sessione utente
+* Request – nuova istanza per ogni richiesta
+* Scopeless – acceduta anche da altri bean e soggetta a garbage collection come ogni oggetto Java
+
+```xml
+<managed-bean>
+    <managed-bean-name>library</managed-bean-name>
+    <managed-bean-class>com.oreilly.jent.jsf.library.model.Library
+    </managed-bean-class>
+    <!-- 
+        Dentro al seguente tag si può mettere: 
+            - application
+            - session
+            - request
+            - non mettere niente e allora è scopeless
+     -->
+    <managed-bean-scope>application</managed-bean-scope>
+</managed-bean>
+```
+
+### JSF E TEMPLATING
+
+Due delle caratteristiche generali tipiche di JSF sono l'estensione e il riuso. Difatti il templating è fortemente presente all'interno di JSF. Il templating è l'utilizzo di pagine come base (o template) per altre pagine.\
+Degli esempi di tag protrebbero essere:
+
+* `ui:insert` – parte di un template in cui potrà essere inserito contenuto (tag di amplissimo utilizzo)
+* `ui:component` – definisce un componente creato e aggiunto all'albero dei componenti
+* `ui:define` – definisce contenuto con cui pagina “riempie” template (vedi insert)
+* `ui:include` – incapsula e riutilizza contenuto per pagine multiple
+* `ui:param` – per passare parametri a file incluso
+
+Un esempio di template può essere:\
+File: `template.xhtml`
+```xml
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link href="./resources/css/default.css" rel="stylesheet" type="text/css"/>
+        <link href="./resources/css/cssLayout.css" rel="stylesheet" type="text/css"/>
+        <title>Facelets Template</title>
+    </h:head>
+    <h:body>
+        <div id="top" class="top">
+            <ui:insert name="top">Top Section</ui:insert>
+        </div>
+        <div>
+            <div id="left">
+                <ui:insert name="left">Left Section</ui:insert>
+            </div>
+            <div id="content" class="left_content">
+                <ui:insert name="content">Main Content</ui:insert>
+            </div>
+        </div>
+        </h:body>
+</html>
+```
+File che utilizza il template:
+```xml
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html">
+    <h:body>
+        <ui:composition template="./template.xhtml">
+            <ui:define name="top"> 
+                Welcome to Template Client Page
+            </ui:define>
+            <ui:define name="left">
+                <h:outputLabel value="You are in the Left Section"/>
+            </ui:define>
+            <ui:define name="content">
+                <h:graphicImage value="#{resource[’images:wave.med.gif’]}"/>
+                <h:outputText value="You are in the Main Content Section"/>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+```
+faces-config.xml
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+...
+<faces-config>
+    <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+        </locale-config></application>
+    <validator>
+        <validator-id>ISBNValidator</validator-id>
+        <validator-class>
+            com.oreilly.jent.jsf.library.validator.ISBNValidator
+        <validator-class> 
+    </validator>
+    <navigation-rule> ...
+    <managed-bean> ...
+</faces-config> 
+```
+C'è la necessità di creare questo file soprattutto per la _navigation rule_ e per il _managed bean_.
+
+#### Navigation rule
+
+Ogni regola di navigazione è come un flowchart con un ingresso e uscite multiple possibili.\
+Un singolo `<from-view-id>` per fare match con URI. Quando è restituito controllo, la stringa risultato viene valutata (ad es. success, failure, verify, login): 
+
+* <from-outcome> deve fare match con stringa risultato
+* <to-view-id> determina URI verso cui fare forwarding
+
+Esempio breve:
+
+```xml
+<navigation-rule>
+    <from-view-id>/login.xhtml</from-view-id>
+    <!-- Caso 1 di navigazione -->
+    <navigation-case>
+        <from-action>#{LoginForm.login}</from-action>
+        <from-outcome>success</from-outcome>
+        <to-view-id>/storefront.xhtml</to-view-id>
+    </navigation-case>
+    <!-- Caso 2 di navigazione -->
+    <navigation-case>
+        <from-action>#{LoginForm.logon}</from-action>
+        <from-outcome>failure</from-outcome>
+        <to-view-id>/logon.xhtml</to-view-id>
+    </navigation-case>
+</navigation-rule>
+```
+
+### UN ESEMPIO UN PO' PIÙ COMPLETO
+
+Managed bean:
+```java
+package guessNumber;
+import java.util.Random;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+@ManagedBean
+@SessionScoped
+/*
+L’annotazione @SessionScoped fa sì che lo scope del bean sia la
+sessione. Altre possibilità: request, application, scopeless
+*/
+public class UserNumberBean {
+    Integer randomInt = null; 
+    Integer userNumber = null;
+    String response = null; 
+    private long maximum=10;
+    private long minimum=0;
+    public UserNumberBean() {
+        Random randomGR = new Random();
+        randomInt = new Integer(randomGR.nextInt(10));
+        System.out.println("Numero estratto: " + randomInt);
+    }
+    public void setUserNumber(Integer user_number) { userNumber = user_number; }
+    public Integer getUserNumber() { return userNumber; }
+    public String getResponse() {
+        if ((userNumber != null) && (userNumber.compareTo(randomInt) == 0)) {
+            return "Indovinato!";
+        } else { return "Mi dispiace, "+userNumber+" non corretto"; }
+    }
+    public long getMaximum() { return (this.maximum); }
+    public void setMaximum(long maximum) { this.maximum = maximum; }
+    public long getMinimum() { return (this.minimum); }
+    public void setMinimum(long minimum) { this.minimum = minimum; }
+}
+```
+File xhtml con form per indovinare il numero:
+```xml
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Guess Number Facelets Application</title>
+    </h:head>
+    <h:body> 
+        <h:form>
+            <h:graphicImage value="#{resource[’images:wave.med.gif’]}"/>
+            <h2> 
+                Sto pensando a un numero fra #{userNumberBean.minimum}
+                e #{userNumberBean.maximum}. Vuoi indovinarlo? 
+                <p></p>
+                <h:inputText id="userNo" value="#{userNumberBean.userNumber}">
+                <f:validateLongRange minimum="#{userNumberBean.minimum}"
+                  maximum="#{userNumberBean.maximum}"/>
+                </h:inputText>
+                <h:commandButton id="submit" value="Submit"
+                  action="response.xhtml"/>
+                <h:message showSummary="true" showDetail="false"
+                  style="color: red; font-family: ’New Century Schoolbook’, serif;
+                    font-style: oblique; text-decoration: overline"
+                    id="errors1" for="userNo"/>
+            </h2>
+        </h:form>
+    </h:body>
+```
+Da notare che:
+
+* i tag HTML Facelets per aggiungere componenti alla pagina (cominciano con h:)
+* il tag `f:validateLongRange` per validazione automatica dell’input utente
+
+Inoltre, utilizzo di funzionalità di navigazione implicita, ridirezione della risposta verso response.xhtml.\
+\
+File response.xhtml:
+```xml
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>Guess Number Facelets Application</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:graphicImage value="#{resource[’images:wave.med.gif’]}"/>
+            <h2> 
+            <h:outputText id="result" value="#{userNumberBean.response}"/> </h2>
+            <h:commandButton id="back" value="Back" action="greeting.xhtml"/>
+        </h:form>
+    </h:body>
+</html>
+```
