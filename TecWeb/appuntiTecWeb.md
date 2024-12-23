@@ -1520,3 +1520,251 @@ xhr.onreadystatechange = function(){istruzioni}
 /*3*/
 xhr.onreadystatechange = () => {istruzioni}
 ```
+
+#### Proprietà status
+
+Contiene un valore intero corrispondente al codice HTTP dell’esito della richiesta:
+
+* 200 in caso di successo (l’unico in base al quale i dati ricevuti in risposta possono essere ritenuti corretti e significativi)
+* Possibili altri valori (in particolare d’errore: 403, 404, 500, ...)
+
+#### Proprietà statusText
+
+Contiene invece una descrizione testuale del codice HTTP restituito dal server. Per esempio: 
+```javascript
+if ( xhr.status != 200 )
+    alert( xhr.statusText );
+```
+
+#### Proprietà responseText
+
+Stringa che contiene i dati restituiti dal server nel body della risposta HTTP, è disponibile **solo** a interazione ultimata, quindi quando `readyState === 4`.
+
+#### Proprietà responseXML
+
+Come la precedente contiene i dati restituiti dal server nel body della risposta ma convertito, se possibile, in documento XML. Questo è utile perchè consente la facile navigazione via JS. Nel caso il body della HTTP response non sia convertibile in un documento XML (e quindi non sia un documento ben formato) questa proprietà vale `null`.
+
+#### Metodi getResponseHeader() e getAllResponseHeaders()
+
+Consentono di leggere gli header HTTP che descrivono la risposta del server:
+
+* Sono utilizzabili solo nella funzione di callback
+* Possono essere invocati sicuramente in modo safe solo a richiesta conclusa (readystate==4)
+* In alcuni browser possono essere invocati anche in fase di ricezione della risposta (readystate==3)
+
+La sintassi è: `getAllResponseHeaders()` e `getResponseHeader(header_name)`.
+
+#### Ruolo della funzione di callback
+
+Usa `readyState` per leggere lo stato di avanzamento della richiesta, per questo è chiamata ad ogni variazione di tale proprietà. Inoltre, usa `status` per verificare l'esito della richiesta.\
+Ha accesso agli headers tramite i due metodi descritti sopra (`getAllResponseHeaders()` e `getResponseHeader()`).\
+Se `readyState === 4` $\Longrightarrow$ può leggere il contenuto della risposta con `responseText` e/o `responseXML`.
+
+### VANTAGGI E SVANTAGGI DI AJAX
+
+Sicuramente si guadagna in espressività ma si perde la linearità dell'interazione.\
+Mentre l'utente è all'interno della stessa pagina le **richieste** sul server possono essere **numerose** ed **indipendenti**.\
+Il **tempo di attesa** passa in secondo piano o non è avvertito affatto.\
+Infine possono presentarsi criticità (meglio descritte in seguito) sia per l'utente che per lo sviluppatore.
+
+#### Criticità nell'interazione con l'utente
+
+\
+Le richieste AJAX permettono all’utente di continuare a interagire con la pagina ma non necessariamente lo informano di che cosa stia succedendo e possono durare troppo. L'effetto finale è un possibile disorientamento dell'utente. Solitamente si agisce di conseguenza su due fronti per limitare i comportamenti impropri a livello utente:
+
+* Si rende visibile in qualche modo l'andamento della chiamata tramite barre di scorrimento o info utente
+* Si interrompono le richieste che non terminano in tempo utile per sovraccarichi del server o momentanei problemi di rete (timeout)
+
+Per interrompere le operazioni di invio e ricezione esiste il metodo `abort()`: non ha bisogno di parametri e termina immediatamente la trasmissione dei dati.\
+Attenzione: non ha senso chiamarlo all'interno della funzione di callback in quanto se `readyState` non cambia il metodo non viene richiamato, e, se la risposta si fa attendere, `readyState` non cambia.\
+Solitamente si crea un'altra funzione da far richiamare in modo asincrono al sistema mediante il metodo: 
+```javascript
+setTimeOut(funzioneAsincronaPerAbortire, timeOut);
+```
+Al suo interno si valuta se continuare l'attesa o abortire l'operazione.
+
+#### Criticità per il programmatore
+
+\
+Alcuni aspetti critici per il programmatore sono: 
+
+* L'accrescimento della complessità delle web app
+* La ripartizione della logica di presentazione fra client-side e server-side
+* Le applicazioni AJAX pongono problemi di debug, test e mantenimento
+
+Aspetti secondari ma non meno importanti sono:
+
+* Il test di codice JavaScript è complesso
+* Il codice JavaScript ha problemi di modularità
+* I toolkit AJAX sono molteplici e solo recentemente hanno raggiunto una discreta maturità
+* Mancanza di standardizzazione di `XMLHttpRequest` e assenza di supporto nei vecchi browser
+
+### GESTIONE DELLA RISPOSTA
+
+Spesso i dati scambiati fra client e server sono codificati in XML: AJAX come abbiamo visto è in grado di ricevere documenti XML. In particolare è possibile elaborare i documenti XML
+ricevuti utilizzando API W3C DOM. Il modo con cui si opera su dati in formato XML è
+analogo a quello visto per ambienti Java: si usa un parser e si accede agli elementi di nostro interesse e per visualizzare i contenuti ricevuti si modifica il DOM della pagina HTML.\
+\
+La domanda che a questo punto sorge spontanea è: ma XML è la scelta giusta?
+
+> Si può dimostrare che lo scambio di dati in formato XML fra client e server porta alla generazione ed utilizzo di quantità di byte piuttosto elevate e non ottimizzate, in più non è semplice da leggere e da manutenere ed è oneroso in termini di elaborazione (JS è interpretato).
+
+E allora esiste un'alternativa più efficiente e semplice da manipolare tramite AJAX?
+
+> La risposta è sì. Il formato alternativo prende il nome di JSON.
+
+### JSON
+
+JSON (JavaScript Object Notation) è un formato per lo scambio dei dati considerato molto più comodo di XML: 
+
+* Leggero in termini di quantità di dati scambiati
+* Molto semplice ed efficiente da elaborare da parte del supporto runtime al linguaggio di programmazione (in particolare JS)
+* Ragionevolmente semplice da leggere per l'operatore umano
+
+È largamente supportato dai maggiori linguaggi di programmazione e si basa sulla notazione usata per le costanti oggetti (object literal) e le costati array (array literal) in JS.
+
+#### Oggetti e costanti oggetto
+
+In è è possibile creare un oggetto in base a una costante oggetto: 
+```javascript
+var Beatles =
+    {
+    "Paese" : "Inghilterra",
+    "AnnoFormazione" : 1959,
+    "TipoMusica" : "Rock"
+    } 
+```
+Che è del tutto equivalente a: 
+```javascript
+var Beatles = new Object();
+Beatles.Paese = "Inghilterra";
+Beatles.AnnoFormazione = 1959;
+Beatles.TipoMusica = "Rock";
+```
+
+#### Array e costanti array
+
+In modo analogo è possibile creare un array utilizzando una costante di tipo array:
+```javascript
+var Membri = ["Paul","John","George","Ringo"];
+```
+Del tutto uguale a:
+```javascript
+var Membri = new Array("Paul","John","George","Ringo");
+```
+Si possono anche creare oggetti che contengono array:
+```javascript
+var Beatles =
+    {
+    "Paese" : "Inghilterra",
+    "AnnoFormazione" : 1959,
+    "TipoMusica" : "Rock",
+    "Membri" : ["Paul","John","George","Ringo"]
+    }
+```
+Infine si possono creare array di oggetti:
+```javascript
+var Rockbands = [
+    {
+     "Nome" : "Beatles",
+     "Paese" : "Inghilterra",
+     "AnnoFormazione" : 1959,
+     "TipoMusica" : "Rock",
+     "Membri" : ["Paul","John","George","Ringo"]
+    },
+    {
+     "Nome" : "Rolling Stones",
+     "Paese" : "Inghilterra",
+     "AnnoFormazione" : 1962,
+     "TipoMusica" : "Rock",
+    "Membri" : ["Mick","Keith","Charlie","Bill"]
+    }
+]
+```
+
+La sintassi JSON si basa su quella della costanti oggetto e array JS: un oggetto JSON non è altro che una stringa equivalente a una costante oggetto di JS.\
+\
+Per la conversione da stringa ad oggetto JS mette a disposizione la funzione `eval()` che invoca l'interprete per la traduzione della stringa passata come parametro: la sintassi JSON è un sottoinsieme di JS, quindi con `eval()` possiamo trasformare una stringa JSON in un oggetto, tuttavia la sintassi della stringa passata deve essere: '(espressione)' quindi bisogna racchiudere la stringa JSON fra parentesi tonde. Ad esempio:
+```javascript
+var s ='{
+    "Paese" : "Inghilterra", 
+    "AnnoFormazione" : 1959, 
+    "TipoMusica" : "Rock", 
+    "Membri" : ["Paul","John","George","Ringo"]
+    }';
+var o = eval('('+s+')');
+```
+L'uso di `eval()` presenta diversi rischi: la stringa passata come parametro potrebbe contenere codice malevolo, infatti di solito si preferisce utilizzare parser che traducono solo oggetti JSON e non espressioni JS di qualunque tipo. Alcuni dei più diffusi sono:
+
+* Google GSON
+* jabsorb
+
+Ad esempio il parser jabsorb espone l'oggetto JSON con 2 metodi:
+
+* `JSON.parse(strJSON)` che converte una stringa JSON in un oggetto JS
+* `JSON.stringify(objJSON)` che converte un oggetto JS in una stringa JSON
+
+#### JSON e AJAX
+
+Si riporta un esempio di un'interazione client-server in cui il client vuole trasferire un oggetto JSON.\
+\
+Sul lato client:
+
+* Si crea un oggetto JavaScript e si riempiono le sue proprietà con le informazioni necessarie
+* Si usa `JSON.stringify()` per convertire l’oggetto in stringa JSON
+* Si usa la funzione `encodeURIComponent()` per convertire la stringa in un formato utilizzabile in una richiesta HTTP (vedi esercitazione su AJAX)
+* Si manda la stringa al server mediante `XMLHttpRequest` (stringa viene passata come variabile con GET o POST) 
+
+Sul lato server:
+
+* Si decodifica la stringa JSON e la si trasforma in oggetto Java utilizzando un apposito parser 
+* Si elabora l’oggetto
+* Si crea un nuovo oggetto Java che contiene dati della risposta
+* Si trasforma l’oggetto Java in stringa JSON usando il parser suddetto
+* Si trasmette la stringa JSON al client nel corpo della risposta HTTP: `response.out.write(strJSON);`
+
+Sul lato client al momento della ricezione:
+
+* Si converte la stringa JSON in un oggetto Javascript usando `JSON.parse()`
+* Si usa liberamente l’oggetto per gli scopi desiderati
+
+#### Parsing JSON in Java: GSON
+
+Gson è una libreria java per il parsing/deparsing di oggetti JSON. È stata realizzata da Google per l’esclusivo sviluppo di prodotti interni, ora Gson è libreria open source.\
+È una libreria molto potente e largamente utilizzata sia in ambito accademico che industriale. Alcuni dei suoi punti di forza sono:
+
+* Fornisce dei metodi semplici e facili da usare per "conversione" Java-JSON e viceversa
+* Genera output JSON compatti e leggibili
+* Consente rappresentazioni custom per gli oggetti
+* Consente la conversione da/a JSON di oggetti Java immodificabili pre-esistenti (non occorre modificare sorgente)
+* Supporta oggetti di complessità arbitraria
+
+Esempio di utilizzo di GSON (in versioni recenti, a partire da 2.8):\
+\
+Inizializzazione dell’oggetto Gson:
+```javascript
+Gson g = new Gson();
+```
+Serializzazione di un oggetto:
+```javascript
+Person santa = new Person("Santa", "Claus", 1000);
+g.toJson(santa);
+```
+Deserializzazione di un oggetto:
+```javascript
+Person peterPan = g.fromJson(json, Person.class);
+```
+
+### UN PICCOLO RIASSUNTO
+
+* AJAX consente gestione asincrona
+* AJAX aggiunge un nuovo elemento al modello a eventi
+* L'uso di XmlHttpRequest rappresenta una modalità alternativa per gestire gli eventi remoti
+* Si può adottare la tecnologia in modo più "radicale" e utilizzare solo AJAX eliminando i caricamenti di pagina (Single Page Applications)
+* Nei casi più comuni però AJAX e la modalità di navigazione tradizionale convivono
+
+
+Si ha quindi:
+
+* Una modalità per gestire gli eventi a livello locale
+* Due modalità per gestire gli eventi remoti (postback e XmlHttpRequest)
