@@ -624,6 +624,144 @@ Rende possibile e semplice la configurazione a deployment time tramite il deploy
 
 #### EJB: principi di design
 
+I principi di design degli EJB sono: 
+
+* Applicazioni EJB e i loro componenti devono essere debolmente accoppiati (loosely coupled)
+* Comportamento di EJB definito tramite interfacce
+* Applicazioni EJB NON si occupano della gestione delle risorse
+* Applicazioni EJB sono N-tier:
+    * Session tier come API verso l'applicazione
+    * Entity tier come API verso le sorgenti dati 
+
+### ARCHITETTURA EJB
+
+L'idea di base è avere un container pesante attivo all'interno dell'EJB Server (Application Server). Il cliente può interagire remotamente con un componente EJB tramite interfacce ben definite passando **sempre** attraverso il container.
+
+```{=latex}
+\begin{center}
+```
+![Architettura EJB](ejbArch.png){#ejbArch height=250px}
+
+```{=latex}
+\end{center}
+```
+
+Fondamentali diventano i **descrittori di deployment** che forniscono le istruzioni al container su come gestire e controllare il comportamento (anche a runtime) di componenti J2EE ad esempio: transazioni, sicurezza e persistenza. Inoltre permettono la personalizzazione tramite specifica dichiarativa (e quindi viene totalmente tolta la personalizzazione tramite programmazione). Un altro vantaggio dei descrittori di deployment sta nella semplificazione della portabilità del codice (proprio perchè la personalizzazione non è a livello di programmazione ma a livello dichiarativo). Sono stati sostituiti o resi sostituibili con le annotazioni a partire da Java5, si possono usare entrambi, uno non esclude l'altro.
+
+### PRINCIPALI COMPONENTI EJB
+
+```{=latex}
+\begin{center}
+```
+![Principali componenti EJB](ejbComp.png){#ejbComp height=250px}
+
+```{=latex}
+\end{center}
+```
+
+Ci sono 3 tipologie di componenti: 
+
+* **Session Bean**:
+    * Stateful session bean
+    * Stateless session bean
+* **Entity Bean**:
+    * Bean Managed Persistence (BMP)
+    * Container Managed Persistence (CMP)
+* **Message Driven Bean**:
+    * Per Java Message Service (JMS)
+    * Per Java API for XML Messaging (JAXML)
+
+#### SESSION BEAN
+
+\
+Lavorano tipicamente per un singolo cliente. Non sono persistenti (vita media relativamente breve) e vengono persi in caso di failure di EJB server.\
+Non rappresentano dati in un DB, anche se possono accedere/modificare questi dati.\
+In EJB2.x classe Bean deve implementare interfaccia `javax.ejb.SessionBean`; in EJB3.x solo uso di annotazioni.\
+L'uso tipico di questo tipo di bean è la modellazione di oggetti di processo o, anche, il controllo specifico per un particolare cliente. Vengo spesso utilizzati anche per modellare workflow o attività di gestione e per coordinare le interazioni fra i bean. Ultimo caso di utilizzo è per muovere la logica di business dal lato client a lato server.\
+Come visto, questi bean si dividono in:
+
+* **Stateless**: che eseguono una richiesta e restituiscono una risposta senza salvare alcuna informazione di stato relativa al cliente
+* **Stateful**: possono mantenere uno stato specifico per un cliente
+
+#### ENTITY BEAN
+
+\
+Forniscono una vista ad oggetti dei dati mantenuti in un DB: il tempo di vita non è, quindi, connesso alla durata delle interazioni con i clienti, infatti i componenti permangono nel sistema fino a che i dati esistono nel DB (long lived) e, nella maggior parte dei casi, i componenti sono sincronizzati con i relativi DB relazionali.\
+C'è accesso condiviso per clienti differenti.\
+In EJB2.x classe Bean deve implementare interfaccia `javax.ejb.EntityBean`; in EJB3.x supporto alla persistenza simile ad Hibernate
+
+#### MESSAGE-DRIVEN BEAN
+
+\
+Svolgono il ruolo di consumatori di messaggi asincroni. Non possono essere invocati direttamente dai clienti, infatti vengono attivati solo in seguito all'arrivo di un messaggio.I clienti possono interagire con MDB tramite l'invio di messaggi verso le code o i topic per i quali questi componenti sono in ascolto (listener). Sono privi di stato.\
+Nel caso si voglia usare JMS:
+
+* MDB corrispondente deve implementare l'interfaccia `javax.jms.MessageListener` interface
+* L'implementazione del metodo `onMessage()` deve contenere la business logic
+* Il bean viene configurato come listener per queue o topic JMS
+
+#### Tipologie di Bean EJB 3.0
+
+In EJB 3.0, i bean di tipo sessione e message-driven sono classi Java ordinarie (Plain Old Java Object - POJO) quindi sono stati rimossi i requisiti di interfaccia. Il tipo di bean viene specificato da una annotation (o da un descrittore), le annotazioni principali sono: `@Stateless`, `@Stateful`e `@MessageDriven` (specificati nella classe del bean). Gli entity bean di EJB2.x non sono stati modificati e possono continuare a essere utilizzati ma Java Persistence API supporta nuove funzionalità. L'annotazione `@Entity` si applica solo alle nuove entità relative a Java Persistence API.
+
+### SERVIZI CONTAINER BASED
+
+Oltre ai dettagli di programmazione, ancora più rilevante è capire quali servizi di supporto/sistema e come vengano supportati in un modello a container pesante:
+
+* **Pooling e concorrenza** 
+* Transazionalità
+* Gestione delle connessioni a risorse
+* Persistenza (vedi Java Persistence API – JPA - e supporto Hibernate ORM)
+* Messaggistica (vedi Java Messaging System – JMS)
+* (Sicurezza)
+
+#### Gestione della concorrenza
+
+Il problema è molto presente ed è causato dal fatto che migliaia (se non milioni) di oggetti vengono usati simultaneamente. Le strade per gestire il problema della relazione fra numero di clienti e numero di oggetti distribuiti richiesti per servire le richieste del client sono 2:
+
+* _Resource pooling_: pooling dei componenti server-side da parte di EJB container (instance pooling). L'idea base è di evitare di mantenere un'istanza separata di ogni EJB per ogni cliente. Si applica a stateless session bean e message-driven bean. Anche pooling dei connector.
+* _Activation_: utilizzata da stateful session bean per risparmiare risorse.
+
+Per definizione, i session beans non possono essere concorrenti, nel senso che una singola istanza è associata ad un singolo cliente: vietato l’utilizzo di thread a livello applicativo e, ad esempio, della keyword `synchronized`.\
+Come nel caso di stateless session bean, Message Driven Bean non mantengono stato della sessione e quindi il container può effettuare pooling in modo relativamente semplice. Le strategie di pooling sono analoghe a quelle descritte nei prossimi paragrafi. Unica differenza che ogni EJB container contiene molti pool, ciascuno dei quali è composto di istanze con la stessa destination JMS.
+
+#### Stateless Session Bean
+
+Ogni EJB container mantiene un insieme di istanze del bean pronte per servire richieste cliente. Non esiste stato di sessione da mantenere fra richieste successive, ogni invocazione di metodo è indipendente dalle precedenti. Implementazione delle strategie di instance pooling demandate ai vendor di EJB container, ma analoghi principi.\
+Il ciclo di vita di uno Stateless Session Bean consiste in:
+
+1. No state: non istanziato, stato iniziale e terminale del ciclo di vita
+2. Pooled state: istanziato ma non ancora associato ad alcuna richiesta cliente
+3. Ready state: già associato con una richiesta EJB e pronto a rispondere ad una invocazione di metodo
+
+Istanza del bean nel pool riceve un riferimento a `javax.ejb.EJBContext` (in caso di richiesta di injection nel codice tramite apposita annotation). EJBContext fornisce un'interfaccia per il bean per comunicare con l'ambiente EJB.\
+Quando il bean passa in stato ready, EJBContext contiene anche informazioni sul cliente che sta utilizzando il bean. Inoltre contiene il riferimento al proprio EJB stub, utile per passare riferimenti ad altri bean. Ricordiamo che il fatto di essere stateless è indicato
+semplicemente tramite annotation `@javax.ejb.Stateless`.\
+NOTA: variabili di istanza non possono essere usate per mantenere stato della sessione
+
+#### Stateful Session Bean: Activation
+
+Usata nel caso di stateful session bean. Gestione della coppia oggetto EJB e istanza di bean stateful tramite:
+
+* Passivation: disassociazione fra stateful bean instance e suo oggetto EJB, con salvataggio dell'istanza su memoria (serializzazione). Processo del tutto trasparente per cliente
+* Activation: recupero dalla memoria (deserializzazione) dello stato dell’istanza e riassociazione con oggetto EJB
+
+Nella specifica J2EE, non richiesto che la classe di uno stateful session bean sia serializzabile.\
+C'è dipendenza dall'implementazione dello specifico vendor e attenzione al trattamento dei transient.\
+La procedura di activation può essere associata anche all'invocazione di metodi di callback sui cambi di stato nel ciclo di vita di uno stateful session bean.\
+Ad esempio, l'annotation `@javax.ejb.PostActivate` associa l'invocazione del metodo a cui si applica immediatamente dopo l'attivazione di un'istanza. Similmente, `@javax.ejb.PrePassivate` (prima dell’azione di passivation).\
+Vengono utilizzati spesso per la chiusura/apertura di connessioni a risorse per gestione più efficiente.
+
+#### Esempio per i Session Beans
+
+Immaginando un e-ecommerce che usa una JSP come homepage la control/business logic può essere implementata tramite Session Bean:
+
+* OperationsBean: Stateless SB contenente la definizione di somma, divisione, sottrazione e moltiplicazione
+* CalculatorBean: Stateful SB che
+    1. seleziona operazione da svolgere in base a parametri forniti
+    2. effettua operazione richiesta (non direttamente ma demandando ad altro componente)
+    3. mantiene il risultato parziale delle operazioni
+
 ## SPRING FRAMEWORK
 
 Spring è um'implementazione di modello a container leggero per la costruzione di applicazioni Java SE e Java EE. Molti dei concetti chiave alla base di Spring soni stati di successo così rilevante da essere diventati linee guida per l'evoluzione di EJB 3.0.
@@ -1071,6 +1209,39 @@ ControllerClassNameHandlerMapping trova vari bean controller definiti e toglie
 * WelcomeController si mappa su URL: /welcome*
 * HomeController si mappa su URL: /home*
 * IndexController si mappa su URL: /index*
+
+## NODE JS E HTTP 3.0
+
+### NODE JS
+
+L'idea centrale è il supporto efficiente ad I/O asincrono non-bloccante. È una tecnologia server-side senza l'utilizzo di thread/processi dedicati. È maggiormente scalabile e va verso l'esasperazione del concetto di server stateless.\
+Per l'utilizzo di nodejs è necessario server-side un runtime environment JS che ospiti Google Chrome V8 engine: soluzione server-side per JS che compila il codice (a differenza del classico interprete) per una maggiore efficienza runtime.\
+È stato progettato per un'estrema concorrenza e scalabilità, senza thread o processi dedicati definiti a livello di applicazione. In più è **sempre** non bloccante, persino per chiamate I/O-oriented.\
+Nodejs sfrutta la sematica ad **Event loop**: al posto dei thread usa un event loop con stack riducendo fortemente overhead di context switching. In più usa il framework `CommonJS` leggermente più simile a un vero linguaggio di programmazione Object Oriented.
+
+#### Thread vs. Event-driven
+
++--------------------------------+--------------------------------------+
+| **Thread**                     | **Asynchronous Event-driven**        |
++================================+======================================+
+| Blocca applicazione/richieste  | Un solo thread, che fa ripetutamente |
+| con listener-worker thread     | fetching di eventi da una coda       |
++--------------------------------+--------------------------------------+
+| Usa modello incoming-request   | Usa una coda di eventi e processa    |
+|                                | eventi presenti                      |
++--------------------------------+--------------------------------------+
+| Multithreaded server potrebbe  | Salva stato e passa poi a processare |
+| bloccare una richiesta che     | il prossimo evento in coda           |
+| coinvolge eventi multipli      |                                      |
++--------------------------------+--------------------------------------+
+| Usa context switching          | No contention e NO context           |
+|                                | switching                            |
++--------------------------------+--------------------------------------+
+| Usa ambienti multithreading in | Usa framework con meccanismi per     |
+| cui listener e worker thread   | il cosiddetto I/O asincrono          |
+| spesso acquisiscono            | (callback, NO poll/select,           |
+| incoming-request lock          | O_NONBLOCK)                          |
++--------------------------------+--------------------------------------+
 
 # WEBSOCKET E JSF
 
@@ -1781,3 +1952,4 @@ File response.xhtml:
     </h:body>
 </html>
 ```
+

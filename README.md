@@ -2,6 +2,6 @@
 
 Ultimi aggiornamenti:
 - TecWeb: 
-    * react.md: da fare EJB principi di design
+    * react.md: finire nodejs 
 - CAT: da iniziare ppt su trasformata di Laplace
 - Reti: slide 10 Java RMI
