@@ -1243,6 +1243,201 @@ Nodejs sfrutta la sematica ad **Event loop**: al posto dei thread usa un event l
 | incoming-request lock          | O_NONBLOCK)                          |
 +--------------------------------+--------------------------------------+
 
+#### I/O bloccante e non bloccante
+
+In molti linguaggi di programmazione e framework tradizionali, le operazioni I/O sono bloccanti: bloccano il progresso di un thread in attesa di lettura da hard drive o da rete. In caso di I/O bloccante, un server "tradizionale" usa multi-threading per limitare l'attesa: un thread per connessione e thread pool. Ma comunque ogni thread passa maggior parte del tempo in attesa di I/O. Andare verso altissimi numeri di thread introduce overhead di context switching e un significativo uso di memoria.\
+Node.js usa un approccio single-thread non-blocking I/O: ogni funzione che fa operazioni I/O viene gestita in modo asincrono non-bloccante tramite callback. Così facendo, usando un solo thread con event loop, Node.js supporta decine di migliaia di connessioni concorrenti, senza costo di context switching. Le task nell'event loop devono eseguire velocemente per NON bloccare la coda: bisogna fare attenzione a task CPU intensive.\
+Il servitore non compie nessuna altra operazione se non di I/O (applicazioni JavaScript, di scripting in generale, in attesa su richieste I/O tendono a degradare significativamente performance), per evitare blocking, Node.js utilizza stessa natura event driven di JavaScript, associando callback alla ricezione di richieste I/O. Gli Script Node.js in attesa su I/O NON sprecano molte risorse (popped off dallo stack automaticamente quando il loro codice non-I/O related termina la sua esecuzione).
+\
+\
+Quando usare Node.js?
+
+> Node.js è particolarmente adatto alla creazione di Web server e strumenti di networking vari. Si fa Uso di una collezione di moduli che realizzano varie funzionalità core: per file system I/O, per networking, per funzioni crittografiche, per gestione stream di dati. Inoltre si usano dei framework (insiemi di moduli) per velocizzare lo sviluppo di web app, per esempio Express.js. In realtà Node possiede, anche, diversi strumenti di sviluppo frontend e associate DevOps.
+
+\
+\
+L'uso di JS sia lato client che lato server permette al web developer di non fare "context switching" di linguaggio di programmazione, tuttavia bisogna tenere a mente che **client-side** JS fa ampio uso del DOM e tipicamente non fa accesso a file o persistent storage, mentre **server-side** lavora principalmente con file e/o persistent storage e senza DOM.
+
+#### Moduli Node.js
+
+Il core di Node consiste di circa una ventina di moduli, alcuni di più basso livello come per la gestione di eventi e stream, altri di più alto livello come http. Il core di Node è stato progettato per essere piccolo e snello; i moduli che fanno parte del core si focalizzano su protocolli e formati di uso comune. Per ogni altro modulo si usa **npm** (tutti possono creare un modulo Node.js con funzionalità aggiuntive e pubblicarlo in npm).\
+NPM è un packet manager di grande successo che semplifica lo sharing e il riuso del codice JS in forma modulare. È preinstallato con una distribuzione Node qualsiasi, esegue tramite linea di comando e permette di ritrovare moduli dal registry pubblico in http://npmjs.org
+\
+\
+Un esempio dell'utilizzo del modulo http:
+```javascript
+// Carica il modulo http per creare un http server
+var http=require('http');
+// Configura HTTP server per rispondere con Hello World
+var server=http.createServer(function(request,response) {
+    response.writeHead(200, {"Content-Type":"text/plain"});
+    response.end("Hello World\n");
+});
+// Ascolta su porta 8000
+server.listen(8000);
+// Scrive un messaggio sulla console terminale
+console.log("Server running at http://127.0.0.1:8000/");
+```
+E invece ecco un esempio dell'utilizzo del modulo fs (file system):
+```javascript
+var fs = require("fs"); // modulo fs richiesto
+// oggetto fs fa da wrapper a chiamate bloccanti sui file
+// read() a livello SO è sincrona bloccante mentre
+// fs.readFile è non-bloccante
+fs.readFile("smallFile", readDoneCallback); // Inizio lettura
+function readDoneCallback(error, dataBuffer) {
+    // convenzione Node per callback: primo argomento è oggetto
+    // js di errore
+    if (!error) {
+        console.log("smallFile contents", dataBuffer.toString());
+    }
+}
+```
+
+#### Listener/Emitter Pattern
+
+Il **listener** è la funzione da chiamare quando un evento associato viene lanciato mentre l'**emitter** è il segnale che un evento è accaduto: l'emissione di un evento causa l'invocazione di TUTTE le funzioni listener. Ad esempio:
+```javascript
+myEmitter.on('myEvent', function(param1, param2) {
+    console.log('myEvent occurred with ' + param1 + ' and ' + param2 + '!');
+});
+myEmitter.emit('myEvent', 'arg1', 'arg2');
+```
+In seguito a emit, i listener sono invocati in modo sincrono-bloccante e nell'ordine con cui sono stati registrati, quindi se non ci sono listener non vengono eseguite operazioni.
+
+#### Node.js Stream
+
+Node contiene moduli che producono/consumano flussi di dati (stream) che possono essere utili per strutturare un server. Si possono costruire stream anche dinamicamente e aggiungere moduli di flusso (ad esempio: `stream.push(Encryption)`). Un po' di esempi di stream:
+
+* Readable stream (ad es. `fs.createReadStream`)
+* Writable stream (es. `fs.createWriteStream`)
+* Duplex stream (es. `net.createConnection`)
+* Transform stream (es. `zlib`, `crypto`)
+
+Esempio di lettura su un file usando Stream: 
+```javascript
+var readableStreamEvent = fs.createReadStream("bigFile");
+readableStreamEvent.on('data', function (chunkBuffer) {
+    console.log('got chunk of', chunkBuffer.length, 'bytes');
+});
+readableStreamEvent.on('end', function() {
+    // Lanciato dopo che sono stati letti tutti i datachunk
+    console.log('got all the data');
+});
+readableStreamEvent.on('error', function (err) {
+    console.error('got error', err);
+});
+```
+Esempio di scrittura su un file usando Stream:
+```javascript
+writableStreamEvent =
+fs.createWriteStream('outputFile');
+writableStreamEvent.on('finish', function () {
+    console.log('file has been written!');
+});
+writableStreamEvent.write('Hello world!\n');
+writableStreamEvent.end();
+```
+
+#### TCP Networking in Node.js
+
+Esiste un modulo di rete Node, chiamato net, che fa da wrapper per le chiamate di rete di SO. Include anche funzionalità di alto livello come la creazione di un server TCP: 
+```javascript
+var net = require('net');
+net.createServer(processTCPconnection).listen(4000);
+```
+Crea una socket, fa binding sulla porta 4000 e si mette in stato di listen, per ogni connessione TCP viene invocata la funzione `processTCPconnection`.\
+Un esempio di creazione di un server per chat:
+```javascript
+var clients = []; // Lista di client connessi
+function processTCPconnection(socket) {
+    clients.push(socket); // Aggiunge il cliente alla lista
+    socket.on('data', function (data) {
+        broadcast( "> " + data, socket);
+        // invia a tutti i dati ricevuti 
+    });
+    socket.on('end', function () {
+        clients.splice(clients.indexOf(socket), 1); // elimina
+        cliente da socket
+    }); 
+}
+// invia messaggio a tutti i clienti
+function broadcast(message, sender) {
+    clients.forEach(function (client) {
+        if (client === sender) return;
+        client.write(message);
+    });
+}
+```
+
+#### Modulo Express
+
+Express.js è il framework più utilizzato oggi per lo sviluppo di applicazioni Web su Node. Le principali caratteristiche sono:
+
+* Focus su high performance
+* Diverse opzioni e motori di templating
+* Eseguibili per rapida generazione di applicazioni
+
+Un esempio di un'applicazione con express:
+```javascript
+var express=require('express');
+var app=express();
+app.get('/',function(req,res) {
+    res.send('Hello World!'); 
+});
+var server=app.listen(3000,function() {
+    var host=server.address().address;
+    var port=server.address().port;
+    console.log('Listening at http://%s:%s',host,port); 
+});
+```
+
+### HTTP 3
+
+HTTP/3 è stato costruito sopra al protocollo creato da Google (e poi reso standard): QUIC. Protocollo che mira alla velocità delle comunicazioni ma senza troppa affidabilità utilizzando una connessione UDP (invece di una TCP normale) e delle stream per inviare i dati, infatti si dice che fa multiplexing su diverse stream per inviare i dati. \
+QUIC sfrutta UDP come livello di trasporto ma lui stesso implementa alcune dinamiche di livello 4 (TCP/IP) ma anche di livello di sicurezza (infatti è un protocollo che prende entrambi i livelli).
+
+```{=latex}
+\begin{center}
+```
+![QUIC e HTTP/3 a confronto con HTTP/2 e TCP](quichttp3.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+Sostanzialmente, quindi, HTTP/3 utilizza delle web socket per la comunicazione con il client.
+
+```{=latex}
+\begin{center}
+```
+![Le versioni HTTP messe a confronto](httpvers.png){width=400px}
+
+![Come lavora QUIC](quic.png){width=400px}
+
+```{=latex}
+\end{center}
+```
+
+Tuttavia non è sempre conveniente utilizzare QUIC, infatti le prestazioni non sono così tanto diverse da HTTP/2. L'incremento di velocità è, infatti, è notevole quando si parla di TTFB (Time To First Byte), infatti si parla di circa 25 ms. Ma quando si parla di pagine web vere e proprie, in fin dei conti, non è sempre conveniente utilizzare QUIC, anzi, quando le dimensioni delle pagine aumentano HTTP/3 è addirittura più lento di HTTP/2, tuttavia, mediamente, HTTP/3 è più veloce.
+
+ ```{=latex}
+\begin{center}
+```
+![Prestazioni delle versioni di HTTP](prestazioniVersHttp.png)
+
+![TTFB HTTP/3 (arancione) e HTTP/2 (verde) messe a confronto](ttfbHttp3.png)
+
+![Confronto HTTP/2 e HTTP/3 su varie dimensioni di pagine](confrontoGrandPagineHttp3.png)
+
+```{=latex}
+\end{center}
+```
+
+Ma quindi, quando si usa HTTP/3 ? 
+
+>
+
 # WEBSOCKET E JSF
 
 ## WEB SOCKET
