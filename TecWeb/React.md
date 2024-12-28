@@ -1436,7 +1436,7 @@ Tuttavia non è sempre conveniente utilizzare QUIC, infatti le prestazioni non s
 
 Ma quindi, quando si usa HTTP/3 ? 
 
->
+> HTTP/3 può portare a miglioramento di performance, dovuti solo al cambio del protocollo di trasporto. È visto in maniera positiva per scambi di response corte e frequenti e non fondamentali. 
 
 # WEBSOCKET E JSF
 
