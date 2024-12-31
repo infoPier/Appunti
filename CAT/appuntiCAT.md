@@ -448,3 +448,52 @@ $$ \mathcal{L}\left[\int_{0}^{t}f_{1}(t-\tau)f_{2}(\tau)d\tau \right] = F_{1}(s)
 
 ### TRASFORMATA DI SEGNALI ELEMENTARI
 
+#### Delta di Dirac
+
+$\mathcal{L}[\delta (t)] = 1$
+
+#### Gradino unitario
+
+$\mathcal{L}[1(t)] = \frac{1}{t}$
+
+#### Rampa
+
+$\mathcal{L}[t 1(t)] = \frac{1}{s^2}$
+
+#### Esponenziale
+
+$\mathcal{L}[e^{\alpha t} 1(t)] = \frac{1}{s-\alpha}$
+
+#### Seno
+
+$\mathcal{L}[sin(\omega t)1(t)] = \frac{\omega}{s^2 + \omega^2}$
+
+#### Coseno
+
+$\mathcal{L}[cos(\omega t)1(t)] = \frac{1}{\omega}\mathcal{L}[\frac{d}{dt}sin(\omega t)1(t)] = \frac{s}{\omega}\mathcal{L}[sin(\omega t)1(t)]  = \frac{s}{\omega} \frac{\omega}{s^2 + \omega^2} = \frac{s}{s^2 + \omega^2}$
+
+#### Seno con fase
+
+$\mathcal{L}[sin(\omega t \pm \varphi)1(t)] = \frac{\omega\ cos(\varphi)\  \pm\  s\ sin(\varphi)}{s^2 + \omega^2}$
+
+#### Coseno con fase
+
+$\mathcal{L}[sin(\omega t \pm \varphi)1(t)] = \frac{s\ cos(\varphi) \ \mp\  \omega\ sin(\varphi)}{s^2 + \omega^2}$
+
+## FUNZIONE DI TRASFERIMENTO
+
+### Sistema non variante
+
+$\dot x(t) = f(x(t),u(t))$ \
+$\mathcal{L}[\frac{d}{dt} x(t)] = \mathcal{L}[f(x(t),u(t))]$ \
+$sX(s)-x(0) = \int_{0^-}^{+\infty} f(x(t), u(t)) e^{-st} dt$
+
+### Sistema lineare tempo variante
+
+$\dot x(t) = A(t)x(t) + B(t)u(t)$ \
+$sX(s)-x_0 = \mathcal{L}[A(t)x(t)+B(t)u(t)] = \mathcal{L}[A(t)x(t)]+\mathcal{L}[B(t)u(t)] = \int_{0^-}^{+\infty} A(t)x(t)e^{-st} dt + \int_{0^-}^{+\infty} B(t)u(t)e^{-st} dt$
+
+### SISTEMA LINEARE TEMPO INVARIANTE
+
+Dato il seguente SLTI con $x\in \mathcal{R}^n$ , $u \in \mathcal{R}^m$ ed $y \in \mathcal{R}^p$ $$ \dot x(t) = Ax(t) + Bu(t) $$ $$ y(t) = Cx(t) + Du(t) $$ con $x(0) = x_0$\
+Siano 
