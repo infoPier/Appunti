@@ -495,5 +495,117 @@ $sX(s)-x_0 = \mathcal{L}[A(t)x(t)+B(t)u(t)] = \mathcal{L}[A(t)x(t)]+\mathcal{L}[
 
 ### SISTEMA LINEARE TEMPO INVARIANTE
 
-Dato il seguente SLTI con $x\in \mathcal{R}^n$ , $u \in \mathcal{R}^m$ ed $y \in \mathcal{R}^p$ $$ \dot x(t) = Ax(t) + Bu(t) $$ $$ y(t) = Cx(t) + Du(t) $$ con $x(0) = x_0$\
-Siano 
+Dato il seguente SLTI con $x\in \mathbb{R}^n$ , $u \in \mathbb{R}^m$ ed $y \in \mathbb{R}^p$ $$ \dot x(t) = Ax(t) + Bu(t) $$ $$ y(t) = Cx(t) + Du(t) $$ con $x(0) = x_0$\
+Siano $X(s) := \mathcal{L}[x(t)]$ , $U(s)=\mathcal{L}[u(t)]$ e $Y(s)=\mathcal{L}[y(t)]$.\
+Trasformando entrambi i membri e ricordando che $\mathcal{L}[\dot x(t)] = sX(s) - x(0)$\ :
+\begin{equation*}
+    \begin{aligned}
+    sX(s) - x(0) &= AX(s) + BU(s) \\
+    Y(s) &= CX(s) + DU(s)
+    \end{aligned}
+\end{equation*}
+\begin{equation*}
+    \begin{aligned}
+    (sI - A)X(s) &= x_0 + BU(s) \\
+    Y(s) &= CX(s) + DU(s)
+    \end{aligned}
+\end{equation*}
+\begin{equation*}
+    \begin{aligned}
+    X(s) &= (sI - A)^{-1} x_0 + (sI - A)^{-1} BU(s)\\
+    Y(s) &= C(sI-A)^{-1} x_0 + (C(sI-A)^{-1}B + D)U(s)
+    \end{aligned}
+\end{equation*}
+Si possono quindi individuare le traformate dell'evoluzione libera (quelle dipendenti da $x_0$) e dell'evoluzione forzata (quelle dipendenti da $U(s)$): 
+
+* Evoluzione libera: $$ X_{\ell}(s) = (sI-A)^{-1}x_0 $$ $$ Y_{\ell}(s) = C(sI-A)^{-1} x_0 $$
+* Evoluzione forzata: $$ X_{f}(s) = (sI-A)^{-1}BU(s) $$ $$ Y_{f}(s) = (C(sI-A)^{-1}B + D) U(s) $$
+
+Considerando la trasformata dell'evoluzione forzata dell'uscita: $$ Y_{f}(s) = (C(sI-A)^{-1}B + D) U(s) $$ La matrice: $$ G(s) = C(sI-A)^{-1}B + D $$ è detta **funzione di traferimento**.\
+Se il sistema è SISO allora è uno scalare.\
+Dunque ora si ha una rappresentazione ingress-uscita (detta rappresentazione _esterna_) del tipo: $$ Y_{f}(s) = G(s)U(s) $$ Se si assumesse $x(0)=0$ allora si avrebbe $$ Y(s)=G(s)U(s) $$
+**N.B.**: la funzione di trasferimento è data dal rapporto tra la trasformata dell'uscita e dell'ingresso nel caso $x(0) = x_0 = 0$: $$ G(s) = \frac{Y(s)}{U(s)} $$
+Operativamente la funzione di traferimento può essere calcolata come: $$ G(s) = C(sI-A)^{-1}B + D = C\frac{adj(sI-A)}{det(sI-A)}B + D $$
+\newpage
+Nel caso sia SISO la funzione è una funzione razionale fratta: 
+
+* il denominatore di grado $n$ e numeratore di grano $\le n$ ($= n$ se $D \ne 0$ e ne consegue che il sistema sarebbe proprio e NON strettamente proprio)
+* il numeratore ed il denominatore possono avere radici comuni e quindi semplificabili, questo comporta un minore contenuto informativo rispetto alla forma di stato
+* la relazione fra grado del numeratore e denominatore è detta _grado relativo_
+
+E a livello dimensionale si avrebbe: $D\in\mathbb{R}$ , $C\in\mathbb{R}^{1\times n}$ , $B\in\mathbb{R}^{n\times 1}$ , $adj(sI-A)\in\mathbb{R}^{n\times n}$ e $det(sI-A)$ che è un polinomio di grado $n$.\
+Nel caso in cui il sistema non sia SISO comunque $G(s)$ sarebbe una matrice i cui i singoli elementi sono rapporti di polinomi.\
+\
+La funzione di traferimento: $$ G(s) = C(sI-A)^{-1}B + D $$ Se vista come rapporto di polinomi, può essere scritta: $$ G(s)=\frac{N(s)}{D(s)}=\frac{\beta _{\nu}s^{\nu} + \beta _{\nu -1} s^{\nu - 1}+ ... + \beta _{1} s + \beta _{0}}{s^{\nu} + \alpha _{\nu -1} s^{\nu - 1} + ... + \alpha _{1} s + \alpha _{0}} $$
+Le radici di $N(s)$ sono dette **zeri**.\
+Le radici di $D(s)$ sono dette **poli**.\
+**Molto importante**: i poli sono radici di di $det(sI-A)$ quindi sono gli autovalori di A.\
+Un'altra osservazione può essere che poli e zeri sono reali o complessi coniugati poichè sono radici di polinomi a coefficienti reali.\
+\
+Ma perchè usiamo la traformata di Laplace?
+
+> Perchè, usando la trasformata di Laplace, abbiamo un dominio (diverso da quello del tempo) nel quale non dobbiamo agire e risolvere equazioni differenziali potenzialmente molto complicate, bensì si riduce tutto a rapporti di polinomi di facile risoluzione.
+
+#### Rappresentazioni e parametri della funzione di traferimento
+
+\
+Una forma fattorizzata è: $$ G(s) = \frac{\rho\prod_{i} (s+z_i) \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2)}{s^g \prod_{i} (s + p_i) \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2)} $$ 
+I cui poli reali sono: $-p_i$. \
+E gli zeri reali: $-z_i$.\
+Si può dimostrare che $|\xi _{i}| < 1$ perchè devono essere complesse coniugate: 
+\begin{equation*}
+    \begin{aligned}
+        s^2 + \xi _{i} \omega _{ni} s + \omega _{ni}^2 \Rightarrow s_{p_{i_{1,2}}} &= -\xi _{i} \omega _{ni} \pm \sqrt{\xi _{i}^2 \omega _{ni}^2 - \omega _{ni}^2} \\
+        &= -\xi _{i} \omega _{ni} \pm \omega _{ni} \sqrt{\xi _{i}^2 - 1} \\
+        &= -\xi _{i} \omega _{ni} \pm j \omega_{ni} \sqrt{1 - \xi _{i}^2}
+    \end{aligned}
+\end{equation*}
+Dalla forma presentata in precedenza si può arrivare ad una seconda forma particolarmente di interesse: $$ G(s) = \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$
+detta **forma di Bode**. 
+\newpage
+_Dimostrazione_:
+
+> $$ G(s) = \frac{\rho\prod_{i} (s+z_i) \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2)}{s^g \prod_{i} (s + p_i) \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2)} $$
+$$ \prod_{i} (s+z_i) = \prod_{i} (1+\frac{1}{z_i}s)z_{i} \quad \quad \quad \quad \quad \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2) = \prod_{i} (\frac{s^2}{\alpha _{ni}^2} + \frac{s\zeta _{i}}{\alpha _{ni}}s + 1)\alpha _{ni}^2 $$
+$$ \prod_{i} (s+p_i) = \prod_{i} (1+\frac{1}{p_i}s)p_{i} \quad \quad \quad \quad \quad \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2) = \prod_{i} (\frac{s^2}{\omega _{ni}^2} + \frac{s\xi _{i}}{\omega _{ni}}s + 1)\omega _{ni}^2 $$
+Quindi la $G(s)$ diventa: 
+\begin{equation*}
+    \begin{aligned}
+        G(s) &= \frac{\rho\prod_{i} (s+z_i) \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2)}{s^g \prod_{i} (s + p_i) \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2)} \\
+        &= \frac{\rho\prod_{i} z_i \prod_{i} \alpha _{ni}^2 \prod_{i} (1+\frac{1}{z_i}s) \prod_{i} (1 + \frac{2\zeta _{i}}{\alpha _{ni}^2} s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i} p_i \prod_{i} \omega _{ni}^2 \prod_{i} (1 + \frac{1}{p_i}) \prod_{i} (1 + \frac{2\xi _{i}}{\omega _{ni}} s + \frac{s^2}{\omega _{ni}^2})}
+    \end{aligned}
+\end{equation*}
+Chiamando: 
+$$ \mu = \rho\frac{\prod_{i} z_i \prod_{i} \alpha _{ni}^2}{\prod_{i} p_i \prod_{i} \omega _{ni}^2} \quad \quad \quad \quad \quad \quad \tau _{i} = \frac{1}{z_i} \quad \quad \quad \quad T_i = \frac{1}{p_i} $$
+Si ha:
+\begin{equation*}
+    \begin{aligned}
+        G(s) &= \frac{\rho\prod_{i} (s+z_i) \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2)}{s^g \prod_{i} (s + p_i) \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2)} \\
+        &= \frac{\rho\prod_{i} z_i \prod_{i} \alpha _{ni}^2 \prod_{i} (1+\frac{1}{z_i}s) \prod_{i} (1 + \frac{2\zeta _{i}}{\alpha _{ni}^2} s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i} p_i \prod_{i} \omega _{ni}^2 \prod_{i} (1 + \frac{1}{p_i}) \prod_{i} (1 + \frac{2\xi _{i}}{\omega _{ni}} s + \frac{s^2}{\omega _{ni}^2})} \\
+        &= \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})}
+    \end{aligned}
+\end{equation*}
+Da qui una variante un po' più chiara della forma di Bode è: $$ G(s) = \mu \frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} \quad \quad \quad \quad \quad \quad \quad \blacksquare $$
+
+In cui:
+
+* $\rho$ costante di trasferimento, $\mu$ guadagno
+* $g$ tipo
+* $-z_i$ zeri reali, $-p_i$ poli reali, $\tau _i$ e $T_i$ costanti di tempo
+* $\alpha _{ni} > 0$, $\omega _{ni} > 0$ pulsazioni naturali di zeri e poli complessi coniugati
+* $\zeta _{i}$, $\xi _{i}$ ($|\zeta _{i}| < 1$ e $|\xi _{i}| < 1$) smorzamenti di zeri e poli complessi coniugati
+
+Esempio sistemi del II ordine: $G(s)=\frac{\rho}{s^2 + s\xi \omega _{n} + \omega _{n}^2}$\
+Esempio: $G(s)=100\frac{s+1}{s(s+10)}=\frac{100}{10}\frac{s+1}{s(1+\frac{1}{10}s)}=10\frac{s+1}{s(1+\frac{1}{10}s)}$\
+\ \ \ \ \ \ \ \ \ \ \ \ \ Quindi si ha: $\rho = 100$, $z=1$, $p=10$, $\mu = 10$, $\tau = 1$ e $T=\frac{1}{10}$ 
+
+```{=latex}
+\begin{center}
+```
+
+![Rappresentazione dei poli e degli zeri sul piano complesso](poliZeriCCeR.jpg)
+
+```{=latex}
+\end{center}
+```
+
