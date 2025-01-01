@@ -609,3 +609,104 @@ Esempio: $G(s)=100\frac{s+1}{s(s+10)}=\frac{100}{10}\frac{s+1}{s(1+\frac{1}{10}s
 \end{center}
 ```
 
+#### Esempio 1
+
+\
+Dato il sistema: $$ \dot x_1 = -x_1 + x_2 $$ $$ \dot x_2 = -2x_2 + u $$ $$ y = x_2 $$ Allora 
+\begin{equation*}
+    \begin{aligned}
+        G(s) &= C(sI-A)^{-1}B \\
+        &= \begin{bmatrix} 0 & 1 \end{bmatrix} \begin{bmatrix} s+1 & -1\\ 0 & s+2\end{bmatrix}^{-1} \begin{bmatrix} 0 \\ 1 \end{bmatrix} \\
+        &= \begin{bmatrix} 0 & 1 \end{bmatrix} \begin{bmatrix} \frac{s+2}{(s+1)(s+2)} & \frac{1}{(s+1)(s+2)} \\ 0 & \frac{s+1}{(s+1)(s+2)} \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} \\
+        &= \frac{s+1}{(s+1)(s+2)} = \frac{1}{s+2}
+    \end{aligned}
+\end{equation*}
+
+#### Esempio 2
+
+\
+Dato il sistema: $$ \dot x_1 = -x_1 -2x_2 + u $$ $$ \dot x_2 = 4x_2 $$ $$ y = x_1 $$ Trasformando entrambi i membri:
+\begin{equation*}
+    \begin{aligned}
+        sX_{1}(s) - x_{1}(0) &= -X_{1}(s) -2X_{2}(s) + U(s) \\
+        sX_{2}(s) - x_{2}(0) &= 4X_{2}(s) \\
+        Y(s) &= X_{1}(s) 
+    \end{aligned}
+\end{equation*}
+In alternativa calcolandola con $G(s) = C(sI-A)^{-1}B$ si ha $G(s)=\frac{s-4}{(s-4)(s+1)}=\frac{1}{s+1}$
+
+## ANTITRAFORMAZIONE DI LAPLACE
+
+Ricordiamo che la trasformata della risposta di un SLTI SISO è data da: $Y(s) = C(sI-A)^{-1} x(0) + G(s)U(s)$ con $C(sI-A)^{-1} \in \mathbb{R}^{1\times n}$. \
+Inoltre sappiamo che si può far vedere che gli elementi di $C(sI-A)^{-1}$ sono rapporti di polinomi.\
+Quindi ora si può scrivere: $$ Y(s)=\frac{N(s)}{D(s)} $$ con $N(s)$ e $D(s)$ polinomi opportuni.\
+Ora si ricorda che per $x(0) = 0$ (cioè in risposta forzata) si ha: $$ Y(s) = G(s)U(s) $$ E applicando a quest'ultima una delta di Dirac $u(t)=\delta (t)$ (che ha traformata $U(s)=1$) si arriva ad avere: $$ Y(s)=G(s) $$ Indi per cui per la risposta all'impulso le radici di $D(s)$ sono i poli della funzione di traferimento.
+
+#### Esempio di antitrasformazione tramite sviluppo di Heaviside
+
+\
+Data la risposta: $$ Y(s) = \frac{10(s+2)}{(s+1)(s+5)} $$ e mettiamo di volerla scrivere come: $$ Y(s) = \frac{10(s+2)}{(s+1)(s+5)} = \frac{r_1}{s+1}+\frac{r_2}{s+5} $$ con $r_1$, $r_2$ coefficienti.\
+Calcolando l'antitrasformata: 
+\begin{equation*}
+    \begin{aligned}
+        y(t) = \mathcal{L}^{-1}[Y(s)] &= \mathcal{L}^{-1}\left[\frac{r_1}{s+1}+\frac{r_2}{s+5}\right] \quad \quad \textrm{per linearità della trasformata}\\
+        &= \mathcal{L}^{-1}\left[\frac{r_1}{s+1}\right] + \mathcal{L}^{-1}\left[\frac{r_2}{s+5}\right] \\
+        &= r_1 \mathcal{L}^{-1}\left[\frac{1}{s+1}\right] + r_2 \mathcal{L}^{-1}\left[\frac{1}{s+5}\right] \quad \quad \textrm{ricordando le trasformate fondamentali} \\
+        &= r_1 e^{-t} 1(t) + r_2 e^{-5t} 1(t)
+    \end{aligned}
+\end{equation*}
+Ma come calcolare $r_1$ e $r_2$? \
+Si sceglie un polo e si calcola la $Y(s)$ moltiplicata per il fatto che corrisponde al polo per la $s\rightarrow polo$. Nel nostro caso scegliamo $(s+1)$ quindi $polo = -1$: $$ (s+1)Y(s)\bigg|_{s=-1} = (s+1) \frac{10(s+2)}{(s+1)(s+5)}\bigg|_{s=-1} = \frac{10}{4} = \frac{5}{2} $$ $$ (s+1)Y(s)\bigg|_{s=-1} = (s+1)\frac{r_1}{s+1} + (s+1)\frac{r_2}{s+5} \bigg|_{s=-1} = r_1 $$ Allora $$ r_1 = (s+1)Y(s)\bigg|_{s=-1} = \frac{10(s+2)}{s+5}\bigg|_{s=-1} = \frac{5}{2} $$ Si fa lo stesso per $r_2$ e risulta: $$ r_2 = (s+5)Y(s)\bigg|_{s=-5} = \frac{10(s+2)}{s+1}\bigg|_{s=-5} = \frac{15}{2} $$ Riassumento: $$ Y(s) = \frac{5}{2}\frac{1}{s+1}+\frac{15}{2}\frac{1}{s+5} $$ $$ y(t) = \frac{5}{2} e^{-t}1(t)+\frac{15}{2}e^{-5t}1(t) $$
+
+### SVILUPPO DI HEAVISIDE O IN FRATTI SEMPLICI
+
+#### Caso 1: poli reali o complessi coniugati distinti (molteplicità 1)
+
+\
+\
+Si può scrivere $Y(s)$ come: $$ Y(s) = \frac{N(s)}{D(s)} = \frac{N(s)}{\prod_{i=1}^{n} (s+p_{i})} = \sum_{i=1}^{n} \frac{r_i}{s+p_i} $$ Gli $r_i$ sono detti **_residui_**.\
+Consideriamo: $$ (s+p_i)\frac{N(s)}{D(s)}\bigg|_{s=-p_{i}} = \sum_{\substack{j=1\\ j\ne i}}^{n}\frac{r_{j}(s+p_{i})}{s+p_{j}}\bigg|_{s=-p_i} + r_i $$ Quindi ciascun residuo $r_i$ può essere calcolato come $$ r_i = (s+p_{i})\frac{N(s)}{D(s)}\bigg|_{s=-p_{i}} $$ Infine, antitrasformando: $$ Y(s) = \frac{N(s)}{\prod_{i=1}^{n} (s+p_{i})} = \sum_{i=1}^{n} \frac{r_i}{s+p_i} $$ $$ y(t) = \mathcal{L}^{-1}[Y(s)] = \sum_{i=1}^{n}r_{i}\mathcal{L}^{-1}\left[ \frac{1}{s+p_{i}}\right] = \sum_{i=1}^{n}r_{i}e^{-p_{i}t}1(t) $$ **Osservazione**: $r_i$ reali se associati a poli reali, $r_i$ complessi coniugati se associati a poli complessi coniugati.\
+\
+È interessante notare, inoltre, la forma reale dei poli complessi coniugati trovati col procedimento precedente, quindi cosideriamo la coppia di poli complessi coniugati seguente: $$ p_{i,1} = \sigma _{i} + j\omega _{i} \quad \quad \quad \quad p_{i,2} = \sigma _{i} - j\omega _{i} $$ E i residui associati sono: $$ r_{i,1} = M_{i} e^{-j\varphi _{i}} \quad \quad \quad \quad r_{i,2}=M_{i} e^{j\varphi _{i}} $$ Quindi l'antitrasformata dei due termini associati è data da: 
+\begin{equation*}
+    \begin{aligned}
+        \mathcal{L}^{-1}\left[\frac{r_{i,1}}{s+p_{i,1}}+\frac{r_{i,2}}{s+p_{i,2}}\right] &= M_{i}e^{-j\varphi _{i}}e^{-p_{i,1}t}1(t) + M_{i}e^{j\varphi _{i}}e^{-p_{i,2}t}1(t) \\
+        &= M_{i}e^{-j\varphi _{i}}e^{-(\sigma _{i} + j\omega _{i})t}1(t) + M_{i}e^{j\varphi _{i}}e^{-(\sigma _{i} - j\omega _{i})t}1(t) \\
+        &= M_{i}e^{-\sigma _{i} t} (e^{-j(\omega _{i} t + \varphi _{i})}+e^{j(\omega _{i} t + \varphi _{i})})1(t) \\
+        &= 2M_{i}e^{-\sigma _{i} t} \frac{(e^{-j(\omega _{i} t + \varphi _{i})}+e^{j(\omega _{i} t + \varphi _{i})})}{2}1(t) \\
+        &= 2M_{i}e^{-\sigma _{i} t}cos(\omega _{i} t + \varphi _{i})1(t)
+    \end{aligned}
+\end{equation*}
+Da cui valgono le regole di divergenza e convergenza viste per i modi naturali:
+
+* $-\sigma _{i}>0 \Longrightarrow e^{-\sigma _{i} t}cos(\omega _{i} t + \varphi _{i})$ diverge
+* $-\sigma _{i}=0 \Longrightarrow e^{-\sigma _{i} t}cos(\omega _{i} t + \varphi _{i})$ rimane costante
+* $-\sigma _{i}<0 \Longrightarrow e^{-\sigma _{i} t}cos(\omega _{i} t + \varphi _{i})$ converge 
+
+#### Caso 2: poli reali o complessi coniugati multipli (molteplicità > 1)
+
+\
+\
+Si può scrivere $Y(s)$ come: $$ Y(s) = \frac{N(s)}{D(s)} = \frac{N(s)}{\prod_{i=1}^{q} (s+p_{i})^{n_i}} = \sum_{i=1}^{q}\sum_{h=1}^{n_i} \frac{r_{i,h}}{(s+p_i)^h} $$ con $r_{i,h}$, $h=1,...,n_i$, residui del polo $-p_i$.\
+Si consideri: 
+\begin{equation*}
+    \begin{aligned}
+        (s+p_i)^{n_i}\frac{N(s)}{D(s)} &= \\
+        &= (s+p_i)^{n_i} \sum_{\substack{j=1\\ j\ne i}}^{q}\sum_{h=1}^{n_j}\frac{r_{j,h}}{(s+p_j)^h}+\sum_{h=1}^{n_i}(s+p_i)^{n_i-h}r_{i,h} \\
+        &= (s+p_i)^{n_i} \sum_{\substack{j=1\\ j\ne i}}^{q}\sum_{h=1}^{n_j}\frac{r_{j,h}}{(s+p_j)^h}+\sum_{h=1}^{n_i-1}(s+p_i)^{n_i-h}r_{i,h} + r_{i,n_i}
+    \end{aligned}
+\end{equation*}
+Quindi il residuo $r_{i,n_i}$ è dato da: $$ r_{i,n_i} = (s+p_i)^{n_i}\frac{N(s)}{D(s)}\bigg|_{s=-p_i} $$ Derivando $(s+p_i)^{n_i}\frac{N(s)}{D(s)}$ si calcolano gli altri residui come: $$ r_{i,h} = \frac{1}{(n_i-h)!}\frac{d^{n_i-h}}{ds^{n_i-h}}\left[(s+p_i)^{n_i}\frac{N(s)}{D(s)}\right]\bigg|_{s=-p_i} $$ Antitrasformando la $Y(s)$ sviluppata in fratti semplici: $$ Y(s) = \frac{N(s)}{D(s)} = \frac{N(s)}{\prod_{i=1}^{q} (s+p_{i})^{n_i}} = \sum_{i=1}^{q}\sum_{h=1}^{n_i} \frac{r_{i,h}}{(s+p_i)^h} $$
+\begin{equation*}
+    \begin{aligned}
+        y(t) = \mathcal{L}^{-1}[Y(s)] &= \sum_{i=1}^{q}\sum_{h=1}^{n_i}r_{i,h}\mathcal{L}^{-1}\left[\frac{1}{(s+p_i)^h}\right] \\
+        &\textrm{ricordando le regole di antitrasformazione}\\
+        &= \sum_{i=1}^{q}\sum_{h=1}^{n_i}r_{i,h}\frac{t^{h-1}}{(h-1)!}e^{-p_it}1(t)
+    \end{aligned}
+\end{equation*}
+Si può dimostrare che per una coppia di poli complessi coniugati $$ \sigma _{i} + j\omega _{i} \quad \quad \textrm{e} \quad \quad \sigma _{i} - j\omega _{i} $$ con molteplicità $n_i$, il contributo elementare associato è dato da: $$ \sum_{h=1}^{n_i}2M_{i,h}\frac{t^{h-1}}{(h-1)!}e^{-\sigma _{i}t}cos(\omega _{i}t+\varphi _{i,h})1(t) $$ I modi naturali per un polo reale (multiplo) $-p_i$ è dato da: $$ \frac{t^{h-1}}{(h-1)!}e^{-p_{i}t}1(t) $$ Mentre per una coppia di poli complessi coniugati (multipli) $-(\sigma _{i} + j\omega _{1})$ e $-(\sigma _{i} - j\omega _{1})$ è dato da: $$ \frac{t^{h-1}}{(h-1)!}e^{-\sigma _{i}t}cos(\omega _{i}t+\varphi _{i,h})1(t) $$ Da qui le regole di convergenza sono le stesse viste per i modi naturali con molteplicità algebrica maggiore di quella geometrica.
+
+#### Esempio di antitrasformazione tramite sviluppo di Heaviside: caso 2
+
+\
+Data la funzione: $$ Y(s) = \frac{s+1}{s(s+2)^2} $$ Si vuole scrivere come: $$ Y(s) = \frac{s+1}{s(s+2)^2} = \frac{r_1}{s}+\frac{r_{2,1}}{s+2}+\frac{r_{2,2}}{(s+2)^2} $$ Si calcola $r_1$: $$ r_1 = s\frac{s+1}{s(s+2)^2}\bigg|_{s=0} = \frac{1}{4} $$ Si procede calcolando $Y(s)(s+2)^2\bigg|_{s=-2}$: $$ Y(s)(s+2)^2\bigg|_{s=-2} = \begin{cases} (s+2)^2\frac{s+1}{s(s+2)^2}\bigg|_{s=-2} = \frac{1}{2} \\ (s+2)^2\frac{r_1}{s}+(s+2)^2\frac{r_{2,1}}{s+2}+(s+2)^2\frac{r_{2,2}}{(s+2)^2}\bigg|_{s=-2} = r_{2,2}\end{cases} \quad \Longrightarrow r_{2,2}=\frac{1}{2} $$ 

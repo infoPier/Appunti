@@ -1,5 +1,5 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- CAT: da continuare funzione di trasferimento
+- CAT: da finire esempio caso 2 sviluppi di heaviside
 - Reti: slide 10 Java RMI
