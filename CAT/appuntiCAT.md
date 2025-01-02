@@ -709,4 +709,52 @@ Si può dimostrare che per una coppia di poli complessi coniugati $$ \sigma _{i}
 #### Esempio di antitrasformazione tramite sviluppo di Heaviside: caso 2
 
 \
-Data la funzione: $$ Y(s) = \frac{s+1}{s(s+2)^2} $$ Si vuole scrivere come: $$ Y(s) = \frac{s+1}{s(s+2)^2} = \frac{r_1}{s}+\frac{r_{2,1}}{s+2}+\frac{r_{2,2}}{(s+2)^2} $$ Si calcola $r_1$: $$ r_1 = s\frac{s+1}{s(s+2)^2}\bigg|_{s=0} = \frac{1}{4} $$ Si procede calcolando $Y(s)(s+2)^2\bigg|_{s=-2}$: $$ Y(s)(s+2)^2\bigg|_{s=-2} = \begin{cases} (s+2)^2\frac{s+1}{s(s+2)^2}\bigg|_{s=-2} = \frac{1}{2} \\ (s+2)^2\frac{r_1}{s}+(s+2)^2\frac{r_{2,1}}{s+2}+(s+2)^2\frac{r_{2,2}}{(s+2)^2}\bigg|_{s=-2} = r_{2,2}\end{cases} \quad \Longrightarrow r_{2,2}=\frac{1}{2} $$ 
+Data la funzione: $$ Y(s) = \frac{s+1}{s(s+2)^2} $$ Si vuole scrivere come: $$ Y(s) = \frac{s+1}{s(s+2)^2} = \frac{r_1}{s}+\frac{r_{2,1}}{s+2}+\frac{r_{2,2}}{(s+2)^2} $$ Si calcola $r_1$: $$ r_1 = s\frac{s+1}{s(s+2)^2}\bigg|_{s=0} = \frac{1}{4} $$ Si procede calcolando $Y(s)(s+2)^2\bigg|_{s=-2}$: $$ Y(s)(s+2)^2\bigg|_{s=-2} = \begin{cases} (s+2)^2\frac{s+1}{s(s+2)^2}\bigg|_{s=-2} = \frac{1}{2} \\ (s+2)^2\frac{r_1}{s}+(s+2)^2\frac{r_{2,1}}{s+2}+(s+2)^2\frac{r_{2,2}}{(s+2)^2}\bigg|_{s=-2} = r_{2,2}\end{cases} \quad \Longrightarrow r_{2,2}=\frac{1}{2} $$ Ora manca solo $r_{2,1}$, per calcolarlo si nota che: $$ Y(s)(s+2)^2=(s+2)^2\frac{r_1}{s}+(s+2)^2\frac{r_2,1}{s+2}+r_{2,2} $$ $$ \frac{d}{ds}\left[Y(s)(s+2)^{2}\right]\bigg|_{s=-2} = \left[2(s+2)\frac{r_1}{s}-(s+2)^2\frac{r_1}{s^2}+r_{2,1}+0\right]\bigg|_{s=-2}=r_{2,1} $$ Quindi: $$ r_{2,1}=\frac{d}{ds}Y(s)(s+2)^2\bigg|_{s=-2}=\frac{d}{ds}\frac{s+1}{s}\bigg|_{s=-2}=-\frac{1}{4} $$ Quindi rimettendo insieme i pezzi: 
+\begin{equation*}
+    \begin{aligned}
+        y(t)&=\mathcal{L}^{-1}[Y(s)] \\
+        &=\mathcal{L}^{-1}\left[\frac{s+1}{s(s+2)^2}\right] \\
+        &=\mathcal{L}^{-1}\left[\frac{r_1}{s}+\frac{r_{2,1}}{s+2}+\frac{r_{2,2}}{(s+2)^2}\right] \\
+        &=r_{1}\mathcal{L}^{-1}\left[\frac{1}{s}\right]+r_{2,1}\mathcal{L}^{-1}\left[\frac{1}{s+2}\right]+r_{2,2}\mathcal{L}^{-1}\left[\frac{1}{(s+2)^2}\right] \\
+        &=r_{1}1(t)+r_{2,1}e^{-2t}1(t)+r_{2,2}te^{-2t}1(t) \\
+        &=\left(\frac{1}{4}-\frac{1}{4}e^{-2t}+\frac{1}{2}te^{-2t}\right)1(t)
+    \end{aligned}
+\end{equation*}
+
+### RISPOSTA AD UN INGRESSO GENERICO
+
+Ricordando che: $$ Y(s)=C(sI-A)^{-1}x(0)+G(s)U(s) $$ in cui $C(sI-A)^{-1}$, $G(s)$ e $U(s)$ sono rapporti di polinomi, si può affermare che: $$ y(t)=y_{\ell}(t)+y_f(t)=y_{\ell}(t)+y_{f,G}(t)+y_{f,U}(t) $$ nella quale: 
+
+* $y_{\ell}(t)$ e $y_{f,G}(t)$ sono combinazioni lineari di modi naturali del sistema di matrici $A$, $B$, $C$ e $D$
+* $y_{f,U}(t)$ è combinazione lineare di "modi" presenti nell'ingresso $u(t)$ (dovuti alle radici del denominatore di $U(s)$)
+
+### RISPOSTE DI SISTEMI ELEMENTARI
+
+Si ricordi che $$ G(s) = \frac{\rho\prod_{i} (s+z_i) \prod_{i} (s^2 + 2\zeta _{i} \alpha _{ni} s + \alpha _{ni}^2)}{s^g \prod_{i} (s + p_i) \prod_{i} (s^2 + 2\xi _{i} \omega _{ni} s + \omega _{ni}^2)} $$ Considerando il caso di poli distinti. Da quanto visto fin'ora risulta che per $x(0)=0$ (risposta forzata): $$ Y(s)=G(s)U(s)=\sum_{i}\frac{r_i}{s+p_i}+\sum_{i}\frac{a_is+b_i}{s^2+2\xi _i\omega _{n,i}s+\omega _{n,i}^2} $$ Viene da se che è importante studiare le risposte di sistemi elementari.
+
+#### Esempio 1: risposta al gradino sistema del prim'ordine
+
+\
+Ricordando: $$Y(s)=G(s)U(s) $$ Si studi la risposta del sistema descritto dalla seguente $G(s)$: $$ G(s)=\frac{\mu}{1+Ts}=\frac{\mu}{T}\frac{1}{s+\frac{1}{T}} $$ Ponendo in ingresso: $$ u(t)=k1(t) $$ Trasformando la $u(t)$ si trova: $$ U(s)=\mathcal{L}[u(t)]=\mathcal{L}[k1(t)]=\frac{k}{s} $$ Quindi la risposta nel dominio di Laplace è: $$ Y(s)=G(s)U(s)=\frac{\mu}{T}\frac{1}{s+\frac{1}{T}}\frac{k}{s}=\frac{k\mu}{s(s+\frac{1}{T})}=\frac{r_1}{s}+\frac{r_2}{s+\frac{1}{T}} $$ Calcolando i residui: $$ r_1=sY(s)\bigg|_{s=0}=\frac{k\mu}{T}\frac{1}{s+\frac{1}{T}}\bigg|_{s=0}=k\mu $$ $$ r_2=\left(s+\frac{1}{T}\right)Y(s)\bigg|_{s=-\frac{1}{T}}=\frac{k\mu}{Ts}\bigg|_{s=-\frac{1}{T}}=-k\mu $$ Si arriva ad una risposta del tipo: $$ Y(s)=\frac{r_1}{s}+\frac{r_2}{s+\frac{1}{T}}=k\mu\frac{1}{s}-k\mu\frac{1}{s+\frac{1}{T}}=k\mu\left(\frac{1}{s}-\frac{1}{s+\frac{1}{T}}\right) $$ Antitrasformando: $$ y(t)=k\mu(1(t)-e^{-\frac{t}{T}}1(t))=k\mu(1-e^{-\frac{t}{T}})1(t) $$
+
+### STABILITÀ ESTERNA o BIBO
+
+Un sistema si dice BIBO (Bounded-Input Nuonded-Output) stabile se la sua uscita forzzata è limitata per ogni ingresso limitato.\
+Consideriamo l'uscita forzata ($x(0)=0$): $$ Y(s)=G(s)U(s) $$ Da quanto visto fino ad ora con lo sviluppo di Heaviside si può dedurre che un sistema con funzione di trasferiment $G(s)$ è BIBO stabile se e solo se tutti i poli della $G(s)$ sono a parte reale strettamente minore di zero.
+
+#### Esempio 1
+\
+Data la seguente $G(s)$ si dica se il sistema descritto da essa è BIBO stabile: $$ G(s)=\frac{r}{s+p} \quad \quad \quad \quad p > 0 $$ In ingresso si ha un rapporto di polinomi: $$ U(s)=\frac{N_U(s)}{D_U(s)} $$ Quindi:
+\begin{equation*}
+    \begin{aligned}
+        Y(s)=G(s)U(s)&=\frac{r}{s+p}\frac{N_U(s)}{D_U(s)} \\
+        &=\frac{r_1}{s+p}+\frac{\alpha}{D_U(s)}
+    \end{aligned}
+\end{equation*}
+Il primo addendo antitrasformandolo si ottiene $r_1e^{-pt}1(t) \rightarrow 0,\quad t\rightarrow 0$ e il secondo è la traformata di un segnale limitato, quindi è limitata, indi per cui il sistema è BIBO stabile.
+
+#### Esempio 2
+
+\
+Il sistema descritto da: $$ G(s)=\frac{r}{s} \quad \quad \quad \quad u(t)=1(t) $$ è BIBO stabile?\
+Trasformando la $u(t)$ si ottiene: $$ U(s)=\frac{1}{s} $$ Da cui $$ Y(s)=G(s)U(s)=\frac{r}{s^2} $$ Che antitrsformando corrisponde a $$ y(t)=rt1(t) $$ che per $t\rightarrow 0$ diverge, quindi la risposta è no, il sistema sopra descritto NON è BIBO stabile.
