@@ -758,3 +758,8 @@ Il primo addendo antitrasformandolo si ottiene $r_1e^{-pt}1(t) \rightarrow 0,\qu
 \
 Il sistema descritto da: $$ G(s)=\frac{r}{s} \quad \quad \quad \quad u(t)=1(t) $$ è BIBO stabile?\
 Trasformando la $u(t)$ si ottiene: $$ U(s)=\frac{1}{s} $$ Da cui $$ Y(s)=G(s)U(s)=\frac{r}{s^2} $$ Che antitrsformando corrisponde a $$ y(t)=rt1(t) $$ che per $t\rightarrow 0$ diverge, quindi la risposta è no, il sistema sopra descritto NON è BIBO stabile.
+
+### ESEMPIO IMPORTANTE
+
+**Risposta al gradino di un sistema del II ordine**\
+Date le seguenti equazioni: $$ u(t)=k1(t)\Longrightarrow U(s)=\frac{k}{s} \quad \quad \quad \quad G(s)=\mu\frac{\omega _{n}^2}{s^2 +2\xi\omega _{n}s+\omega _{n}^2} $$ $$ Y(s)=G(s)U(s)=\frac{k\mu\omega _{n}^2}{s(s^2 +2\xi\omega _{n}s+\omega _{n}^2)} $$ Con poli: $$ s_{p_{1,2}}=-\xi\omega _{n}\pm j\omega_{n}\sqrt{1-\xi ^2} $$ Per trovare la risposta nel dominio del tempo come prima cosa bisogna, innanzitutto, la $Y(s)$ come: $$ Y(s)=k\mu\omega _{n}^2 \left(\frac{r_1}{s}+\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right) $$
