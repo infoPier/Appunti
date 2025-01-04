@@ -478,7 +478,7 @@ $\mathcal{L}[sin(\omega t \pm \varphi)1(t)] = \frac{\omega\ cos(\varphi)\  \pm\ 
 
 #### Coseno con fase
 
-$\mathcal{L}[sin(\omega t \pm \varphi)1(t)] = \frac{s\ cos(\varphi) \ \mp\  \omega\ sin(\varphi)}{s^2 + \omega^2}$
+$\mathcal{L}[cos(\omega t \pm \varphi)1(t)] = \frac{s\ cos(\varphi) \ \mp\  \omega\ sin(\varphi)}{s^2 + \omega^2}$
 
 ## FUNZIONE DI TRASFERIMENTO
 
@@ -762,4 +762,4 @@ Trasformando la $u(t)$ si ottiene: $$ U(s)=\frac{1}{s} $$ Da cui $$ Y(s)=G(s)U(s
 ### ESEMPIO IMPORTANTE
 
 **Risposta al gradino di un sistema del II ordine**\
-Date le seguenti equazioni: $$ u(t)=k1(t)\Longrightarrow U(s)=\frac{k}{s} \quad \quad \quad \quad G(s)=\mu\frac{\omega _{n}^2}{s^2 +2\xi\omega _{n}s+\omega _{n}^2} $$ $$ Y(s)=G(s)U(s)=\frac{k\mu\omega _{n}^2}{s(s^2 +2\xi\omega _{n}s+\omega _{n}^2)} $$ Con poli: $$ s_{p_{1,2}}=-\xi\omega _{n}\pm j\omega_{n}\sqrt{1-\xi ^2} $$ Per trovare la risposta nel dominio del tempo come prima cosa bisogna, innanzitutto, la $Y(s)$ come: $$ Y(s)=k\mu\omega _{n}^2 \left(\frac{r_1}{s}+\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right) $$
+Date le seguenti equazioni: $$ u(t)=k1(t)\Longrightarrow U(s)=\frac{k}{s} \quad \quad \quad \quad G(s)=\mu\frac{\omega _{n}^2}{s^2 +2\xi\omega _{n}s+\omega _{n}^2} $$ $$ Y(s)=G(s)U(s)=\frac{k\mu\omega _{n}^2}{s(s^2 +2\xi\omega _{n}s+\omega _{n}^2)} $$ Con poli: $$ s_{p_{1,2}}=-\xi\omega _{n}\pm j\omega_{n}\sqrt{1-\xi ^2} $$ Per trovare la risposta nel dominio del tempo come prima cosa bisogna, innanzitutto, la $Y(s)$ come: $$ Y(s)=k\mu\omega _{n}^2 \left(\frac{r_1}{s}+\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right) $$ Successivamente si trovano i residui: $$ r_1=sY(s)\bigg|_{s=0}=\frac{1}{s^2 +2\xi\omega _{n}s+\omega _{n}^2}\bigg|_{s=0}=\frac{1}{\omega _{n}^2} $$ $$ r_{2,2}=Y(s)
