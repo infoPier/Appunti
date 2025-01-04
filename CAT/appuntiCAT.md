@@ -762,4 +762,104 @@ Trasformando la $u(t)$ si ottiene: $$ U(s)=\frac{1}{s} $$ Da cui $$ Y(s)=G(s)U(s
 ### ESEMPIO IMPORTANTE
 
 **Risposta al gradino di un sistema del II ordine**\
-Date le seguenti equazioni: $$ u(t)=k1(t)\Longrightarrow U(s)=\frac{k}{s} \quad \quad \quad \quad G(s)=\mu\frac{\omega _{n}^2}{s^2 +2\xi\omega _{n}s+\omega _{n}^2} $$ $$ Y(s)=G(s)U(s)=\frac{k\mu\omega _{n}^2}{s(s^2 +2\xi\omega _{n}s+\omega _{n}^2)} $$ Con poli: $$ s_{p_{1,2}}=-\xi\omega _{n}\pm j\omega_{n}\sqrt{1-\xi ^2} $$ Per trovare la risposta nel dominio del tempo come prima cosa bisogna, innanzitutto, la $Y(s)$ come: $$ Y(s)=k\mu\omega _{n}^2 \left(\frac{r_1}{s}+\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right) $$ Successivamente si trovano i residui: $$ r_1=sY(s)\bigg|_{s=0}=\frac{1}{s^2 +2\xi\omega _{n}s+\omega _{n}^2}\bigg|_{s=0}=\frac{1}{\omega _{n}^2} $$ $$ r_{2,2}=Y(s)
+Date le seguenti equazioni: $$ u(t)=k1(t)\Longrightarrow U(s)=\frac{k}{s} \quad \quad \quad \quad G(s)=\mu\frac{\omega _{n}^2}{s^2 +2\xi\omega _{n}s+\omega _{n}^2} $$ $$ Y(s)=G(s)U(s)=\frac{k\mu\omega _{n}^2}{s(s^2 +2\xi\omega _{n}s+\omega _{n}^2)} $$ Con poli: $$ s_{p_{1,2}}=-\xi\omega _{n}\pm j\omega_{n}\sqrt{1-\xi ^2} $$ Per trovare la risposta nel dominio del tempo come prima cosa bisogna, innanzitutto, la $Y(s)$ come: $$ Y(s)=k\mu\omega _{n}^2 \left(\frac{r_1}{s}+\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right) $$ Successivamente si trovano i residui: $$ r_1=sY(s)\bigg|_{s=0}=\frac{1}{s^2 +2\xi\omega _{n}s+\omega _{n}^2}\bigg|_{s=0}=\frac{1}{\omega _{n}^2} $$
+\begin{equation*}
+    \begin{aligned}
+        r_{2,1}&=Y(s)\left(s+\omega _{n}\xi+j\omega _{n} \sqrt{1-\xi ^2}\right)\bigg|_{s=-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}} \\
+        &=\frac{s+\omega _{n}\xi+j\omega _{n} \sqrt{1-\xi ^2}}{s\left(s+\omega _{n}\xi-j\omega _{n} \sqrt{1-\xi ^2}\right)\left(s+\omega _{n}\xi+j\omega _{n} \sqrt{1-\xi ^2}\right)}\bigg|_{s=-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}} \\
+        &= \frac{1}{\left(-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}\right)\left(-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}+\omega _{n}\xi-j\omega _{n} \sqrt{1-\xi ^2}\right)} \\
+        &=\frac{1}{\left(-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}\right)\left(-2j\omega _{n} \sqrt{1-\xi ^2}\right)}\quad\frac{j}{j} \\
+        &= \frac{j}{\left(-\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}\right)2\omega _{n} \sqrt{1-\xi ^2}}\quad\frac{\left(-\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}\right)}{\left(-\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}\right)} \\
+        &= \frac{\left(-\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}\right)j}{\left(\xi ^2 \omega _{n}^2+\omega_{n}^2\left(1-\xi ^2\right)\right)2\omega _{n} \sqrt{1-\xi ^2}} \\
+        &= \frac{\omega _{n}\left(-\sqrt{1-\xi ^2}-j\xi\right)}{\omega _{n}^2 2\omega _{n}\sqrt{1-\xi ^2}} \\
+        &= \frac{-\sqrt{1-\xi ^2}-j\xi}{2\omega _{n}^2\sqrt{1-\xi ^2}} = \frac{1}{2\omega _{n}^2\sqrt{1-\xi ^2}}e^{j\psi}=Me^{j\psi}
+    \end{aligned}
+\end{equation*}
+Si arriva a $r_{2,2}$ con lo stesso procedimento ottenendo che è il complesso coniugato di $r_{2,1}$: $r_{2,2}=\bar r_{2,1}$\
+Ricordando (vedi dimostrazione a pag. 23): $$ \mathcal{L} ^{-1}\left[\frac{r_{i,1}}{s+p_{i,1}}+\frac{r_{i,2}}{s+p_{i,2}}\right] = 2M_ie^{-\sigma _i t}cos(\omega _{i}t+\varphi _i)1(t) $$ Si ha:
+\begin{equation*}
+    \begin{aligned}
+        y(t)&=k\mu\omega _{n}^2 \left(\mathcal{L}^{-1}\left[\frac{r_1}{s}\right]+\mathcal{L}^{-1}\left[\frac{r_{2,1}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{r_{2,2}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right]\right) \\
+        &=k\mu\omega _{n}^2 \left(\mathcal{L}^{-1}\left[\frac{1}{\omega _{n}s}\right]+\mathcal{L}^{-1}\left[\frac{Me^{j\psi}}{s+\xi\omega _{n}+j\omega _{n}\sqrt{1-\xi ^2}}+\frac{Me^{-j\psi}}{s+\xi\omega _{n}-j\omega _{n}\sqrt{1-\xi ^2}}\right]\right) \\
+        &=k\mu\omega _{n}^2\left[\frac{1}{\omega _{n}}+2Me^{-\xi\omega _{n}t}cos\left(\omega _{n}\sqrt{1-\xi ^2}+\psi\right)\right]1(t)
+    \end{aligned}
+\end{equation*}
+\
+È utile partire da questo esempio per definire il concetto di **sovraelongazione**: il valore massimo raggiunto dalla $y(t)$ rispetto alla $y_{\infty}$.\
+Da qui viene la definizione di **sovraelongazione percentuale**: $$ S\% := \frac{y_{max}-y_{\infty}}{y_{\infty}} $$ E **solo** per i sistemi del II ordine può essere anche scritta come: $$ S\% = 100e^{-\frac{\pi\xi}{\sqrt{1-\xi ^2}}} $$ Un'altra definizione importante è quella di **tempo di assestamento**: tempo $T_{a,\epsilon}$ tale che $$ (1-0.01\epsilon)y_{\infty}\le y(t)\le (1+0.01\epsilon)y_{\infty} \quad \quad \quad \forall t \ge T_{a,\epsilon} $$ Approssimazioni utili per $T_{a,\epsilon}$ sono: $T_{a,5} \approx \frac{3}{\xi\omega _{n}} \quad \quad T_{a,1} \approx \frac{4.6}{\xi\omega _{n}}$
+\newpage
+Inoltre:
+
+* $\xi$ è detto _coefficiente di smorzamento_
+* $\omega _{n}$ è detta _pulsazione naturale_
+* $\mu$ è detto _guadagno_
+
+
+```{=latex}
+\begin{center}
+```
+
+![Immagine rappresentativa di tutti i concetti introdotti](sistIIordParam.png)
+
+```{=latex}
+\end{center}
+```
+
+```{=latex}
+\begin{center}
+```
+
+![Mappatura dei parametri della risposta a gradino dei sistemi del secondo ordine sul piano complesso](descrParamPianoCompl.png)
+
+```{=latex}
+\end{center}
+```
+
+### Luogo di punti a tempo di assestamento costante
+
+Si ricordi che abbiamo approssimato  $T_{a,5} \approx \frac{3}{\xi\omega _{n}} \quad T_{a,1} \approx \frac{4.6}{\xi\omega _{n}}$, inoltre si è visto che $-\xi\omega _{n}$ è la parte reale dei poli complessi coniugati. Ne consegue che sistemi con poli complessi coniugati che hanno la stessa parte reale avranno una risposta al gradino con **stesso tempo di assestamento**.\
+Sul piano complesso i luoghi dei punti a tempo di assestamento costante sono rette parallele all'asse immaginario.
+
+```{=latex}
+\begin{center}
+```
+
+![Luogo dei punti a tempo di assestamento costante](luogpuntTassCost.png){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### Luogo dei punti a sovraelongazione costante
+
+Si ricordi che per i sistemi del secondo ordine $S\%=100e^{-\frac{\pi\xi}{\sqrt{1-\xi ^2}}}$, inoltre $arcos(\xi)$ è l'angolo formato con l'asse reale sul piano complesso. Si evince, quindi, che sistemi con stesso coefficiente di smorzamento avranno una risposta al gradino con **stessa sovraelongazione**.\
+Sul piano complesso i luoghi dei punti a sovraelongazione costante sono semirette uscenti dall'origine.
+
+```{=latex}
+\begin{center}
+```
+
+![Luogo dei punti a sovraelongazione costante](luogpuntScost.png){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### Mappatura di specifiche temporali nel piano complesso
+
+Si vuole caratterizzare i sistemi del secondo ordine (con poli complessi coniugati) con $S\%\le S^*$ e, per esempio, $T_{a,5}\le T^*$. Tali specifiche sono, quindi, soddisfatte per: $\xi\ge\xi^*$ e $\xi\omega _{n} \ge\frac{3}{T^*}$. Quindi i poli complessi coniugati del sistema si devono trovare all'interno della zona colorata. 
+
+```{=latex}
+\begin{center}
+```
+
+![Mappatura specifiche temporali nel piano complesso](carattSistIIordSpecTemp.png){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### SISTEMI DEL SECONDO ORDINE CON POLI REALI
+
+#### Caso $T_1 \ne T_2$, $T_1>T_2$
+
