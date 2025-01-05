@@ -1,5 +1,5 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- CAT: da finire risposta a gradino sistemi elementari (slide 30)
+- CAT: da iniziare diagrammi di bode (slide 17 risposta in frequenza tablet)
 - Reti: slide 10 Java RMI

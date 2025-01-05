@@ -1,7 +1,7 @@
 ---
 title: CONTROLLI AUTOMATICI
 author: Pierluca Pevere
-geometry: margin=2.5cm
+geometry: margin=2.5cm    
 ---
 
 ```{=latex}
@@ -1045,3 +1045,87 @@ Proseguendo $$ y(t)=r_1e^{-\frac{t}{T}}1(t)+2|r_u|cos(\omega t+arg\{r_u\})1(t) $
         &=|G(j\omega)|Ucos(\omega t+arg\{G(j\omega)\})1(t)
     \end{aligned}
 \end{equation*}
+
+### RISPOSTA AD UN SEGNALE DI INGRESSO SINUSOIDALE
+
+Dato un SLTI SISO con funzione di trasferimento $G(s)$ si vuole calcolare l'uscita in corrispondenza di un ingresso sinusoidale generico: $$ u(t)=Ucos(\omega t+\varphi) $$ Ricordando che $$ U(s)=U\frac{scos(\varphi)-\omega sin(\varphi)}{s^2+\omega ^2} $$ Quindi $$ Y(s)=G(s)U(s)=G(s)U\frac{scos(\varphi)-\omega sin(\varphi)}{s^2+\omega ^2} $$ Considerando $G(s)$ con poli distinti a parte reale negativa (BIBO stabile). Sviluppando in tratti semplici si ottiene
+\begin{equation*}
+    \begin{aligned}
+        Y(s)&=\underbrace{\sum_{i=1}^{n}\frac{r_i}{s+p_i}}+\underbrace{\frac{r_u}{s-j\omega}+\frac{\bar r_u}{s+j\omega}} \\
+        &= \quad Y_1(s) \quad + \quad \quad \ Y_2(s)
+    \end{aligned}
+\end{equation*}
+Antitrasformando la $Y(s)$ si ha 
+\begin{equation*}
+    \begin{aligned}
+        y(t)&=\mathcal{L}^{-1}\left[Y(s)\right] \\
+        &=\underbrace{\sum_{i=1}^{n}r_ie^{-p_it}1(t)}+\underbrace{2|r_u|cos(\omega t+arg(r_u))1(t)} \\
+        &= \quad \quad y_1(t) \quad \quad + \quad \quad \quad \quad \quad y_2(t)
+    \end{aligned}
+\end{equation*}
+Poichè i poli della funzione di trasferimento sono a parte reale negativa, i contributi $e^{-p_it} sono tutti convergenti a zero. Pertanto $y_1(t)\rightarrow 0$ per $t\rightarrow \infty$.\
+Mentre il residuo $r_u$ è dato da
+\begin{equation*}
+    \begin{aligned}
+        r_u&=(s-j\omega)Y(s)\bigg|_{s=j\omega}= UG(j\omega)\frac{j\omega cos(\varphi)-\omega sin(\varphi)}{j\omega+j\omega} \\
+        &= UG(j\omega)\frac{jcos(\varphi)-sin(\varphi)}{2j}=UG(j\omega)\frac{cos(\varphi)+jsin(\varphi)}{2}
+    \end{aligned}
+\end{equation*}
+Ricordando che $e^{j\varphi}=cos(\varphi)+jsin(\varphi)$ si ha $$ r_u=UG(j\omega)\frac{e^{j\varphi}}{2}=\frac{U|G(j\omega)|}{2}e^{arg(G(j\omega))+\varphi} $$ dove si è scritto $G(j\omega)=|G(j\omega)|e^{arg(G(j\omega))}$.\
+Antitrasformando $Y(s)$ si arriva a $$ y(t)=y_1(t)+U|G(j\omega)|cos(\omega t+\varphi+arg(G(j\omega))) $$ Ma si è visto che $y_1(t)\rightarrow 0$ per $t\rightarrow \infty$, quindi l'uscita $y(t)$ converge a $$ y_2(t)=U|G(j\omega)|cos(\omega t+\varphi+arg(G(j\omega))) $$ ovvero per $t$ sufficientemente grande si ha $$ y(t) \approx U|G(j\omega)|cos(\omega t+\varphi+arg(G(j\omega))) $$ Quanto trovato trova la sua generalizzazione nel seguente teorema.\
+\
+\
+**Teorema**
+
+> Se ad un sistema lineare tempo invariante con funzione di trasferimento $G(s)$ avente poli a parte reale negativa si applica l'ingresso sinusoidale $$ u(t)=Ucos(\omega t+\varphi) $$ l'uscita a transitorio esaurito è data da $$ y_2(t)=U|G(j\omega)|cos(\omega t+\varphi+arg(G(j\omega))) $$
+
+### RISPOSTA A SEGNALI SVILUPPABILI IN SERIE DI FOURIER
+
+In base a quanto visto per un ingresso sinusoidale e sfruttando il principio di sovrapposizione degli effetti per sistemi BIBO stabili si può dimostrare che per $t$ elevati $$ y(t)\approx Y_0+2\sum_{n=1}^{+\infty}|Y_n|cos\left(n\omega _0 t+arg(Y_n)\right) $$ con $$ \omega _0=\frac{2\pi}{T} \quad \quad \quad \quad Y_n=G(jn\omega _0)U_n \quad \quad n=0,1,... $$ $$ |Y_n|=|G(jn\omega _0)||U_n| \quad \quad arg\{Y_n\}=arg(U_n)+arg(G(jn\omega _0)) $$ \
+_Osservazione_: $$ G(s)=\mu\frac{(1+\tau _1s)(1+\tau _2s)...}{(1+T_1s)(1+T_2s)...} $$ allora $$ G(0)=\mu $$ \
+Tutto ciò può essere schematizzato come segue
+```{=latex}
+\begin{center}
+```
+
+![Risposta a segnali sviluppabili con Fourier](segnSvilFour1.png){height=100px}
+
+```{=latex}
+\end{center}
+```
+E a $t$ sufficientemente elevati anche con
+```{=latex}
+\begin{center}
+```
+
+![Risposta a segnali sviluppabili con Fourier a $t$ elevati](segnSvilFour2.png){height=100px}
+
+```{=latex}
+\end{center}
+```
+\newpage
+
+### RISPOSTA A SEGNALI DOTATI DI TRASFORMATA DI FOURIER
+
+Dato un segnale non periodico dotato di trasformata di Fourier, si può anche scrivere come $$ u(t)=\frac{1}{2\pi}\int_{-\infty}^{+\infty} 2|U(j\omega)|cos(\omega t+arg(U(j\omega)))d\omega $$ con $$ U(j\omega)=\int_{-\infty}^{+\infty} u(t)e^{-j\omega t}dt $$ Ovvero l'ingresso è scomponibile come un'infinità non numerabile di armoniche con valori di $\omega$ reali maggiori o uguali a $0$.\
+Quindi se il sistema è BIBO stabile per $t$ elevati $$ y(t)\approx \frac{1}{2\pi}\int_{-\infty}^{+\infty} 2|Y(j\omega)| cos(\omega t+arg(Y(j\omega)))d\omega $$ con $$ Y(j\omega)=G(j\omega)U(j\omega) $$
+
+## RISPOSTA IN FREQUENZA
+
+La funzione complessa $G(j\omega)$ ottenuta valutando $G(s)$ in $s=j\omega$ è detta **risposta in frequenza**. Il concetto di risposta in frequenza viene esteso anche a sistemi non asintoticamente stabili.\
+Per un certo valore di $\omega$, $G(j\omega)$ è un numero complesso 
+```{=latex}
+\begin{center}
+```
+
+![](Gjomega.png){height=130px}
+
+```{=latex}
+\end{center}
+```
+Nel caso in cui la risposta in frequenza non sia nota si possono sfruttare i risultati precedenti per ricavarla sperimentalmente.\
+Si vedrà in seguito che dalla rappresentazione grafica di $G(j\omega)$ sarà possibile ricavare: guadagno statico, poli e zeri della funzione di trasferimento $G(s)$.\
+Uno dei modi più utilizzati per rappresentare la $G(j\omega)$ sono i **diagrammi di Bode** in cui si rappresentano separatamente modulo ($|G(j\omega)|$) e fase ($arg(G(j\omega))$) in funzione di $\omega$.
+
+### DIAGRAMMI DI BODE
+
