@@ -794,12 +794,13 @@ Inoltre:
 * $\omega _{n}$ è detta _pulsazione naturale_
 * $\mu$ è detto _guadagno_
 
+Dato un valore massimo di sovraelongazione $S^*$, dalle formule precedenti, si può ricavare il valore massimo del coefficiente di smorzamento $\xi$ per i sistemi del secondo ordine: $$ S\%\le S^* \Longrightarrow \xi \ge \frac{\left|\ln\left(\frac{S^*}{100}\right)\right|}{\sqrt{\pi ^2+\ln ^2\left(\frac{S^*}{100}\right)}} $$
 
 ```{=latex}
 \begin{center}
 ```
 
-![Immagine rappresentativa di tutti i concetti introdotti](sistIIordParam.png)
+![Immagine rappresentativa di tutti i concetti introdotti](sistIIordParam.png){height=300px}
 
 ```{=latex}
 \end{center}
@@ -863,3 +864,184 @@ Si vuole caratterizzare i sistemi del secondo ordine (con poli complessi coniuga
 
 #### Caso $T_1 \ne T_2$, $T_1>T_2$
 
+> Avendo $$ G(s)=\frac{\mu}{(1+T_1s)(1+T_2s)}\quad \quad \quad U(s)=\frac{k}{s} $$ Risulta $$ Y(s)=G(s)U(s)=\frac{k\mu}{s(1+T_1s)(1+T_2s)} $$ $$ \mu > 0, \quad k>0, \quad T_1>0, \quad T_2>0 $$ Antitrasformando si ottiene $$ y(t)=k\mu\left(1-\frac{T_1}{T_1-T_2}e^{-\frac{t}{T_1}}+\frac{T_2}{T1-T_2}e^{-\frac{t}{T_2}}\right)1(t) $$ $$ y(0)=0, \quad \dot y(t)=0, \quad \ddot y(0)=\frac{k\mu}{T_1T_2}, \quad y_{\infty}=k\mu $$ Da notare che i modi presenti sono $1(t)$ (dovuto all'ingresso), $e^{-\frac{t}{T_1}}$ e $e^{-\frac{t}{T_2}}$ (dovuti al sistema).
+
+```{=latex}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolR1.png}
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolR2.png}
+    \label{Grafici corrispondenti all'esempio}
+\end{figure}
+```
+
+#### Sistemi a polo dominante
+
+Se nel precedente esempio considerassimo $T_1\gg T_2$, nella risposta $e^{-\frac{t}{T_2}}\rightarrow 0$ velocemente e $\frac{T_2}{T_1-T_2}\ll\frac{T_1}{T_1-T_2}\approx 1$, quindi $$ y(t)\approx k\mu\left(1-e^{-\frac{t}{T_1}}\right)1(t) $$
+
+```{=latex}
+\begin{center}
+```
+
+![Variazione uscita in base al polo dominante](sistIIordinePolR3.png){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+#### Caso $T_1=T_2$ 
+
+> Considerando $$ G(s)=\frac{\mu}{(1+T_1s)^2} \quad \quad \quad U(s)=\frac{k}{s} $$ Risulta $$ Y(s)=G(s)U(s)=\frac{k\mu}{s(1+T_1s)^2} $$ $$ \mu>0, \quad k>0, \quad T_1>0 $$ Antitrasformando $$ y(t)=k\mu\left(1-e^{\frac{t}{T_1}}-\frac{t}{T_1}e^{-\frac{t}{T_1}}\right)1(t) $$ Da notare che i modi presenti nel sistema sono $1(t)$ (dovuto all'ingresso), $e^{-\frac{t}{T_1}}$ e $te^{-\frac{t}{T_1}}$ (dovuti al sistema).
+
+```{=latex}
+\begin{center}
+```
+
+![Poli coincidenti](sistIIordinePolR4.png){height=100px}
+
+```{=latex}
+\end{center}
+```
+\newpage
+A questo punto si possono trarre delle conclusioni riguardo ai sistemi del secondo ordine con poli reali: 
+
+* la risposta è monotòna
+* se $T_1\gg T_2$ polo dominante allora il comportamento è simile a quello di un sistema del prim'ordine
+* $\dot y(t)=0$ quindi continuità in zero anche della derivata prima
+* $T_{a,\epsilon}$ funzione non semplice di $T_1$ e $T_2$
+
+### SISTEMI DEL PRIM'ORDINE CON UNO ZERO
+
+> Considerando $$ \mu\frac{1+\alpha Ts}{1+Ts} \quad \quad \quad U(s)=\frac{k}{s} $$ Risulta $$ Y(s)=G(s)U(s)=k\mu\frac{1+\alpha Ts}{s(1+Ts)} $$ $$ \mu >0,\quad k>0, \quad T>0 $$ Antitrasformando l'uscita $$ y(t)=k\mu\left(1+(\alpha -1)e^{-\frac{t}{T}}\right)1(t) $$ $$ y(0)=k\mu\alpha, \quad y_{\infty}=k\mu $$ Si noti che il grado relativo è zero (grado numeratore uguale al grado del denominatore) quindi c'è collegamento algebrico ingresso-uscita ($y(0)=k\mu\alpha\ne 0$).
+
+
+```{=latex}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.3\linewidth]{sist1ordineZero1.png}
+    \includegraphics[width=0.3\linewidth]{sist1ordineZero2.png}
+    \label{Grafici corrispondenti all'esempio sistemi del primo ordine con uno zero}
+\end{figure}
+```
+
+### SISTEMI DEL SECONDO ORDINE CON POLI REALI E ZERO
+
+Considerando $$ G(s)=\mu\frac{1+\tau s}{(1+T_1s)(1+T_2s)} \quad \quad \quad U(s)=\frac{k}{s} $$ $$ Y(s)=G(s)U(s)=k\mu\frac{1+\tau s}{s(1+T_1s)(1+T_2s)} $$ $$ \mu>0,\quad k>0,\quad T_1 >0,\quad T_2>0 $$ Antitrasformando $$ y(t)=k\mu\left(1-\frac{T_1-\tau}{T_1-T_2}e^{-\frac{t}{T_1}}+\frac{T_2-\tau}{T_1-T_2}e^{-\frac{t}{T_2}}\right)1(t) $$ $$ y(0)=0,\quad \dot y(0)=\frac{k\mu\tau}{T_1T_2},\quad y_{\infty}=k\mu $$ Si noti che il segno della derivata $\dot y(0)=\frac{k\mu\tau}{T_1T_2}$ dipende da $\tau$.
+\newpage
+Da qui si distinguono 3 casi: 
+
+#### Caso $T_1 > T_2$, $\tau < 0$, sistemi a fase NON minima
+
+> si ha sottoelongazione ($\dot y(0)=\frac{k\mu\tau}{T_1T_2} < 0$), il sistema risponde in "senso contrario" ($<0$) rispetto all'ingresso $>0$.
+
+```{=latex}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer1.png}
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer2.png}
+    \label{Grafici esempio sistemi del 2 ordine con poli reali e 1 zero tau neg}
+\end{figure}
+```
+
+#### Caso $\tau >T_1>T_2>0$, sistemi a fase minima (sovraelongazione)
+
+> è presente una sovraelongazione tanto più accentuata quanto più lo zero è vicino all'origine (ovvero al crescere di $\tau$).
+
+```{=latex}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer3.png}
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer4.png}
+    \label{Grafici esempio sistemi del 2 ordine con poli reali e 1 zero tau pos}
+\end{figure}
+```
+
+#### Caso $\tau\approx T_1 \gg T_2$, sistemi a fase minima (code di assestamento)
+
+> a causa della non perfetta cancellazione polo/zero ($\tau\approx T_1$) il modo "lento" $e^{-\frac{t}{T_1}}$ è presente e il suo transitorio si esaurisce lentamente.
+
+```{=latex}
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer5.png}
+    \includegraphics[width=0.3\linewidth]{sistIIordinePolZer6.png}
+    \label{Grafici esempio sistemi del 2 ordine con poli reali e 1 zero tau circa t1}
+\end{figure}
+```
+\newpage
+
+### INTERCONNESSIONE SCHEMI A BLOCCHI
+
+#### Serie
+
+```{=latex}
+\begin{center}
+```
+
+![](InterconnessioneSerie.png){height=70px}
+
+```{=latex}
+\end{center}
+```
+\begin{equation*}
+    \begin{aligned}
+        Y(s)=G(s)U(s) \Longrightarrow Y_1(s)&=G_1(s)U_1(s) \\
+        Y_2(s)&=G_2(s)U_2(s) \\
+        &=G_2(s)Y_1(s)=G_2(s)G_1(s)U_1(s) \Longrightarrow G_{serie}(s)=G_1(s)G_2(s) \quad \blacksquare
+    \end{aligned}
+\end{equation*}
+
+#### Parallelo
+
+```{=latex}
+\begin{center}
+```
+
+![](InterconnessionePar.png){height=100px}
+
+```{=latex}
+\end{center}
+```
+\begin{equation*}
+    \begin{aligned}
+        Y(s)&=G_1(s)U(s)+G_2(s)U(s) \\
+        &=(G_1(s)+G_2(s))U(s) \Longrightarrow G_{parallelo}(s)=G_1(s)G_2(s) \quad \blacksquare
+    \end{aligned}
+\end{equation*}
+
+#### Retroazione negativa
+
+```{=latex}
+\begin{center}
+```
+
+![](InterconnessioneRetroNeg.png){height=110px}
+
+```{=latex}
+\end{center}
+```
+\begin{equation*}
+    \begin{aligned}
+        Y(s)&=\left[U(s)Y_2(s)\right]G_1(s) \\
+        &=\left[U(s)-Y(s)G_2(s)\right]G_1(s) \\
+        &=\frac{G_1(s)}{G_2(s)G_1(s)+1}U(s) \Longrightarrow G_{retro-}(s)=\frac{G_1(s)}{1+G_1(s)G_2(s)} \quad \blacksquare
+    \end{aligned}
+\end{equation*}
+
+\newpage
+
+# RISPOSTA IN FREQUENZA
+
+L'idea d'ora in poi sarà considerare ogni sistema come un filtro.
+
+#### Esempio
+
+\
+Si calcoli l'uscita nel dominio del tempo del seguente sistema con il seguente ingresso $$ G(s)=\frac{\mu}{1+Ts} \quad \quad \quad \quad u(t)=Ucos(\omega t), \quad U>0 $$ Innanzitutto si trasforma la $u(t)$ (ricordando le trasformate fondamentali) $$ U(s)=\mathcal{L}[u(t)]=U\frac{s}{s^2+\omega^2} $$ Quindi l'uscita risulta $$ Y(s)=G(s)U(s)=\frac{\mu U s}{(1+Ts)(s^2+\omega ^2)}=\frac{\mu U}{T}\frac{s^2}{\left(s+\frac{1}{T}\right)(s^2+\omega ^2)} $$ Ora si scrive la $Y(s)$ come somma dei residui fratto i poli $$ Y(s)=\frac{r_1}{1+\frac{1}{T}}+\frac{r_u}{s-j\omega}+\frac{\bar r_u}{s+j\omega} \quad \quad \quad r_u=M_ue^{j\varphi _u}=|r_u|e^{jarg(r_u)} $$ Quindi la $y(t)$ risulta $$ y(t)=r_1e^{-\frac{t}{T}}1(t)+2M_ue^{-\sigma t}cos(\omega t+\varphi _u)1(t) $$ In questo esempio si ha $\sigma = 0$.\
+Proseguendo $$ y(t)=r_1e^{-\frac{t}{T}}1(t)+2|r_u|cos(\omega t+arg\{r_u\})1(t) $$ Per $t\gg 0$ ($t\rightarrow \infty$): $$ y(t)\approx 2|r_u|cos(\omega t+arg\{r_u\})1(t) $$ Calcolando il residuo si arriva a $$ r_u=Y(s)(s-j\omega)\bigg|_{s=j\omega}=G(s)\frac{Us}{(s-j\omega)(s+j\omega)}(s-j\omega)\bigg|_{s=j\omega}=\frac{G(j\omega)Uj\omega}{2j\omega}=\frac{U}{2}G(j\omega) $$ Quindi la $y(t)$ risulta 
+\begin{equation*}
+    \begin{aligned}
+        y(t)&=2\frac{|G(j\omega)|U}{2} cos(\omega t+arg\{G(j\omega)\})1(t) \\
+        &=|G(j\omega)|Ucos(\omega t+arg\{G(j\omega)\})1(t)
+    \end{aligned}
+\end{equation*}
