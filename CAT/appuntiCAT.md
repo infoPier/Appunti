@@ -1188,3 +1188,102 @@ $$ G_a(j\omega)=\mu \quad \quad \quad |G_a(j\omega)|_{dB}=20\log{|\mu|} \quad \q
 ```
 **_Ampiezza_**: se $\mu\ge 1$ allora $20\log{|\mu|}\ge 0$ e si ha amplificazione, mentre se $\mu <1$ allora $20\log{|\mu|}<0$ e si ha attenuazione.\
 **_Fase_**: se $\mu \ge 0$ allora $\arg{(\mu)}=0$, se $\mu <0$ allora $\arg{(\mu)}=-180^{\circ}$
+
+\newpage
+
+#### Zeri nell'origine
+
+\
+Consideriamo uno zero nell'origine ($g=-1$) $$ G_b(j\omega)=\frac{1}{(j\omega)^g}=j\omega \quad \quad \quad |G_b(j\omega)|_{dB}=20\log{(\omega)} \quad \quad \quad \arg{(G_b(j\omega))}=\arg{(j\omega)} $$ 
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeroOrigine.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+In scala logaritimica $\log{\omega}\mapsto 20\log{\omega}$ corrisponde ad una retta di pendenza $20$ dB/decade.\
+Quindi se ho $g$ zeri nell'origine, la pendenza della retta sarà $20g$ dB/decade.\
+$j\omega$ è un punto sul semiasse immaginario positivo $\forall\omega >0$, quindi ha fase $90^{\circ}\quad \forall\omega >0$.\
+La fase sarà uguale, quindi, a $\arg{(j\omega)^g}=g90^{\circ}$.\
+Sostanzialmente una funzione di trasferimento del genera è un derivatore, che amplifica le alte frequenze e quindi anche il rumore (che solitamente si trova ad alta frequenza).
+
+#### Poli nell'origine
+
+\
+Si consideri, ora, un polo nell'origine ($g=1$) $$ G_b(j\omega)=\frac{1}{(j\omega)^g}=\frac{1}{j\omega} \quad \quad \quad |G_b(j\omega)|_dB=-20\log{(\omega)} \quad \quad \quad \arg{(G_b(j\omega))}=-\arg{(j\omega)} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodePoloOrigine.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Sostanzialmente valgono li stessi discorsi fatti in precedenza per lo zero, ma col segno opposto.\
+Quindi, in scala logaritmica $\log{\omega}\mapsto -20\log{\omega}$ corrisponde ad una retta di pendenza $-20$ dB/decade.\
+Quando ho $g$ poli nell'origine la pendenza diventa $-20g$ dB/decade.\
+$-j\omega$ è un punto sul semiasse immaginario positivo $\forall\omega >0$, quindi ha fase $-90^{\circ}\quad \forall\omega >0$.\
+Più in generale, la fase è uguale a $\arg{(j\omega)^g}=g90^{\circ}\ \ g<0$.\
+Questo tipo di funzione di trasferimento rappresenta un integratore, che attenua le alte frequenze ma introduce ritardo.\
+
+#### Zero reale
+
+\
+Ora si consideri $G_c(j\omega)=1+j\omega\tau$ 
+\begin{equation*}
+    \begin{aligned}
+        |G_c(j\omega)|_dB=20\log{(\sqrt{1+\omega^2\tau^2})}&\approx\begin{cases} 20\log{1}=0 \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \omega\ll\frac{1}{|\tau|} \\ 20\log{\omega |\tau|}=20\log{(\omega)}+20\log{|\tau|} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases} \\
+        &\approx \begin{cases} 20\log{1}=0 \quad \quad \quad \quad \quad \ \omega\ll\frac{1}{|\tau|} \\ 20\log{(\omega)}-20\log{\frac{1}{|\tau|}} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+$$ \left|G_d(j\omega)\bigg|_{\omega=\frac{1}{|\tau|}}\right|=\left|G\left(j\frac{1}{|\tau|}\right)\right|=\left|1+j\frac{1}{|\tau|}\tau\right|=|1\pm j|=\sqrt{2} $$
+$$ \left|G_d\left(j\frac{1}{|\tau|}\right)\right|_{dB}=20\log{\sqrt{2}}=10\log{2}\approx 3\textrm{ dB} $$ In verde è rappresentato il grafico asintotico (approssimazione).\
+In blu vi è rappresentato il diagramma reale.
+```{=latex}
+\begin{center}
+```
+
+![](bodePoloReale.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Il riferimento per l'approssimazione è 1 decade, quindi: $$ \omega\ll\frac{1}{|\tau|}\Longrightarrow\omega <\frac{1}{|\tau|}\cdot~10^{-1} $$ $$ \omega\gg\frac{1}{|\tau|}\Longrightarrow\omega >\frac{1}{|\tau|}\cdot~10^{1} $$ Fino alla **_pulsazione di taglio_** $\omega=\frac{1}{|\tau|}$ l'andamento dell'approssimazione è costante a $0$ dB. \
+Sempre in riferimento alla pulsazione di taglio $\omega=\frac{1}{|\tau|}$ entra in gioco la retta $\log{\omega}\mapsto -20\log{\frac{1}{|\tau|}}+20\log{\omega}$ con pendenza $20$ dB/dec.\
+Per quanto riguarda. invece, il grafico reale ha un discostamento massimo proprio alla pulsazione di taglio $\omega=\frac{1}{|\tau|}$, tale scostamento vale proprio $3$ dB (come visto in precedenza).
+\newpage
+Per la fase, invece, considerando uno zero reale negativo ($\tau >0$):
+\begin{equation*}
+    \begin{aligned}
+        \arg{\left(G_c(j\omega)\right)}=\arg{(1+j\omega\tau)}\approx \begin{cases} 0 \quad \quad \ \omega\ll\frac{1}{|\tau|} \\ 90^{\circ} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+```{=latex}
+\begin{center}
+```
+
+![Fase di uno zero reale negativo $\tau >0$](bodeZeroRealeFase1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Se, invece, si prende in considerazione uno zero positivo ($\tau <0$) si ha:
+\begin{equation*}
+    \begin{aligned}
+        \arg{\left(G_c(j\omega)\right)}=\arg{(1+j\omega\tau)}\approx \begin{cases} 0 \quad \quad \ \ \ \omega\ll\frac{1}{|\tau|} \\ -90^{\circ} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+```{=latex}
+\begin{center}
+```
+
+![Fase di uno zero reale positivo $\tau >0$](bodeZeroRealeFase2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Come si evince da entrambe le immagini, il cambio di fase inizia circa una decade prima ($\frac{1}{5}\cdot~\frac{1}{|\tau|}$) e finisce circa una decade dopo ($5\cdot~\frac{1}{|\tau|}$) la pulsazione di taglio $\omega=\frac{1}{|\tau|}$.
