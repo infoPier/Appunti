@@ -560,7 +560,7 @@ Si può dimostrare che $|\xi _{i}| < 1$ perchè devono essere complesse coniugat
         &= -\xi _{i} \omega _{ni} \pm j \omega_{ni} \sqrt{1 - \xi _{i}^2}
     \end{aligned}
 \end{equation*}
-Dalla forma presentata in precedenza si può arrivare ad una seconda forma particolarmente di interesse: $$ G(s) = \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$
+Dalla forma presentata in precedenza si può arrivare ad una seconda forma particolarmente di interesse: $$ G(s) = \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni}}s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$
 detta **forma di Bode**. 
 \newpage
 _Dimostrazione_:
@@ -1129,3 +1129,62 @@ Uno dei modi più utilizzati per rappresentare la $G(j\omega)$ sono i **diagramm
 
 ### DIAGRAMMI DI BODE
 
+Si parte dalla forma fattorizzata della funzione di trasferimento (detta forma di Bode): $$ G(s) = \mu \frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{n,i} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{n,i}} s +\frac{s^2}{\omega _{n,i}^2})} $$ con risposta in frequenza associata $$ G(s) = \mu \frac{\prod_{i}(1+j\omega\tau _{i}) \prod_{i}(1+2j\zeta _i\frac{\omega}{\alpha _{n,i}} - \frac{\omega ^2}{\alpha _{n,i}^2})}{(j\omega)^g \prod_{i}(1+j\omega T_i) \prod_{i} (1+2j\xi _{i}\frac{\omega}{\omega _{ni}} -\frac{\omega ^2}{\omega _{n,i}^2})} $$
+Come detto in precedenza si studiano $|G(j\omega)|$ e $arg(G(j\omega))$. \
+Sull'asse delle ascisse si hanno sempre le frequenze **in scala logaritmica** di base 10 (ricorda: $\omega\ge 0$).\
+Mentre sull'asse delle ordinate si ha:
+
+* l'ampiezza in **decibel**: $|G(j\omega)|_{dB}=20 log(|G(j\omega)|)$
+* nel diagramma delle fasi l'angolo: $arg(G(j\omega))$
+
+È quindi utile ricordare che per quanto riguarda il diagramma del modulo la scala logaritmica è sia per l'asse delle ascisse che per quello delle ordinate, mentre per il diagramma della fase questa scala si usa solo per le ascisse. \
+La seguente immagine riporta un esempio di diagramma di Bode.
+
+```{=latex}
+\begin{center}
+```
+
+![Esempio di diagramma di Bode della funzione: $G(j\omega)=\frac{1}{1+10j\omega}$](bode1.png){height=330px}
+
+```{=latex}
+\end{center}
+```
+Per la risposta in frequenza è utile studiare come risulta la funzione che restituisce $|G(j\omega)|_{dB}$ e $arg(G(j\omega))$
+\begin{equation*}
+    \begin{aligned}
+        |G(j\omega)|_{dB} &=20log(|G(j\omega)|) \\
+        &= 20\log{|\mu|} -20g\log{|j\omega|} \\
+        &+\sum_{i} 20\log{|1+j\omega\tau _{i}|} + \sum_{i}20\log{\left|1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right|} \\
+        &- \sum_{i}20\log{|1+j\omega T_i|}-\sum_{i}20\log{\left|1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}\right|}\\
+    \end{aligned}
+\end{equation*}
+\begin{equation*}
+    \begin{aligned}
+        \arg(G(j\omega)) &= \arg{(\mu)} -g\arg{(j\omega)} \\
+        &+\sum_{i} \arg{(1+j\omega\tau _{i})} + \sum_{i}\arg{\left(1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right)} \\
+        &- \sum_{i}-\arg{(1+j\omega T_i)}-\sum_{i}\arg{\left(1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}\right)}\\
+    \end{aligned}
+\end{equation*}
+**N.B.**: si noti che in entrambe le equazioni la prima e la terza sommatoria hanno lo stesso andamento ma con segno opposto, e stessa cosa vale per la seconda e la quarta.\
+\
+Si può passare, quindi, a studiare l'andamento dei contributi fondamentali per poi sommarli (grazie al principio di sovrapposizione degli effetti) per ottenere il risultato: 
+
+* $G_a(j\omega)=\mu$ 
+* $G_b(j\omega)=\frac{1}{(j\omega)^g}$ 
+* $G_c(j\omega) = (1+j\omega\tau _i)$ e, per quanto visto nel nota bene, $G_c(j\omega)=\frac{1}{1+j\omega T_i}$ ha lo stesso andamento ma con segno opposto
+* $G_d(j\omega)=\left(1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right)$ e, per quanto visto nel nota bene, $G_c(j\omega)=\frac{1}{1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}}$ ha lo stesso andamento ma con segno opposto
+
+#### Guadagno statico $\mu$
+
+$$ G_a(j\omega)=\mu \quad \quad \quad |G_a(j\omega)|_{dB}=20\log{|\mu|} \quad \quad \quad \arg{(G(j\omega))}=\arg{(\mu)} $$ 
+```{=latex}
+\begin{center}
+```
+
+![](bodeMU.png){height=220px}
+
+```{=latex}
+\end{center}
+```
+**_Ampiezza_**: se $\mu\ge 1$ allora $20\log{|\mu|}\ge 0$ e si ha amplificazione, mentre se $\mu <1$ allora $20\log{|\mu|}<0$ e si ha attenuazione.\
+**_Fase_**: se $\mu \ge 0$ allora $\arg{(\mu)}=0$, se $\mu <0$ allora $\arg{(\mu)}=-180^{\circ}$
