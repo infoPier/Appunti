@@ -1247,7 +1247,7 @@ In blu vi è rappresentato il diagramma reale.
 \begin{center}
 ```
 
-![](bodePoloReale.PNG){height=220px}
+![](bodeZeroReale.PNG){height=220px}
 
 ```{=latex}
 \end{center}
@@ -1287,3 +1287,20 @@ Se, invece, si prende in considerazione uno zero positivo ($\tau <0$) si ha:
 \end{center}
 ```
 Come si evince da entrambe le immagini, il cambio di fase inizia circa una decade prima ($\frac{1}{5}\cdot~\frac{1}{|\tau|}$) e finisce circa una decade dopo ($5\cdot~\frac{1}{|\tau|}$) la pulsazione di taglio $\omega=\frac{1}{|\tau|}$.
+
+#### Polo reale
+
+\
+Considerando $G_c(j\omega)=\frac{1}{1+j\omega T}$ (polo reale): $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+\omega^2T^2}} \quad \quad \quad \arg{(G_c(j\omega))}=-\arg{(1+j\omega T)} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodePoloReale.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+A destra il diagramma di Bode di un polo reale negativo ($T>0$), mentre a sinistra di un polo reale positivo ($T<0$).\
+Il diagramma è ottenuto da quello dello zero ribaltando rispetto all'asse reale: fino alla pulsazione di taglio ha sempre andamento costante a $0$ dB, dopo $\omega=\frac{1}{|T|}$ si ha la retta $\log{\omega}\mapsto 20\log{\frac{1}{|T|}}-20\log{\omega}$ di pendenza $-20$ dB/dec.\
+Anche lo scostamento massimo è uguale ma di segno opposto rispetto a quello dello zero: $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+1}}=-20\log{\sqrt{2}}\approx -3 \textrm{ dB} $$ 
