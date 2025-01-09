@@ -1303,4 +1303,452 @@ Considerando $G_c(j\omega)=\frac{1}{1+j\omega T}$ (polo reale): $$ |G_c(j\omega)
 ```
 A destra il diagramma di Bode di un polo reale negativo ($T>0$), mentre a sinistra di un polo reale positivo ($T<0$).\
 Il diagramma è ottenuto da quello dello zero ribaltando rispetto all'asse reale: fino alla pulsazione di taglio ha sempre andamento costante a $0$ dB, dopo $\omega=\frac{1}{|T|}$ si ha la retta $\log{\omega}\mapsto 20\log{\frac{1}{|T|}}-20\log{\omega}$ di pendenza $-20$ dB/dec.\
-Anche lo scostamento massimo è uguale ma di segno opposto rispetto a quello dello zero: $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+1}}=-20\log{\sqrt{2}}\approx -3 \textrm{ dB} $$ 
+Anche lo scostamento massimo è uguale ma di segno opposto rispetto a quello dello zero: $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+1}}=-20\log{\sqrt{2}}\approx -3 \textrm{ dB} $$ Il cambio di fase inizia circa una decade prima e finisce circa una decade dopo la pulsazione di taglio $\omega =\frac{1}{|T|}$
+
+#### Zeri complessi coniugati
+
+\
+Considerando $G_d(j\omega)=1+2j\zeta\frac{\omega}{\alpha _n}-\frac{\omega ^2}{\alpha _n^2}$ (coppia di zeri complessi coniugati): $$ |G_d(j\omega)|_{dB}=20\log{\sqrt{(1-\frac{\omega ^2}{\alpha _n^2})^2+4\zeta ^2\frac{\omega ^2}{\alpha _n^2}}}\approx \begin{cases} 20\log{(1)}=0 \quad \quad \quad \quad \quad \quad \quad \quad \quad \ \  \omega \ll \alpha _n \\ 20\log{\frac{\omega ^2}{\alpha _n^2}}=-40\log{\alpha _n}+40\log{\omega} \quad \omega \gg \alpha _n \end{cases} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeriCC.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Fino alla pulsazione di taglio $\omega =\alpha _n$ l'andamento è costante a $0$ dB. \
+A partire dalla pulsazione di taglio ($\omega =\alpha _n$) si passa ad una retta $\log{\omega}\mapsto -40\log{\alpha _n}+40\log{\omega}$ di pendenza $40$ dB/dec.\
+Si ha uno scostamento significativo nella zona tratteggiata del grafico che dipende dal valore di $\zeta$.
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeriCCZeta.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Quello in blu rappresenta $\zeta = 0.01$ e così a salire. Al crescere di $\zeta$ il discostamento diminuisce.\
+Se ideale, questo tipo di rappresentazione ha un nome: filtro di Notch, che, sempre a livello ideale, elimina solo una frequenza detta $\omega _r =\alpha _n\sqrt{1-2\zeta ^2}$.\
+A tale pulsazione, $\omega _r =\alpha _n\sqrt{1-2\zeta ^2}$, $|G_d(j\omega _r)|_{dB}=2|\zeta|\sqrt{1-\zeta ^2}$.\
+\
+Per quanto riguarda la fase invece di zeri c.c. a parte reale negativa ($\zeta >0$) $$ \arg{(G_d(j\omega))} \approx \begin{cases} 0 \quad \quad \omega \ll \alpha _n \\ 180^{\circ} \ \ \omega \gg \alpha _n \end{cases} $$ 
+```{=latex}
+\begin{center}
+```
+
+![Zeri c.c. a parte reale negativa ($\zeta >0$)](bodeZeriCCFase1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Invece per zeri c.c. a parte reale positiva ($\zeta <0$): $$ \arg{(G_d(j\omega))} \approx \begin{cases} 0 \quad \quad \quad \omega \ll \alpha _n \\ -180^{\circ} \ \ \omega \gg \alpha _n \end{cases} $$ In entrambi i casi il cambio di fase dipende in modo significativo dal valore di $\zeta$.
+```{=latex}
+\begin{center}
+```
+
+![Zeri c.c. a parte reale positiva ($\zeta <0$)](bodeZeriCCFase2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+$$ \omega _a = \frac{\alpha _n}{5^{\zeta}} \quad \quad \quad \omega _b = 5^{\zeta}\alpha _n $$ 
+Questo tipo di effetto si chiama: effetto bloccante degli zeri.\
+Esempio: 
+
+> $$ \zeta =0 $$ $$ G(s)=\mu\frac{1+\frac{s^2}{\alpha _n^2}}{(1+T_1s)(1+T_2s)}=\frac{\mu}{\alpha _n^2T_1T_2}\frac{s^2+\alpha _n^2}{(s+\frac{1}{T_1})(s+\frac{1}{T_2})} \quad \quad T_{1,2} > 0 $$ Sistema a zeri puramente immaginari $$ u(t)=U\cos{(\alpha _nt)}1(t) \Longrightarrow U(s)=U\cdot\frac{s}{s^2+\alpha _n^2} $$ $$ Y(s)=G(s)U(s)=U\frac{\mu}{\alpha _n^2T_1T_2}\frac{s}{(s+\frac{1}{T_1})(s+\frac{1}{T_2})} = \frac{r_1}{s+\frac{1}{T_1}} + \frac{r_2}{s+\frac{1}{T_2}} $$ Che nel dominio del tempo corrisponde a $$ y(t)=r_1e^{-\frac{t}{T_1}}1(t)+r_2e^{-\frac{t}{T_2}}1(t) $$ La cosa da osservare è che dato un coseno in ingresso, non ci sono coseni in uscita.
+\newpage 
+
+#### Poli complessi coniugati
+
+\
+Considerando $|G_d(j\omega)|_{dB}=\frac{1}{1+2j\xi\frac{\omega}{\omega _n}+\frac{\omega ^2}{\omega _n^2}}$ con $\xi >0$ (coppia di poli c.c. a parte reale negativa)
+```{=latex}
+\begin{center}
+```
+
+![](bodePoliCCXiPos.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Si ha un picco di risonanza alla pulsazione di risonanza $\omega _r = \omega _n\sqrt{1-2\xi^2}$ con $|G_d(j\omega _r)|=\frac{1}{2|\xi|\sqrt{1-\xi^2}}$, conseguentemente alla frequenza $\omega _n$ si ha $|G_d(j\omega _n)|=\frac{1}{s|\xi|}$.\
+\
+Per quanto riguarda i poli c.c. con parte reale positiva ($\xi <0$)
+```{=latex}
+\begin{center}
+```
+
+![](bodePoliCCXiNeg.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Si noti che il grafico è ottenuto dal ribaltamento rispetto all'asse reale del diagramma visto per gli zeri (il caso $\xi <0$ corrisponde al caso $\zeta <0$).\
+$\xi$ è detto coefficiente di smorzamento, in più d'ora in poi si approssimerà $$ \omega _r\approx\omega _n \Longrightarrow |G_d(\omega _n)|=\frac{1}{|\xi|} $$
+
+#### Ritardo temporale
+
+\
+Considerando una $G(s)=e^{-\tau s}$ e quindi $G(j\omega)=e^{-j\omega\tau}$ si ha $$ |G(j\omega)|_{dB}=20\log{|1e^{-j\omega\tau}|}=20\log{1}=0 $$ $$ \arg{(G(j\omega))}=\arg{(e^{-j\omega\tau})}=-\omega\tau $$ 
+\newpage
+Che in termini di diagrammi di Bode si traduce in 
+```{=latex}
+\begin{center}
+```
+
+![](bodeRitardoTemp.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+
+### PROPRIETÀ BLOCCANTE DEGLI ZERI
+
+Si supponga di avere $G(s)=\mu\frac{s^2+\alpha _n^2}{(1+T_1s)(1+T_2s)}$, con $T_1,T_2 >0$ (asintoticamente stabile). Si calcoli l'uscita del sistema all'ingresso $u(t)=U\cos{(\omega _uT)}$ che ha trasformata $U(s)=U\frac{s}{s^2+\omega _u^2}$. Si distinguono 2 casi
+
+#### Caso $\omega _u \ne \alpha _n$
+
+\
+La trasformata dell'uscita sarà $$ Y(s)=U\mu\frac{s(s^2+\alpha _n^2)}{(1+T_1s)(1+T_2s)(s^2+\omega _u^2)} $$ In base al denominatore i modi presenti nell'uscita sono: 
+
+* $e^{-\frac{t}{T_1}}$, dovuto al termine $1+T_1s$
+* $e^{-\frac{t}{T_2}}$, dovuto al termine $1+T_2s$
+* $|G(j\omega _u)|U\cos{(\omega _ut+\arg{(G(j\omega _u))})}$, dovuto al termine $s^2+\omega _u^2$
+
+#### Caso $\omega _u =\alpha _n$
+
+\
+La trasformata dell'uscita sarà $$ Y(s)=U\mu\frac{s(s^2+\alpha _n^2)}{(1+T_1s)(1+T_2s)(s^2+\omega _u^2)}=U\mu\frac{s}{(1+T_1s)(1+T_2s)} $$ In base al denominatore, i modi presenti nell'uscita saranno:
+
+* $e^{-\frac{t}{T_1}}$, dovuto al termine $1+T_1s$
+* $e^{-\frac{t}{T_2}}$, dovuto al termine $1+T_2s$
+
+Pertanto, in questo caso l'uscita **non presenta** i modi corrispondenti agli zeri del sistema.
+
+### RISONANZA
+
+Si supponga di avere un sistema con poli immaginari coniugati $\pm j\omega$, ovvero $G(s)=\mu\frac{\omega _n^2}{s^2+\omega _n^2}$.\
+Si è visto che il diagramma di bode ha un picco di risonanza infinito alla pulsazione $\omega _n$.\
+Ma cosa significa?\
+Per capirlo si calcola l'uscita del sistema in corrispondeza dell'ingresso $u(t)=U\cos{(\omega _nt)}$ che ha trasformata $U(s)=U\frac{s^2}{s^2+\omega _n^2}$. Quindi l'uscita è $$ Y(s)=G(s)U(s)=\mu\frac{U\omega _n^2 s}{(s^2+\omega _n^2)^2}=\frac{r_1}{s-j\omega _n}+\frac{\bar r_1}{s+j\omega _n}+\frac{r_2}{(s-j\omega _n)^2}+\frac{\bar r_2}{(s+j\omega _n)^2} $$ A causa dei termini al quadrato a denominatore avremo un'uscita del tipo $$ y(t)=A_1t\cos{(\omega _nt+\varphi _1)}+A_2\cos{(\omega _nt+\varphi _2)} $$ il cui valore assoluto tende ad infinito per $t\rightarrow\infty$.\
+Conseguentemente si tornerebbe ad un grafico dell'uscita nel tempo simile a quello per i modi naturali di poli a parte reale positiva.\
+Nella realtà non esistono sistemi con $\xi=0$ ma per valori molto piccoli del coefficiente di smorzamento il picco di risonanza può essere considerato infinito.
+
+### AZIONE FILTRANTE DEI SISTEMI DINAMICI
+
+Quanto visto fin'ora mostra che un sistema dinaminco si comporta come un filtro per l'ingresso "modellandolo" per produrre l'uscita.
+```{=latex}
+\begin{center}
+```
+
+![](filtri1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](filtri2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+
+# SISTEMI DI CONTROLLO: STABILITÀ e PRESTAZIONI
+
+Si consideri il seguente sistema in retroazione
+```{=latex}
+\begin{center}
+```
+
+![](retroazione.PNG){height=400px}
+
+```{=latex}
+\end{center}
+```
+L'obiettivo è garantire che l'uscita $y(t)$ segua il riferimento $w(t)$ in presenza di:
+
+* disturbi non misurabili in uscita $d(t)$ e disturbi di misura $n(t)$
+* incertezze sul modello $G(s)$ del sistema fisico (impianto) considerato
+
+soddisfacendo opportune specifiche di prestazione.\
+A questo scopo si definisce la **funzione d'anello** $$ L(s)=R(s)G(s) $$ $$ \textrm{(funzione di trasferimento in anello aperto)} $$ Lo schema precedente cattura anche strutture più complesse che includono attuatori e trasduttori
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneComplicata.PNG){height=400px}
+
+```{=latex}
+\end{center}
+```
+**N.B.**: il riferimento $w$ viene filtrato con una replica della dinamica del sensore $T(s)$ in modo che sia "compatibile" con la dinamica dell'uscita $y$ retroazionata.
+\newpage
+Usando le proprietà degli schemi a blocchi interconnessi si può riscrivere lo schema precedente come
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneComplicata2.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+Riferendo in maniera opportuna i vari blocchi, lo schema semplificato cattura anche lo schema generale:
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneMenoComplicata.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+Sistemi:
+
+* $R(s)=T(s)\tilde R(s)$
+* $G(s)=A(s)\tilde G(s)$
+
+Segnali:
+
+* $W(s)=\tilde W(s)$
+* $N(s)=T^{-1}(s)\tilde N(s)$
+* $D(s)=D_a(s)\tilde G(s)+D_u(s)$
+
+**N.B.** il disturbo sull'attuatore $d_a(t)$ viene filtrato dal sistema. Bisogna tenerne conto quando si fanno considerazioni sul disturbo in uscita $d(t)$.
+\newpage
+Nelle applicazioni di carattere ingegneristico tipicamente le bande dei segnali di ingresso $w(t)$, $d(t) e $n(t)$ sono limitate in opportuni range
+```{=latex}
+\begin{center}
+```
+
+![](bandaSegnali.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+* $w(t)$ e $d(t)$ hanno bande a "basse frequenze" (e.g. posizioni, rotazioni, velocità, etc. di sistemi meccanici)
+* $n(t)$ hanno bande ad "alte frequenze" (e.g. disturbi termici in componenti elettronici, accoppiamenti con cambi elettromagretici etc.)
+
+#### Stabilità nominale
+
+\
+Requisito fondamentale è l'asintotica stabilità o stabilità BIBO (esterna) se solo rappresentazione ingresso-uscita.
+
+#### Stabilità robusta
+
+\
+La stabilità dev'essere garantita anche in situazioni perturbate (errori di modello o incertezze nei parametri).
+
+#### Prestazioni statiche
+
+\
+Prestazioni a transitorio esaurito ($t\rightarrow\infty$): tipicamente $e(t)$ limitato o nullo a fronte di ingressi $w$, $d$, $n$ con determinate caratteristiche. Ad esempio:
+
+* errore in risposta ad un ingresso a gradino (transizione ad un nuovo riferimento o disturbi costanti su attuatori/sensori) o rampa
+* risposta ad un ingresso sinusoidale ad alte frequenze (disturbi con certe componenti frequenziali)
+
+#### Prestazioni dinamiche
+
+\
+Prestazioni del sistema in transitorio relative a:
+
+* risposta ad un riferimento $w$, date in termini di tempo di assestamento $T_{\alpha,\epsilon}$ e sovraelongazione $S\%$ massimi
+* risposta a disturbi $d$ ed $n$, date in termini di attenuazione in certi range di frequenze (bande di frequenza dei disturbi)
+* moderazione della variabile di controllo $u$, date in termini di contenimento dell'ampiezza (per evitare la saturazione degli attuatori, uscita dal range in cui la linearizzazione è valida, costi eccessivi)
+
+```{=latex}
+\begin{center}
+```
+
+![](prestazioni.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+## STABILITÀ ROBUSTA DEL SISTEMA RETROAZIONATO
+
+Poichè la stabilità di un sistema lineare non dipende dagli ingressi, si consideri il seguente schema a blocchi
+```{=latex}
+\begin{center}
+```
+
+![](sistemaRetroazionato.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Per studiare la stabilità robusta (in presenza di incertezze) del sistema retroazionato si enuncerà un risultato fondamentale: il **criterio di bode** che lega la stabilità del sistema retroazionato a quella del sistema in anello aperto.\
+Prima di introdurre tale teorema è necessario introdurre un altro paio di concetti.
+
+### MARGINE DI FASE E AMPIEZZA
+
+Con $\omega _c$ detta pulsazione critica.
+
+#### Margine di fase:
+
+$M_f=180^{\circ}+\arg{(L(j\omega))}$ con $\omega _c$ tale che $|L(j\omega)|_{dB}=0$\
+**N.B.** $M_f=\arg{(L(j\omega))}-(-180^{\circ})=180^{\circ}+\arg{(L(j\omega))}$
+
+#### Margine di ampiezza:
+
+$M_a=-|L(j\omega _{\pi})|_{dB}$ con $\omega _{\pi}$ tale che $\arg{(L(j\omega _{\pi}))}=-180^{\circ}$
+
+```{=latex}
+\begin{center}
+```
+
+![](margineFaseAmpiezza.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Si possono riscontrare alcuni casi in cui $M_f$ e $M_a$ non sono definiti o non sono informativi:
+
+* _Intersezioni multiple_: il diagramma delle ampiezze $|L(j\omega)|_{dB}$ interseca l'asse a $0$ dB più di una volta
+* _Assenza di intersezioni_: il diagramma delle ampiezze $|L(j\omega)|_{dB}$ non attraversa l'asse a $0$ dB
+* _Segni discordi_: margini di fase e ampiezza $M_f$ e $M_a$ hanno segno discorde (per essere informativi $M_f$ ed $M_a$ devono avere lo stesso segno)
+
+### CRITERIO DI BODE
+
+**Teorema**
+
+> Si supponga che:\
+\ \ \ \ 1. $L(s)$ non abbia poli a parte reale (strettamente positiva) \
+\ \ \ \ 2. il diagramma di Bode del modulo di $L(j\omega)$ attraversi una sola volta l'asse a $0$ dB\
+Allora condizione necessaria e sufficiente perchè il sistema retroazionato sia asintoticamente stabile è che risulti $\mu >0$ (con $\mu$ guadagno statico di $L(j\omega)$) e $M_f >0$
+
+Si osservino le seguenti:
+
+* la stabilità del sistema in retroazione è determinata dalla lettura di un solo punto sul diagramma di Bode di $L(j\omega)$
+* $M_f$ e $M_a$ in genere vanno considerati simultaneamente e forniscono una misura della robustezza rispetto ad incertezze su $L(s)$.
+
+#### Robustezza rispetto a ritardi temporali
+
+\
+Un sistema che ritarda di $\tau$ ha funzione di trasferimento $G(s)=e^{-s\tau}$.\
+Il diagramma di Bode delle ampiezze di un ritardo è costante a $0$ dB.\
+Lo sfasamento è $\arg{G(j\omega)}=-\omega\tau$ che nel diagramma di Bode delle fasi, in scala semi-logaritmica, ha un andamento di tipo esponenziale.\
+A questo punto ci sono un paio di osservazioni da fare:
+
+* se $L(s)=e^{-s\tau}\tilde L(s)$ la pulsazione critica $\omega _c$ non cambia, ovvero quella di $L(s)$ è la stessa di $\tilde L(s)$
+* un ritardo riduce quindi il margine di fase in quanto per $\omega=\omega _c$ riduce la fase, ovvero $$ \arg{(L(j\omega _c))} = \arg{(\tilde L(j\omega _c))} -\tau\omega _c $$ Quindi il massimo ritardo tollerabile $\tau _{\textrm{max}}$ deve soddisfare $$ \tau _{\textrm{max}} < \frac{M_f}{\omega _c} $$ 
+
+Considerando il sistema $\tilde L(s)=\frac{1}{s(s+1)(s+10)}$\
+Tale sistema con un ritardo di $\tau$ sarà $L(s)=e^{-s\tau}\tilde L(s)$ 
+```{=latex}
+\begin{center}
+```
+
+![](ritardiTemporali.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### Robustezza rispetto ad incertezze sul guadagno
+
+\
+Il margine di ampiezza $M_a$ rappresenta la massima incertezza tollerabile sul guadagno statico $\mu$.\
+È importante notare che variazioni di $\mu$ determinano solo traslazioni del diagramma delle ampiezze e non alterano il diagramma delle fasi.\
+Ecco alcuni esempi:
+```{=latex}
+\begin{center}
+```
+
+![](incertezzeGuadagno.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+## FUNZIONI DI SENSITIVITÀ
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazione.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+Ingressi:
+
+* $w(t)$ riferimento (andamento desiderato per la $y(t)$)
+* $d(t)$ disturbo in uscita
+* $n(t)$ disturbo di misura
+
+Uscite di interesse:
+
+* $e(t)=w(t)-y(t)$ errore di inseguimento
+* $y(t)$ uscita controllata
+* $u(t)$ ingresso di controllo del sistema in anello aperto (impianto)
+
+Le **funzioni di sensitività** sono funzioni di trasferimento tra ingressi ed uscite di interesse.\
+$$ S(s)=\frac{1}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività} $$ 
+$$ F(s)=\frac{R(s)G(s)}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività complementare} $$
+$$ Q(s)=\frac{R(s)}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività del controllo} $$
+Le relazioni che le legano ad ingressi ed uscite sono:
+$$ \left[ {\begin{array}{c} Y(s)\\ U(s)\\ E(s)\\ \end{array} } \right] = \left[ {\begin{array}{ccc} F(s) & S(s) & -F(s)\\ Q(s) & -Q(s) & -Q(s)\\ S(s) & -S(s) & F(s)\\ \end{array} } \right]\left[ {\begin{array}{c} W(s)\\ D(s)\\ N(s)\\ \end{array} } \right] $$
+
+```{=latex}
+\begin{center}
+```
+
+![](funzioniSensitivita.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+La funzione di sensitività $S(s)$ descrive, sostanzialmente, quanto l'uscita è sensibile ai disturbi quindi la si vuole "nulla" (la più piccola possibile).\
+La $F(s)$ è detta funzione di sensitività complementare perchè: $S(s)+F(s)=1$.\
+Il denominatore di tutte le funzioni di sensitività e lo stesso. Si ricordi che la stabilità e
+determinata dai poli della funzione di trasferimento. Questo è consistente con il fatto che la stabilità del sistema (retroazionato) non dipende dal particolare ingresso considerato.
+Dalle definizioni e dallo schema tramite sovrapposizione degli effetti $$ Y(s)=Y_w(s)+Y_d(s)+Y_n(s) $$ 
+con
+
+* $Y_w(s)$ uscita con ingresso $W(s)$ e ponendo $D(s)=0$ e $N(s)=0$
+* $Y_d(s)$ uscita con ingresso $D(s)$ e ponendo $W(s)=0$ e $N(s)=0$
+* $Y_n(s)$ uscita con ingresso $N(s)$ e ponendo $D(s)=0$ e $W(s)=0$
+
+E allo stesso modo si possono definire $$ E(s)=E_w(s)+E_d(s)+E_n(s) $$ $$ U(s)=U_w(s)+U_d(s)+U_n(s) $$
+È interessante notare, quindi che se avessi $S(s)=0$ (per complementarietà) allora $F(s)=1$, ma ciò vorrebbe dire $$ Y_n(s)=-F(s)N(s)\ne 0 $$ quindi mi ritroverei disturbo in uscita, quindi non si può annullare completamente $S(s)$. Quanto descritto è un motivo in più per passare a lavorare sempre nel dominio di $\omega$.\
+Sostanzialmente l'obiettivo è arrivare ad avere:
+
+* $|S(j\omega)|\approx 0$ per $\omega$ basse
+* $|F(j\omega)|\approx 1$ per $\omega$ basse
+* $|F(j\omega)|\approx 0$ per $\omega$ alte
+
+perchè $d(t)$ ed $w(t)$ sono a basse $\omega$ mentre $n(t)$ è ad alte $\omega$. Per ottenre ciò è necessario progettare $R(j\omega)$ in modo tale che:
+
+* $|L(s)| \gg 1$ per $\omega$ basse
+* $|L(s)| \ll 1$ per $\omega$ alte
+
+Quindi, facendo tale scelta di design, le approssimazioni che si possono fare sono:
+
+* Ricordando che $F(j\omega)=\frac{L(j\omega)}{1+L(j\omega)}$ e che per $\omega=\omega _c$, $|L(j\omega _c)|_{dB}\Longrightarrow |L(j\omega _c)|=0$ si può approssimare $$ |F(j\omega)|\approx \begin{cases} 1 \quad \quad \quad \quad \omega\ll\omega _c \\ |L(j\omega)| \quad \ \omega\gg\omega _c \end{cases} \quad \quad \Longrightarrow \quad \quad |F(j\omega)|_{dB}\approx\begin{cases} 0 \textrm{ dB} \quad \quad \quad \quad \omega\ll\omega _c \\ |L(j\omega)|_{dB} \quad \quad \omega\gg\omega _c \end{cases} $$
+* Ricordando $S(j\omega)=\frac{1}{1+L(j\omega)}$, si può approssimare $$ |S(j\omega)|\approx\begin{cases} \frac{1}{|L(j\omega)|} \quad \quad \omega\ll\omega _c \\ 1 \quad \quad \quad \quad \ \omega\gg\omega _c \end{cases} \quad \quad \Longrightarrow \quad \quad |S(j\omega)|_{dB}\approx\begin{cases} -|L(j\omega)|_{dB} \quad \ \ \omega\ll\omega _c \\ 0 \textrm{ dB} \quad \quad \quad \quad \ \ \omega\gg\omega _c \end{cases} $$
+
+È utile, a questo punto, effettuare un'analisi in frequenza delle funzioni di sensitività.
+
+#### Funzione di sensitività complementare
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivitaComplementare.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+
+#### 
