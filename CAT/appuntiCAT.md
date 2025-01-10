@@ -1915,3 +1915,202 @@ Il regolatore dev'essere un sistema proprio, quindi il grado relativo (differeza
 Esempio: attenuazione di $d(t)$ di $A_d=40$ dB\
 
 > $$ A_d=40 \textrm{ dB} \quad A_d=20\log{\bar A_d} \Rightarrow \bar A_d=10^{\frac{40}{20}}=10^2 $$ $$ d(t)=D\sin{(\omega t)} \longrightarrow y_d(t)=Y_d\sin{(\omega t+\varphi)} \quad \quad \textrm{con } Y_d\le\frac{D}{\bar A_d}=\frac{D}{10^2} $$
+
+## SPECIFICHE IN TERMINI DI GUADAGNO D'ANELLO
+
+### STABILITÀ ROBUSTA
+
+Stabilità robusta rispetto alle incertezze significa stabilità in presenza di errori di modello o incertezze di parametri, ad esempio: massimo ritardo temporale $\tau _{\textrm{max}}$ o massima incertezza sul guadagno statico $\Delta\mu _{\textrm{max}}$\
+\
+**Specifica su $L(j\omega)$**: $M_f\ge M_f^{\star}$
+
+### PRECISTIONE STATICA
+
+Per soddisfare tali specifiche va considerata l'analisi statica effettuata sulla funzione di sensitività $S(s)$.\
+\
+Un **esempio di specifica** è: 
+
+> $|e_{\infty}|\le e^{\star}$ in risposta a un gradino $w(t)=W1(t)$, $d(t)=D1(t)$ con $W\le W^{\star}$ e $|D|\le D^{\star}$.\
+Quindi $$ e_{\infty}=\frac{W}{1+\mu}+\frac{D}{1+\mu}=\frac{D+W}{1+\mu}\approx\frac{D+W}{\mu} $$ e per rispettare la specifica si necessita, quindi, di $$ \mu=L(0)\ge\frac{D^{\star}+W^{\star}}{e^{\star}} $$
+
+Un altro **esempio di specifica** può essere:
+
+> $e_{\infty}=0$ in risposta a $W(s)=\frac{W}{s^k}$ e/o $D(s)=\frac{D}{s^k}$ quindi $L(s)$ deve avere $k$ poli nell'origine.
+
+Mettendo insieme i precedenti due esempi si ha un qualcosa del tipo:
+
+> se $|e_{\infty}|\le e^{\star}$ in risposta a $W(s)=\frac{W}{s^k}$ e/o $D(s)=\frac{D}{s^k}$ allora $k-1$ poli in $L(s)$ e $\mu\ge\frac{D^{\star}+W^{\star}}{e^{\star}}$.
+
+**N.B.** notare che la specifiche sono sulla $L(s)$ quindi se per esempio avessi $G(s)=\frac{1}{s(s+2)}$ e avessi la specifica di errore a regime nullo in risposta al gradino $w(t)=W1(t)$, il regolatore non necessiterebbe di poli nell'origine in quanto è già presente il polo necessario in $G(s)$.\
+\
+**N.B.** se $e_{\infty}=0$ in risposta ad un disturbo sull'attuatore $D_a(s)=\frac{D_a}{s^k}$ allora $D(s)=D_a(s)G(s)$ ed $E(s)=S(s)G(s)D_a(s)$ quindi $$ \textrm{IMPORTANTE} $$ $$ k\textrm{ poli nell'origine in } R(s) $$ 
+
+### PRECISIONE DINAMICA
+
+**Specifiche**: $S\%\le S^{\star}$ e $T_{\alpha,\epsilon}\le T^{\star}$.\
+\
+Se si progettasse $L(j\omega)$ in modo che $F(j\omega)$ abbia una coppia di poli complessi coniugati dominanti in $\omega _n\approx \omega _c$ con coefficiente di smorzamento $\xi$ allora $$ \xi\approx\frac{M_f}{100} $$ Perchè $S\%\le S^{\star}$ allora $$ \xi\ge\xi^{\star}=\frac{\left|\ln{\left(\frac{S^{\star}}{100}\right)}\right|}{\sqrt{\pi ^2+\ln^2\left(\frac{S^{\star}}{100}\right)}} $$ con $$ S^{\star}=\frac{-\pi\xi^{\star}}{\sqrt{1-(\xi^{\star})^2}} $$ e quindi $$ M_f\ge M_f^{\star}=100\xi^{\star} $$ Perchè $T_{a,1}\le T^{\star}$ allora $\xi\omega _n\ge\frac{4.6}{T^{\star}}$ e quindi $$ M_f\omega _c\ge\frac{460}{T^{\star}} $$ Volendo mettere insieme le due specifiche: $$ M_f^{\star}\omega _c\ge\frac{460}{T^{\star}} \Longrightarrow \omega _c\ge\frac{460}{M_f^{\star}T^{\star}}=\omega _c^{\star} $$ $$ \omega _c^{\star}=\omega _{c,\textrm{min}} $$ **N.B.** $L(j\omega)$ può attraversare $0$ dB solo una volta.
+```{=latex}
+\begin{center}
+```
+
+![](precisioneDinamica.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+### ATTENUAZIONE DISTURBO IN USCITA $d(t)$
+
+Il disturbo in uscita $d(t)$, con una banda limitata in un range di pulsazioni $[\omega _{d,\textrm{min}},\omega _{d,\textrm{max}}]$ (solitamente $\omega _{d,\textrm{min}}$ presa uguale a 0), dev'essere attenuato di $A_d$ dB ($A_d>0$).\
+\
+Si ricordi che se $d(t)=D\cos{(\omega t+\varphi)}$ allora $$ Y_D(s)=S(s)D(s)\Longrightarrow y(t)=|S(j\omega)|D\cos{(\omega t+\varphi+\arg{(S(j\omega))})} $$ e che $$ |S(j\omega)|_{\textrm{dB}}\approx\begin{cases} -|L(j\omega)|_{\textrm{dB}} \quad \omega\le\omega _c \\ 0 \quad \quad \quad \quad \quad \ \ \omega>\omega _c \end{cases} $$ Da specifica vogliamo $|S(j\omega)|_{\textrm{dB}}\le -A_d$ dB. Poichè $\omega _{d,\textrm{max}}\ll\omega _c$, si ha $$ |L(j\omega)|_{\textrm{dB}}\ge A_d\textrm{ dB} $$ Ad esempio se $d(t)$ dev'essere attenuato di $20$ dB allora $|L(j\omega)|_{\textrm{dB}}\ge 20\textrm{ dB}$
+```{=latex}
+\begin{center}
+```
+
+![](disturboUscita.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### ATTENUAZIONE DISTURBO DI MISURA $n(t)$
+
+Il disturbo di misura $n(t)$, con banda limitata in un range di pulsazioni $[\omega _{n,\textrm{min}},\omega _{n,\textrm{max}}]$ ($\omega _{n,\textrm{max}}$ spesso considerata $+\infty$), deve essere attenuato di $A_n$ dB ($A_n>0$).\
+\
+Ricordando che se $n(t)=N\cos{(\omega t+\varphi)}$ allora $$ Y_N(s)=-F(s)N(s)\Longrightarrow y(t)=|F(j\omega)|N\cos{(\omega t+\varphi-\arg{(F(j\omega))})} $$ e che $$ |F(j\omega)|_{\textrm{dB}}\approx\begin{cases} 0 \quad \quad \quad \quad \quad \quad \omega\le\omega _c \\ |L(j\omega)|_{\textrm{dB}} \quad \quad \ \omega>\omega _c \end{cases} $$ Da specifica si vuole $|F(j\omega)|_{\textrm{dB}}\le -A_n$ dB. Poichè $\omega _{c,\textrm{min}}\gg\omega _c$ si ha $$ |L(j\omega)|_{\textrm{dB}}\le -A_n\textrm{ dB} $$ Ad esempio se $n(t)$ dev'essere attenuato di $20$ dB allora $|L(j\omega)|_{\textrm{dB}}\le -20$ dB.\
+**N.B.** se non ho specifiche particolari su $\omega _{c,\textrm{max}}$ sostanzialmente si prende $\omega _{c,\textrm{max}}=\omega _{n,\textrm{min}}$.
+```{=latex}
+\begin{center}
+```
+
+![](disturboMisura.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### MODERAZIONE DELLA VARIABILE DI CONTROLLO $u(t)$
+
+Contenimento dell'ampiezza della variabile di controllo $u$ in ingresso al sistema fisico (impianto).\
+Ricordiamo che se $w(t)=W\cos{(\omega t+\varphi)}$ allora $$ U(s)=Q(s)U(s)\Longrightarrow u(t)=|Q(j\omega)|W\cos{(\omega t+\varphi+\arg{(Q(j\omega))})} $$ e che $$ |Q(j\omega)|_{\textrm{dB}}\approx\begin{cases} -|G(j\omega)|_{\textrm{dB}}  \quad \quad \omega\le\omega _c \\ |R(j\omega)|_{\textrm{dB}} \quad \quad \quad \omega>\omega _c \end{cases} $$ Poichè si vuole contenere $|Q(j\omega)|_{\textrm{dB}}$ e non abbiamo controllo su $G(j\omega)$ si deve:
+
+* limitare $\omega _c$
+* realizzare $R(j\omega)$ passa-basso
+
+```{=latex}
+\begin{center}
+```
+
+![](moderazioneControllo.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+**N.B.** il limite superiore su $\omega _c$ può essere determinato dalle specifiche sulla variabile di controllo, in caso contrario si prende $\omega _{c,\textrm{max}}=\omega _{n,\textrm{min}}$.
+
+### FISICA REALIZZABILITÀ DEL REGOLATORE $R(s)$
+
+Il regolatore dev'essere un sistema proprio, quindi il grado relativo (differeza poli-zeri) deve essere maggiore o uguale a zero (grado del denominatore maggiore o uguale al grado del numeratore).\
+A pulsazioni elevate la pendenza $-k_L$ dB/dec di $|L(j\omega)|_{\textrm{dB}}$ è determinata dalla differenza tra poli (ciascuno contribuisce con pendenza $-20$ dB/dec) e zeri (ciascuno contribuisce con pendenza $20$ dB/dec). Se a pulsazioni elevate $|G(j\omega)|_{\textrm{dB}}$ ha pendenza $-k_G$ dB/dec allora $$ -k_L\le-k_G $$ In parole povere se $$ R(s)=\frac{N(s)}{D(s)} $$ perchè il regolatore sia fisicamente realizzabile si deve avere $$ \textrm{grado di }D(s)\ge\textrm{grado di }N(s) $$
+```{=latex}
+\begin{center}
+```
+
+![](fisicaRealizzabilita.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+
+### RIEPILOGO
+
+Avendo $$ L(j\omega)=R(j\omega)G(j\omega) \quad \quad G(j\omega)\textrm{ data} $$
+```{=latex}
+\begin{center}
+```
+
+![](specificheGuadagnoAnello.PNG)
+
+```{=latex}
+\end{center}
+```
+\newpage
+
+## SINTESI DEL REGOLATORE
+
+### SINTESI PER TENTATVI O "LOOP SHAPING"
+
+Consiste nel dare forma alla $L(j\omega)$ in modo che:
+
+* il diagramma della ampiezze non attraversi le "regioni proibite" in bassa e alta frequenza
+* per $\omega=\omega _c$ rispetti il vincolo sul margine di fase
+
+procedendo per tentativi basati su opportune considerazioni.
+
+### STRUTTURA
+
+È conveniente dividere il progetto in 2 fasi fattorizzando $R(s)$ come $$ R(s)=R_s(s)R_d(s) $$
+
+#### Regolatore statico
+
+$$ R_s(s)=\frac{\mu _s}{s^k} $$ progettato per soddisfare precisione statica e attenuazione dei disturbi $d$.
+
+#### Regolatore dinamico
+
+$$ R_d(s)=\mu _d\frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni}}s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$ progettato per soddisfare stabilità robusta, precisione dinamica, attenuazione disturbi $n$, moderazione del controllo e fisica realizzabilità.\
+\
+**N.B.** $\mu _d$ può essere scelto **solo se** $\mu _s$ non è stato imposto.
+
+### SINTESI DEL REGOLATORE STATICO
+
+Il guadagno $\mu _s$ e il numero di poli nell'origine in $R_s(s)$ dipende dalla specifica sull'errore a regime $e_{\infty}$ in risposta a segnali canonici.\
+Ad esempio: $|e_{\infty}|\le e^{\star}$ in risposta al gradino su $w$ e $d$, con $G(s)$ senza poli nell'origine.\
+Progetto: si può scegliere $$ R(s)=\mu _s\ge\mu ^{\star} $$ oppure $$ R(s)=\frac{\mu _s}{s} $$ Nel secondo caso possiamo scegliere $\mu _s$ "liberamente" purchè consenta di rispettare i vincoli dell'attenuazione di $d$.
+
+### SINTESI DEL REGOLATORE DINAMICO 
+
+La progettazione di $R_d(s)$ mira a 
+
+1. imporre $\omega _c$ in un certo intervallo
+2. garantire un dato margine di fase $M_f$ (ovvero garantire che $\arg{L(j\omega _c)}\ge-180+M_f$)
+3. garantire una certa attenuazione e pendenza di $L(j\omega)$ (e $R(j\omega)$) a pulsazioni elevate
+
+**N.B.** Per soddisfare il terzo punto basta introdurre poli del regolatore ad alte frequenze.\
+\
+Si procederà individuando dei possibili scenari in base al diagramma di $$ G_e(s)=R_s(s)G(s) $$ detto **sistema esteso**.
+
+### SINTESI DEL REGOLATORE DINAMICO: SCENARIO A
+
+Supponiamo scenario A come uno scenario in cui nell'intervallo ("centrale") di pulsazioni ammissibili per la pulsazione di attraversamento $\omega _c$ esiste un sotto-intervallo in cui la fase di $G_e(j\omega)$ rispetta il vincolo sul margine di fase.
+```{=latex}
+\begin{center}
+```
+
+![](scenarioA.PNG)
+
+```{=latex}
+\end{center}
+```
+Gli obiettivi da raggiungere sono:
+
+* attenuare (selettivamente) il diagramma delle ampiezze (traslarlo in basso) in modo che $\omega _c$ ricada nel sotto-intervallo in cui il vincolo sul margine di fase è rispettato
+* alterare il meno possibile la fase
+
+Le possibili azioni sono:
+
+1. Se $\mu _d$ libero, allora scegliere $R_d(s)=\mu _d$ con $\mu _d<1$
+2. Se $\mu _d$ bloccato (vincolato dalla scelta di $\mu _s$), allora attenuare mediante l'inserimento di poli e zeri in $R_d(s)$ 
+
+#### $\mu _d$ libero
+
+```{=latex}
+\begin{center}
+```
+
+![](scenarioAMuLibero.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```

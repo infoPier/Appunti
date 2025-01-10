@@ -1,5 +1,5 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- CAT: da continuare specifiche in termini di guadagno d'anello
+- CAT: da continuare sintesi del regolatore secnario A
 - Reti: slide 10 Java RMI
