@@ -1751,4 +1751,167 @@ Quindi, facendo tale scelta di design, le approssimazioni che si possono fare so
 \end{center}
 ```
 
-#### 
+#### Funzione di sensitività
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivita.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+
+#### Funzione di sensitività di controllo
+
+A basse frequenze il modulo di $Q(j\omega)$ dipende da $G(j\omega)$, quindi non possiamo influenzarlo con il regolatore. Occore, inoltre, evitare valori di $\omega _c$ "troppo elevati". La parte fondamentale è progettare regolatori che attenuino a frequenze alte.
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivitaControllo.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### POLI COMPLESSI CONIUGATI DI $F(s)$ E MARGINE DI FASE
+
+La funzione di sensitività può presentare una coppia di poli complessi coniugati dominanti, quindi l'obiettivo, ora, è mettere in relazione il picco di risonanza di $F(j\omega)$ con lo smorzamento $\xi$ associato, assumendo che $\omega _n\approx\omega _c$ $$ F(j\omega)=\frac{1}{1+2j\frac{\xi}{\omega _n}\omega-\frac{\omega^2}{\omega _n^2}} $$ La risposta al gradino di tale funzione di sensitività è la classica risposta al gradino vista nel capitoli precedenti.
+
+```{=latex}
+\begin{center}
+```
+
+![](rispostaGradSistIIOrdine.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Si ha un picco di risonanzadi $F(j\omega)$ per $\omega\approx\omega _c$ ($\omega _c$ pulsazione critica tale che $|L(j\omega _c)|=1\Rightarrow |L(j\omega)|_{dB}=0 \textrm{ dB}$).\
+Si ricorda inoltre che si assume $$ \omega _c\approx\omega _n\approx\omega _r $$ $\omega _c$ pulsazione critica\
+$\omega _n$ pulsazione naturale dei poli c.c.\
+$\omega _r$ pulsazione di risonanza.\
+Inoltre si ricorda l'approssimazione $$ |F(j\omega) _c|\approx |F(j\omega _n)|=\frac{1}{2\xi} $$ Però dalla definizione di funzione di sensitività $$ |F(j\omega _c)|=\frac{|L(j\omega _c)|}{|1+L(j\omega _c)|}=\frac{1}{|1+e^{j\arg{(L(j\omega _c))}}|} $$ Si pone $\arg{(L(j\omega _c))}=\varphi _c$\
+Quindi si ha 
+\begin{equation*}
+    \begin{aligned}
+        |F(j\omega _c)|=\frac{1}{|1+e^{j\arg{(L(j\omega _c))}}|}&=\frac{1}{\sqrt{(1+\cos{(\varphi _c)})^2+\sin^2(\varphi _c)}} \\
+        &=\frac{1}{\sqrt{1+2\cos{(\varphi _c)}+\cos^2(\varphi _c)+\sin^2(\varphi _c)}}=\frac{1}{\sqrt{2(1+\cos{(\varphi _c)})}}
+    \end{aligned}
+\end{equation*}
+Ricordando $$ \cos{(\varphi _c)}=-\cos{(\pi+\varphi _c)} $$ $$ M_f=180^{\circ}+\arg{(L(j\omega _c))} $$ $$ M_f^{\textrm{rad}}=\pi+\varphi _c $$ Quindi si arriva ad avere $$ |F(j\omega _c)|=\frac{1}{\sqrt{2(1+\cos{(\varphi _c)})}}=\frac{1}{\sqrt{2\left(1-\cos{\left(M_f^{\textrm{rad}}\right)}\right)}} $$ Grazie alla seguente regola trigonometrica $$ 1-\cos{(x)}=2\sin^2\left(\frac{x}{2}\right) $$ Si può scrivere $$ |F(j\omega _c)|=\frac{1}{\sqrt{2\left(1-\cos{\left(M_f^{\textrm{rad}}\right)}\right)}}=\frac{1}{\sqrt{4\sin^2\left(\frac{M_f^{\textrm{rad}}}{2}\right)}}=\frac{1}{2\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}} $$ A questo punto si possono uguagliare le due forme di $|F(j\omega _c)|$: $$ \frac{1}{2\xi}=\frac{1}{2\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}} $$ Conseguentemente si può scrivere $$ \xi=\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}\approx\frac{M_f^{\textrm{rad}}}{2}=\frac{M_f}{2}\frac{\pi}{180}\approx\frac{M_f}{100} $$ Quindi, riassumendo $$ \xi\approx\frac{M_f}{100} $$
+
+### ANALISI STATICA
+
+#### Errore a regime ad un gradino
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ con $e(t)=w(t)-y(t)$ errore in risposta ad un gradino $w(t)=W1(t)$.\
+Utilizzando il teorema del valore finale (sistema in anello chiuso asintoticamente stabile, BIBO stabile) $$ e_{\infty}=\lim_{s\to 0}sE(s)=\lim_{s\to 0}sS(s)W(s)=\lim_{s\to 0}sS(s)\frac{W}{s}=W\lim_{s\to 0}S(s)=W\lim_{s\to 0}\frac{1}{1+L(s)} $$ Sia $L(s)=\mu\frac{N_L(s)}{D_L(s)}=\mu\frac{N_L(s)}{s^gD_L'(s)}$ con $N_L(0)=1$ e $D_L'(0)=1$ abbiamo $$ \lim_{s\to 0}S(s)=\lim_{s\to 0}\frac{D_L(s)}{\mu N_L(s)+D_L(s)}=\lim_{s\to 0}\frac{s^gD_L'(s)}{\mu N_L(s)+s^gD_L'(s)}=\lim_{s\to 0}\frac{s^g}{\mu+s^g} $$ Quindi, si ha $$ e_{\infty}=W\lim_{s\to 0}\frac{s^g}{\mu+s^g}=\begin{cases} \frac{W}{1+\mu} \quad \quad g=0 \\ 0 \quad \quad \quad g>0 \end{cases} $$
+
+#### Errore a ingressi $\frac{W}{s^k}$
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ con $e(t)=w(t)-y(t)$ errore in risposta ad un segnale di trasformata $W(s)=\frac{W}{s^k}$ $$ e_{\infty}=\lim_{s\to 0}sS(s)\frac{W}{s^k}=W\lim_{s\to 0}\frac{s^{g-(k-1)}}{\mu+s^g}=\begin{cases} \infty \quad \  g<k-1 \\ \frac{W}{\mu} \quad \ g=k-1 \\ 0 \quad \quad g>k+1\ \ [g\ge k] \end{cases} $$ 
+Quindi
+
+* se $g<k-1$ l'errore a regime diverge
+* se $g=k-1$ l'errore a regime è finito e diminuisce all'aumentare di $\mu$
+* se $g>k-1$ l'errore a regime è nullo
+
+**N.B.** il sistema in anello chiuso deve esere asintoticamente stabile.\
+**N.B.** affinchè l'errore a regime a $W(s)=\frac{W}{s^k}$ sia nullo occorre che $L(s)$ abbia un numero di poli almeno pari a $k$ (pricipio del modello interno)\
+\
+**_Osservazione_**: 
+
+> $L(s)=R(s)G(s)$\
+Se $g>0$ c'è almeno un polo nell'orgine\
+Se $R(s)$ o $G(s)$ hanno almeno un polo nell'origine non c'è bisogno di introdurlo conil regolatore
+
+Perchè se ho un polo nell'origine l'errore è nullo?
+
+> Perchè se voglio un $\frac{1}{s}$ in uscita ed $e(t)=0$ (idealmente) ho un anello spezzato, quindi, anche con ingresso nullo il sistema deve essere comunque in grado di produrre un $\frac{1}{s}$ in uscita.
+
+#### Principio del modello interno
+
+Il risultato precedentemente trovato può essere generalizzato come segue:\
+Affinchè un segnale di riferimento (risposta ad un disturbo di misura) con una componente spettrale alla frequenza $\omega _0$ sia inseguito (risposta al neutralizzato) a regime perfettamente in uscita è necessario e sufficiente che:
+
+1. il sistema chiuso in retroazione sia asintoticamente stabile
+2. il guadagno d'anello $L(s)$ abbia una coppia di poli complessi coniugati sull'asse immaginario con pulsazione naturale pari a $\omega _0$
+
+```{=latex}
+\begin{center}
+```
+
+![](principioModInterno.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+
+# SISTEMI DI CONTROLLO: PROGETTO DEL REGOLATORE
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneConDipendezeTempo.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+L'obiettivo, ora, è progettare $R(s)$ in modo che $y(t)$ sia "più vicina possibile" a $w(t)$
+
+## RIEPILOGO SPECIFICHE
+
+#### Stabilità robusta
+
+rispetto a incertezze.\
+\
+Stabilità in presenza di errori di modello o incertezze di parametri, ad esempio: massimo ritardo temporale $\tau _{\textrm{max}}$ o massima incertezza sul guadagno statico $\Delta\mu _{\textrm{max}}$
+
+#### Precisione statica
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ il valore a regime dell'errore in risposta a riferimenti $w(t)$ o disturbi in uscita $d(t)$ "canonici" (gradino $w(t)=W1(t)$, $d(t)=D1(t)$, o rampa $w(t)=t1(t)$, $d(t)=t1(t)$).\
+\
+Specifica: $|e_{\infty}|\le e^{\star}$ oppure $e_{\infty}=0$
+
+#### Precisione dinamica
+
+\
+Tipicamente specifiche in termini di sovraelongazione e tempo di assestamento massimi:\
+\
+Specifiche: $S\%\le S^{\star}$ e $T_{\alpha,\epsilon}\le T^{\star}$
+
+#### Attenuazione disturbo in uscita $d(t)$
+
+\
+Il disturbo in uscita $d(t)$, con banda limitata in un range di pulsazioni $[\omega _{d,\textrm{min}},\omega _{d,\textrm{max}}]$, deve essere attenuato di $A_d$ dB ($A_d>0$).
+
+#### Attenuazione disturbo di misura $n(t)$
+
+\
+Il disturbo di misura $n(t)$, con banda limitata in un range di pulsazioni $[\omega _{n,\textrm{min}},\omega _{n,\textrm{max}}]$, deve essere attenuato di $A_n$ dB ($A_n>0$).\
+\
+**N.B.** in applicazioni ingegneristiche in genere $\omega _{d,\textrm{max}}\ll\omega _{n,\textrm{min}}$
+
+#### Moderazione variabile di controllo $u(t)$
+
+\
+Contenimento dell'ampiezza della variabile di controllo $u$ in ingresso al sistema fisico (impianto).
+
+#### Fisica realizzabilità del regolatore $R(s)$
+
+\
+Il regolatore dev'essere un sistema proprio, quindi il grado relativo (differeza poli-zeri) deve essere maggiore o uguale a zero (grado del denominatore maggiore o uguale al grado del numeratore).\
+\
+\
+\
+Esempio: attenuazione di $d(t)$ di $A_d=40$ dB\
+
+> $$ A_d=40 \textrm{ dB} \quad A_d=20\log{\bar A_d} \Rightarrow \bar A_d=10^{\frac{40}{20}}=10^2 $$ $$ d(t)=D\sin{(\omega t)} \longrightarrow y_d(t)=Y_d\sin{(\omega t+\varphi)} \quad \quad \textrm{con } Y_d\le\frac{D}{\bar A_d}=\frac{D}{10^2} $$
