@@ -2061,7 +2061,9 @@ $$ R_s(s)=\frac{\mu _s}{s^k} $$ progettato per soddisfare precisione statica e a
 
 $$ R_d(s)=\mu _d\frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni}}s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$ progettato per soddisfare stabilità robusta, precisione dinamica, attenuazione disturbi $n$, moderazione del controllo e fisica realizzabilità.\
 \
-**N.B.** $\mu _d$ può essere scelto **solo se** $\mu _s$ non è stato imposto.
+**N.B.** $\mu _d$ può essere scelto **solo se** $\mu _s$ non è stato imposto.\
+\
+**N.B.** posso inserire $\frac{1}{s}$ per avere $e_{\infty}=0$ anche se la specifica è $e_{\infty}<e_{\textrm{max}}$ ma introduco uno sfasamento di $-90^{\circ}$.
 
 ### SINTESI DEL REGOLATORE STATICO
 
@@ -2074,7 +2076,7 @@ Progetto: si può scegliere $$ R(s)=\mu _s\ge\mu ^{\star} $$ oppure $$ R(s)=\fra
 La progettazione di $R_d(s)$ mira a 
 
 1. imporre $\omega _c$ in un certo intervallo
-2. garantire un dato margine di fase $M_f$ (ovvero garantire che $\arg{L(j\omega _c)}\ge-180+M_f$)
+2. garantire un dato margine di fase $M_f$ (ovvero garantire che $\arg{L(j\omega _c)}\ge-180+M_f$, vedi criterio di Bode)
 3. garantire una certa attenuazione e pendenza di $L(j\omega)$ (e $R(j\omega)$) a pulsazioni elevate
 
 **N.B.** Per soddisfare il terzo punto basta introdurre poli del regolatore ad alte frequenze.\
@@ -2088,7 +2090,7 @@ Supponiamo scenario A come uno scenario in cui nell'intervallo ("centrale") di p
 \begin{center}
 ```
 
-![](scenarioA.PNG)
+![](scenarioA.PNG){height=300px}
 
 ```{=latex}
 \end{center}
@@ -2103,13 +2105,504 @@ Le possibili azioni sono:
 1. Se $\mu _d$ libero, allora scegliere $R_d(s)=\mu _d$ con $\mu _d<1$
 2. Se $\mu _d$ bloccato (vincolato dalla scelta di $\mu _s$), allora attenuare mediante l'inserimento di poli e zeri in $R_d(s)$ 
 
-#### $\mu _d$ libero
+#### $\mu _d$ LIBERO
 
 ```{=latex}
 \begin{center}
 ```
 
 ![](scenarioAMuLibero.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### $\mu_d$ VINCOLATO
+
+\
+Per attenuare solo nel range di pulsazioni selezionato si progetta una **_rete ritardatrice_** $$ R_d(s)=\frac{1+\alpha\tau s}{1+\tau s}\quad\quad 0<\alpha<1 $$ $$ s_p=-\frac{1}{\tau}\quad\quad s_z=-\frac{1}{\alpha\tau} $$
+
+```{=latex}
+\begin{center}
+```
+
+![](reteRitardatrice.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](effettoReteRitardatrice.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](bodeRitardatrice.PNG){height=270px}
+
+```{=latex}
+\end{center}
+```
+Per trovare $\omega ^{\star}$ si procede nel seguente modo 
+\begin{equation*}
+    \begin{aligned}
+        \log{\left(\omega ^{\star}\right)}&=\frac{1}{2}\left[\log{\left(\frac{1}{\tau}\right)}+\log{\left(\frac{1}{\alpha\tau}\right)}\right] \\
+        &=\frac{1}{2}\log{\left(\frac{1}{\tau}\frac{1}{\alpha\tau}\right)} \\
+        &=\log{\left(\frac{1}{\alpha\tau ^2}\right)^{\frac{1}{2}}} \\
+        &=\log{\frac{1}{\tau\sqrt{\alpha}}} \\
+        &\Longrightarrow \omega ^{\star}=\frac{1}{\tau\sqrt{\alpha}}
+    \end{aligned}
+\end{equation*}
+L'obiettivo è, quindi, calcolare $\alpha$ e $\tau$ in modo che $L(j\omega)$ abbia una pulsazione di attraversamento $\omega _c^{\star}$ e valga $\arg{(L(j\omega _c^{\star}))}\approx\arg{(G_e(j\omega _c^{\star}))}$.\
+Si procederà:
+
+* scegliendo $\alpha$ tale che $20\log{\alpha}\approx -|G_e(j\omega _c^{\star})|_{\textrm{dB}}$ 
+* scegliendo $\tau$ tale che $\frac{1}{\alpha\tau}\le\frac{\omega _c^{\star}}{10}$
+
+Quindi si avrà 
+\begin{equation*}
+    \begin{aligned}
+        |R_d(j\omega _c^{\star})G_e(j\omega _c^{\star})|_{\textrm{dB}}&=0 \\
+        20\log{|R_d(j\omega _c^{\star})|}+20\log{|G_e(j\omega _c^{\star})|}&=0 \\
+        20\log{|R_d(j\omega _c^{\star})|}&=-20\log{|G_e(j\omega _c^{\star})|}
+    \end{aligned}
+\end{equation*}
+Supponendo $|R_d(j\omega _c^{\star})|_{\textrm{dB}}\approx 20\log{\alpha}$ si avrà $$ 20\log{\alpha}=-|G_e(j\omega _c^{\star})|_{\textrm{dB}}\Longrightarrow\alpha=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$
+
+#### Rete ritardatrice: formule di inversione
+
+\
+Obiettivo 1: calcolare $\alpha$ e $\tau$ in modo che alla pulsazione $\omega _c^{\star}$ la rete ritardatrice abbia un'attenuazione di $0<M^{\star}<1$ e uno sfasamento $-\frac{\pi}{2}<\varphi ^{\star}<0$, ovvero $$ R_d(j\omega _c^{\star})=\frac{1+j\alpha\tau\omega _c^{\star}}{1+j\tau\omega _c^{\star}}=M^{\star}e^{j\varphi ^{\star}} $$ $$ M^{\star}=|R_d(j\omega _c^{\star})| \quad\quad \varphi ^{\star}=\arg{(R_d(j\omega _c^{\star}))} $$ Si pone $$ \frac{1+j\alpha\tau\omega _c^{\star}}{1+j\tau\omega _c^{\star}}=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right) $$
+\begin{equation*}
+    \begin{aligned}
+        1+j\alpha\tau\omega _c^{\star}&=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right)(1+j\tau\omega _c^{\star}) \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}+j\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}-\tau\omega _c^{\star}\sin{(\varphi ^{\star})}\right] \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}-\tau\omega _c^{\star}\sin{(\varphi ^{\star})}+j\left(\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+\sin{(\varphi ^{\star})}\right)\right]
+    \end{aligned}
+\end{equation*}
+Uguagliando parte reale ed immaginaria si ottiene
+\begin{equation*}
+    \begin{aligned}
+        1&=M^{\star}\cos{(\varphi ^{\star})}-M^{\star}\tau\omega _c^{\star}\sin{(\varphi ^{\star})} \\
+        \alpha\tau\omega_c^{\star}&=M^{\star}\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+M^{\star}\sin{(\varphi ^{\star})}
+    \end{aligned}
+\end{equation*}
+Quindi le formule di inversione sono:
+\begin{equation*}
+    \begin{aligned}
+        \tau&=\frac{\cos{(\varphi ^{\star})}-\frac{1}{M^{\star}}}{\omega_c^{\star}\sin{(\varphi ^{\star})}} \\
+        \alpha\tau&=\frac{M^{\star}-\cos{(\varphi ^{\star})}}{\omega_c^{\star}\sin{(\varphi ^{\star})}}
+    \end{aligned}
+\end{equation*}
+Si noti che per avere $\alpha >0$ occorre $M^{\star}<\cos{(\varphi ^{\star})}$.\
+\
+Obiettivo 2: imporre $|L(j\omega)|_{\textrm{dB}}=0$ per $\omega=\omega _c^{\star}$.\
+Si procede: 
+
+1. scegliendo $\omega _c^{\star}$ e ricavare $M_f^{\star}$ dalle specifiche
+2. calcolare $M^{\star}$ e $\varphi ^{\star}$ imponendo $$ |G_e(j\omega _c^{\star})|_{\textrm{dB}}-20\log{M^{\star}} $$ $$ M_f^{\star}=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} $$ Ottenendo $M^{\star}$ dalla prima (o da quanto visto in precedenza): $$ M^{\star}=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$ E per il margine di fase:  $$: $$
+\begin{equation*}
+    \begin{aligned}
+        M_f^{\star}&=180^{\circ}+\arg{(L(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\arg{(R_d(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} \\
+        \varphi^{\star}&=M_f^{\star}-180^{\circ}-\arg{(G_e(j\omega _c^{\star}))}
+    \end{aligned}
+\end{equation*}
+3. si verifica che $0<M^{\star}<1$, $-\frac{\pi}{2}<\varphi ^{\star}<0$ e $M^{\star}<\cos{(\varphi ^{\star})}$
+4. si calcolano $\alpha$ e $\tau$ tramite le formule inverse viste nel paragrafo precedente.
+
+### SINTESI DEL REGOLATORE DINAMICO: SCENARIO B
+
+Si suppone, invece, scenario B la situazione in cui nell'intervallo ("centrale") di pulsazioni ammissibili per la pulsazione di attraversamento $\omega _c$ NON esistono pulsazioni in cui la fase di $G_e(j\omega)$ rispetti il vincolo sul margine di fase.
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+Gli obiettivi da raggiungere sono: 
+
+* modificare il diagramma delle fasi (aumentare la fase) nell'intervallo in modo che il vincolo sul margine di fase sia rispettato
+* amplificare il meno possibile l'ampiezza
+
+Le possibili azioni da compiere sono:
+
+1. aggiungere uno o più zeri (a pulsazioni precedenti quella di attraversamento desiderata) per aumentare la fase
+2. aggiungere uno o più poli a pulsazioni più alte per la fisica realizzabilità e per evitare una
+eccessiva amplificazione
+
+Aggiungendo 1 solo zero si avrebbe
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB1Zero.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Aggiungendone 2 invece
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB2Zeri.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+**N.B.** il massimo incremento di fase dato da uno zero è $90^{\circ}$ per $\omega\to\infty$ quindi il guadagno di fase per uno zero è $<90$.\
+\
+Tenendo conto dell'aggiunta di uno o più poli si può progettare $R_d(s)$ come segue.
+
+#### Rete anticipatrice
+
+$$ R_d(s)=\frac{1+\tau s}{1+\alpha\tau s} \quad \quad 0<\alpha<1 $$ Nel caso in cui si necessiti di un anticipo maggiore di fase (ad esempio 2 zeri): $$ R_d(s)=\frac{1+\tau _1 s}{1+\alpha _1\tau _1s}\frac{1+\tau _2 s}{1+\alpha _2\tau _2s} \quad \quad 0<\alpha _1<1, 0<\alpha _2<1 $$ $$ s_z=-\frac{1}{\tau} \quad\quad s_p=-\frac{1}{\alpha\tau} $$ 
+\
+\
+Una volta realizzata la rete anticipatrice (singola o multipla) si possono verificare 2 casi:
+
+* **_B1_**: $\omega _c$ è nell'intervallo di specifica e il vincolo sul margine di fase è rispettato. In questo caso il progetto è terminato
+* **_B2_**: $\omega _c$ è fuori dall'intervallo di specifica o in un intervallo in cui il vincolo di margine di fase non è rispettato.\
+In ogni caso ci si è ricondotti ad uno scenario A (esiste un sotto-intervallo in cui il vincolo sul margine di fase è rispettato).
+
+#### Caso B2
+
+* Se $\mu _d$ libero allora scegliamo $\mu _d<1$ per attenuare $$ R_d(s)=\mu _d\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$
+* Se $\mu _d$ bloccato $$ R_d(s)=\frac{1+\alpha _a\tau _a s}{1+\tau _a s}\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$
+
+#### Rete ritardo-anticipo
+
+$$ R_d(s)=\frac{1+\alpha _a\tau _a s}{1+\tau _a s}\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$ 
+
+* Rete anticipatrice: polo e zero a più alte frequenze
+* Rete ritardatrice: polo e zero a più basse frequenze
+
+```{=latex}
+\begin{center}
+```
+
+![](reteRitardoAnticipo.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### Rete anticipatrice: diagramma di Bode
+
+```{=latex}
+\begin{center}
+```
+
+![](reteAnticipatrice.PNG){height=270px}
+
+```{=latex}
+\end{center}
+```
+
+#### Rete anticipatrice: formule di inversione
+
+\
+Obiettivo 1: calcolare $\alpha$ e $\tau$ in modo che alla pulsazione $\omega _c^{\star}$ la rete ritardatrice abbia un'attenuazione di $M^{\star}>1$ e uno sfasamento $0<\varphi ^{\star}<\frac{\pi}{2}$, ovvero $$ R_d(j\omega _c^{\star})=\frac{1+j\tau\omega _c^{\star}}{1+j\alpha\tau\omega _c^{\star}}=M^{\star}e^{j\varphi ^{\star}} $$ $$ M^{\star}=|R_d(j\omega _c^{\star})| \quad\quad \varphi ^{\star}=\arg{(R_d(j\omega _c^{\star}))} $$ Si pone $$ \frac{1+j\tau\omega _c^{\star}}{1+j\alpha\tau\omega _c^{\star}}=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right) $$
+\begin{equation*}
+    \begin{aligned}
+        1+j\tau\omega _c^{\star}&=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right)(1+j\alpha\tau\omega _c^{\star}) \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}+j\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}-\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})}\right] \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}-\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})}+j\left(\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+\sin{(\varphi ^{\star})}\right)\right]
+    \end{aligned}
+\end{equation*}
+Uguagliando parte reale ed immaginaria si ottiene
+\begin{equation*}
+    \begin{aligned}
+        1&=M^{\star}\cos{(\varphi ^{\star})}-M^{\star}\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})} \\
+        \tau\omega_c^{\star}&=M^{\star}\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+M^{\star}\sin{(\varphi ^{\star})}
+    \end{aligned}
+\end{equation*}
+Quindi le formule di inversione sono:
+\begin{equation*}
+    \begin{aligned}
+        \tau&=\frac{M^{\star}-\cos{(\varphi ^{\star})}}{\omega_c^{\star}\sin{(\varphi ^{\star})}} \\
+        \alpha\tau&=\frac{\cos{(\varphi ^{\star})}-\frac{1}{M^{\star}}}{\omega_c^{\star}\sin{(\varphi ^{\star})}}
+    \end{aligned}
+\end{equation*}
+Si noti che per avere $\alpha >0$ occorre $\frac{1}{M^{\star}}<\cos{(\varphi ^{\star})}$.\
+\
+Obiettivo 2: imporre $|L(j\omega)|_{\textrm{dB}}=0$ per $\omega=\omega _c^{\star}$.\
+Si procede: 
+
+1. scegliendo $\omega _c^{\star}$ e ricavare $M_f^{\star}$ dalle specifiche
+2. calcolare $M^{\star}$ e $\varphi ^{\star}$ imponendo $$ |G_e(j\omega _c^{\star})|_{\textrm{dB}}-20\log{M^{\star}} $$ $$ M_f^{\star}=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} $$ Ottenendo $M^{\star}$ dalla prima (o da quanto visto in precedenza): $$ M^{\star}=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$ E per il margine di fase:
+\begin{equation*}
+    \begin{aligned}
+        M_f^{\star}&=180^{\circ}+\arg{(L(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\arg{(R_d(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} \\
+        \varphi^{\star}&=M_f^{\star}-180^{\circ}-\arg{(G_e(j\omega _c^{\star}))}
+    \end{aligned}
+\end{equation*}
+3. verificare $M^{\star}>1$, $0<\varphi ^{\star}<\frac{\pi}{2}$ e $\frac{1}{M^{\star}}<\cos{(\varphi ^{\star})}$
+4. si calcolano $\alpha$ e $\tau$ tramite le formule inverse viste nel paragrafo precedente.
+
+## CONTROLLORI PID
+
+Un controllore PID (Proporzionale Integrale Derivativo) "ideale" è della forma $$ R(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right) \quad \quad T_i=\textrm{ Tempo integrale} \quad T_d=\textrm{ Tempo derivativo} $$
+```{=latex}
+\begin{center}
+```
+
+![](retroazionePID.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+Ingresso di controllo: 
+\begin{equation*}
+    \begin{aligned}
+        U(s)&=R(s)E(s) \\
+        &= K_pE(s)+\frac{K_p}{T_i}\frac{E(s)}{s}+K_pT_dsE(s)
+    \end{aligned}
+\end{equation*}
+Che nel dominio del tempo risulta $$ u(t)=\mathcal{L}[U(s)]=K_pe(t)+\frac{K_p}{T_i}\int_{0}^{t}e(\tau)d\tau+K_pT_d\frac{de(t)}{dt} $$ 
+Di cui:
+
+* $K_pe(t)$ termine **P**roporzionale
+* $\frac{K_p}{T_i}\int_{0}^{t}e(\tau)d\tau$ termine **I**ntegrale
+* $K_pT_d\frac{de(t)}{dt}$ termine **D**erivativo (**N.B.** non causale)
+
+ATTENZIONE!!\
+Il PID ideale non è fisicamente realizzabile. Infatti, sviluppando i calcoli, si vede che la funzione di trasferimento del controllore ha un numeratore con grado più elevato del denominatore: $$ R(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right)=\frac{K_pT_is+K_p+K_pT_iT_ds^2}{T_is} $$ il PID "reale" (fisicamente realizzabile) richiede di aggiungere un polo in alta frequenza $$ R^{\textrm{fr}}(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right)\frac{1}{1+T_ps} $$
+\
+\
+Raccogliendo i termini e definendo opportunamente $\tau _1$, $\tau _2$ si può vedere che il PID reale è una combinazione di una rete anticipatrice e di una ritardatrice:
+\begin{equation*}
+    \begin{aligned}
+        R^{\textrm{fr}}(s)&=\frac{K_p}{T_i}\frac{T_is+1+T_iT_ds^2}{s}\frac{1}{1+T_ps} \\
+        &=\mu\frac{(1+\tau _1s)(1+\tau _2s)}{s}\frac{1}{1+T_ps} \quad \quad \mu := \frac{K_p}{T_i}
+    \end{aligned}
+\end{equation*}
+\
+Casi particolari:
+
+* **Regolatori P**: se $T_i\to\infty$ e $T_d=0$ (no termine integrale e derivativo), si ottiene un regolatore proporzionale $R(s)=K_p$
+* **Regolatori I**: in assenza di termine proporzionale e derivativo, si ottiene un regolatore puramente integrale $R(s)=\frac{K_i}{s}$. Si può interpretare come una rete ritardatrice con il polo posto nell'origine e con lo zero all'infinito
+* **Regolatori PI**: se $T_d=0$ (no termine derivativo), si ottiene un regolatore proporzionale integrale $R(s)=K_p\left(1+\frac{1}{T_is}\right)$. Possono essere visti come reti ritardatrici con polo nell'oricine e zero in $-1/T_i$.
+* **Regolatori PD**: se $T_i\to\infty$ (no termine integrale), si ottiene un regolatore proporzionale derivativo $R(s)=K_p(1+T_ds)$. Possono essere visti come reti anticipatrici con zero in $-1/T_d$ e polo posto all'infinito (nel caso ideale)
+
+# LUOGO DELLE RADICI
+
+Considerando il seguente schema in retroazione
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadici.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+in cui si mette in evidenza il guadagno $k$. La funzione di trasferimento in anello chiuso è $$ F(s)=\frac{kR(s)G(s)}{1+kR(s)G(s)}=\frac{kL(s)}{1+kL(s)} $$ L'obiettivo è studiare come variano nel piano complesso i poli di $F(s)$ al variare di $k$.
+
+#### Esempio
+
+Prendendo in esempio un sistema del prim'ordine $L(s)=\frac{1}{s+1}$ (polo in $-1)
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+La funzione di trasferimento in anello chiuso è $$ F(s)=\frac{kL(s)}{1+kL(s)}=\frac{k\frac{1}{s+1}}{1+k\frac{1}{s+1}}=\frac{k}{s+1+k} \quad \quad \quad \textrm{polo in $-1-k$} $$ **_Luogo delle radici_**: posizione nel piano complesso del polo di $F(s)$ al variare di $k\ge 0$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+
+## DEFINIZIONE DI LUOGO DELLE RADICI
+
+Sia $$ L(s)=\frac{N(s)}{D(s)} $$ si ha $$ F(s)=\frac{kL(s)}{1+kL(s)}=\frac{kN(s)}{D(s)+kN(s)} $$
+
+* Gli zeri di $F(s)$ sono le radici di $kN(s)$ e quindi sono gli zeri di $L(s)$
+* I poli di $F(s)$ sono le radici di $D(s)+kN(s)$ e quindi dipendono da poli e zeri di $L(s)$
+
+**N.B.** la retroazione non sposta gli zeri del sistema, ma solo i poli
+
+#### Luogo diretto:
+
+posizione dei poli di $F(s)$ al variare di $k\ge 0$ (ci si concentrerà su questo)
+
+#### Luogo inverso:
+
+posizione dei poli di $F(s)$ al variare di $k\le 0$
+
+## EQUAZIONE CARATTERISTICA
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+I poli del sistema retroazionato sono le soluzioni dell'**equazione caratteristica** $$ D(s)+kN(s)=0 $$
+
+* $k=0 \longrightarrow D(s)=0$ I poli di $F(s)$ coincidono con quelli di $L(s)$
+* $k\to\infty \longrightarrow N(s)=0$ I poli di $F(s)$ coincidono con gli zeri di $L(s)$
+
+**N.B.** Per sistemi propri il polinomio $D(s)$ ha grado maggiore o uguale a quello di $N(s)$, l'ordine del polinomio $D(s)+kN(s)$ è lo stesso di quello di $D(s)$\
+$\Longrightarrow$ il numero di poli del sistema retroazionato è uguale a quello del sistema ad anello aperto.
+
+### OSSERVAZIONI
+
+Fissato un valore di $k$ le soluzioni dell'equazione caratteristica determinano $n$ punti nel piano complesso, con $n$ ordine di $L(s)$ $$ D(s)+kN(s)=0 $$
+
+#### Esempio:
+
+sistema del terz'ordine $$ L(s)=\frac{1}{(s+1)^3} \quad \quad \textrm{3 poli in -1} $$ Il luogo delle radici è costituito da $n$ "rami" parametrizzati nel valore di $k$. Una volta fissato, gli $n$ punti sugli $n$ rami identificano i poli del sistema retroazionato per quel $k$.\
+Se i coefficienti dell'equazione caratteristica sono reali allora il luogo è simmetrico rispetto all'asse reale.
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs2.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+
+## REGOLE DI TRACCIAMENTO
+
+Sia $n$ il numero di poli e $m$ il numero di zeri di $L(s)$ (con $n\ge m$).\
+Le regole sono:
+
+1. Il luogo ha tanti rami quanti sono i poli del sistema in catena aperta
+2. Ogni ramo parte da un polo di $L(s)$ e termina in uno zero di $L(s)$ o all'infinito. In particolare, $m$ rami terminano negli zeri di $L(s)$ e $n-m$ rami terminano all'infinito
+3. Il luogo è simmetrico rispetto all’asse reale 
+4. I punti dell'asse reale che appartengono al luogo sono quelli che lasciano alla propria destra un numero dispari di singolarità (cioè poli o zeri) di $L(s)$.
+
+Siano ora $-p_1,\ldots,-p_n$ i poli e $-z_1,\ldots,-z_m$ gli zeri di $L(s)=\frac{(s+z_1)\cdots(s+z_m)}{(s+p_1)\cdots(s+p_n)}$
+
+5. I rami che tendono all'infinito lo fanno lungo asintoti che si intersecano sull'asse reale nel punto con ascissa pari a $$ x_a=\frac{1}{n-m}\left(\sum_{i=1}^{m}z_i-\sum_{i=1}^{n}p_i\right) $$
+6. Gli asintoti dividono il piano complesso in parti uguali. In particolare l'angolo che il $j$-esimo asintoto forma con l'asse reale è $$ \theta _{a,j}=\frac{(2j+1)\pi}{n-m}, \quad \quad \quad j=0,\ldots,n-m-1 $$
+7. Quando il grado relativo del sistema è maggiore di 1 (cioè $n-m\ge 2$), la somma dei poli è costante al variare di $k$, quindi il baricentro del luogo è il punto dell’asse reale con ascissa $$ x_b=-\frac{1}{n}\sum_{i=1}^{n}p_i $$ 
+
+```{=latex}
+\begin{center}
+```
+
+![](asintoti.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+Le regole che si enuncieranno in seguito si applicano ai poli semplici di $L(s)$ (per i poli multipli le regole sono più complesse)
+
+8. La tangente al ramo uscente da un polo semplice $-p_j$ forma con l'asse reale l'angolo $$ \alpha _j=180^{\circ}+\sum_{i=1}^{m}\theta _i-\sum_{i\ne j} \varphi _i $$ dove $\theta _i$ (e rispettivamente $\varphi _i$) è l'angolo formato con il semiasse reale positivo dal vettore che congiunge il polo in considerazione con lo zero $-z_i$ (rispettivamente con il polo $-p_i$)
+9. La tangente del ramo entrante in uno zero semplice $-z_j$ forma con l'asse reale l'angolo $$ \beta _j=180^{\circ}-\sum_{i\ne j}\theta _i+\sum_{i=1}^{n}\varphi _i $$ dove gli angoli $\theta _i$ e $\varphi _i$ sono definiti in modo analogo alla precedente regola
+
+Ad esempio: determinare l'angolo di uscita $\alpha _3$ del ramo che parte dal polo in $-p_3$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs3.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+Oppure, un altro esempio: determinare l'angolo d'ingresso $\beta _2$ del ramo che entra nello zero in $-z_2$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs4.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+
+10. Eventuali punti di incrocio di rami sull'asse reale si possono determinare trovando i massimi e i minimi relativi della funzione $$ \gamma (x)=-\frac{D(x)}{N(x)} $$ Nello specifico, se $\bar x$ è un punto di minimo e $s=\bar x$ appartiene al luogo, esistono due rami complessi che confluiscono sull'asse reale in $\bar x$; se $\bar x$ è, invece, un punto di massimo e $s=\bar x$ appartiene al luogo, esistono due rami reali che si incontrano in $\bar x$ e poi si semparano diventando complessi.
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciReg10.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+
+## SISTEMI DEL PRIM'ORDINE
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIordine.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+## SISTEMI DEL SECOND'ORDINE 
+
+### CON POLI REALI
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIIordineReali.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+### CON POLI COMPLESSI CONIUGATI
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIIordineComplCC.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+## ESEMPIO CON MATLAB
+
+Luogo delle radici di un sistema del secondo ordine con zero $$ G(s)=\frac{s+2}{s^2+2s+2} $$
+```matlab
+s = tf('s');
+G = zpk([-2], [-1+j,-1-j], 1);
+rlocus(G);
+```
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciMatlab.PNG){height=200px}
 
 ```{=latex}
 \end{center}
