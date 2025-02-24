@@ -1,4 +1,5 @@
 # APPUNTI LEZIONI
 
 Ultimi aggiornamenti:
-- Ingegneria del software
+- CAT: da iniziare diagrammi di bode (slide 17 risposta in frequenza tablet)
+- Reti: slide 10 Java RMI

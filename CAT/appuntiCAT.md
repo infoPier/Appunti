@@ -560,7 +560,7 @@ Si può dimostrare che $|\xi _{i}| < 1$ perchè devono essere complesse coniugat
         &= -\xi _{i} \omega _{ni} \pm j \omega_{ni} \sqrt{1 - \xi _{i}^2}
     \end{aligned}
 \end{equation*}
-Dalla forma presentata in precedenza si può arrivare ad una seconda forma particolarmente di interesse: $$ G(s) = \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$
+Dalla forma presentata in precedenza si può arrivare ad una seconda forma particolarmente di interesse: $$ G(s) = \frac{\mu \prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni}}s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$
 detta **forma di Bode**. 
 \newpage
 _Dimostrazione_:
@@ -1129,3 +1129,1481 @@ Uno dei modi più utilizzati per rappresentare la $G(j\omega)$ sono i **diagramm
 
 ### DIAGRAMMI DI BODE
 
+Si parte dalla forma fattorizzata della funzione di trasferimento (detta forma di Bode): $$ G(s) = \mu \frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{n,i} s} + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{n,i}} s +\frac{s^2}{\omega _{n,i}^2})} $$ con risposta in frequenza associata $$ G(s) = \mu \frac{\prod_{i}(1+j\omega\tau _{i}) \prod_{i}(1+2j\zeta _i\frac{\omega}{\alpha _{n,i}} - \frac{\omega ^2}{\alpha _{n,i}^2})}{(j\omega)^g \prod_{i}(1+j\omega T_i) \prod_{i} (1+2j\xi _{i}\frac{\omega}{\omega _{ni}} -\frac{\omega ^2}{\omega _{n,i}^2})} $$
+Come detto in precedenza si studiano $|G(j\omega)|$ e $arg(G(j\omega))$. \
+Sull'asse delle ascisse si hanno sempre le frequenze **in scala logaritmica** di base 10 (ricorda: $\omega\ge 0$).\
+Mentre sull'asse delle ordinate si ha:
+
+* l'ampiezza in **decibel**: $|G(j\omega)|_{dB}=20 log(|G(j\omega)|)$
+* nel diagramma delle fasi l'angolo: $arg(G(j\omega))$
+
+È quindi utile ricordare che per quanto riguarda il diagramma del modulo la scala logaritmica è sia per l'asse delle ascisse che per quello delle ordinate, mentre per il diagramma della fase questa scala si usa solo per le ascisse. \
+La seguente immagine riporta un esempio di diagramma di Bode.
+
+```{=latex}
+\begin{center}
+```
+
+![Esempio di diagramma di Bode della funzione: $G(j\omega)=\frac{1}{1+10j\omega}$](bode1.png){height=330px}
+
+```{=latex}
+\end{center}
+```
+Per la risposta in frequenza è utile studiare come risulta la funzione che restituisce $|G(j\omega)|_{dB}$ e $arg(G(j\omega))$
+\begin{equation*}
+    \begin{aligned}
+        |G(j\omega)|_{dB} &=20log(|G(j\omega)|) \\
+        &= 20\log{|\mu|} -20g\log{|j\omega|} \\
+        &+\sum_{i} 20\log{|1+j\omega\tau _{i}|} + \sum_{i}20\log{\left|1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right|} \\
+        &- \sum_{i}20\log{|1+j\omega T_i|}-\sum_{i}20\log{\left|1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}\right|}\\
+    \end{aligned}
+\end{equation*}
+\begin{equation*}
+    \begin{aligned}
+        \arg(G(j\omega)) &= \arg{(\mu)} -g\arg{(j\omega)} \\
+        &+\sum_{i} \arg{(1+j\omega\tau _{i})} + \sum_{i}\arg{\left(1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right)} \\
+        &- \sum_{i}-\arg{(1+j\omega T_i)}-\sum_{i}\arg{\left(1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}\right)}\\
+    \end{aligned}
+\end{equation*}
+**N.B.**: si noti che in entrambe le equazioni la prima e la terza sommatoria hanno lo stesso andamento ma con segno opposto, e stessa cosa vale per la seconda e la quarta.\
+\
+Si può passare, quindi, a studiare l'andamento dei contributi fondamentali per poi sommarli (grazie al principio di sovrapposizione degli effetti) per ottenere il risultato: 
+
+* $G_a(j\omega)=\mu$ 
+* $G_b(j\omega)=\frac{1}{(j\omega)^g}$ 
+* $G_c(j\omega) = (1+j\omega\tau _i)$ e, per quanto visto nel nota bene, $G_c(j\omega)=\frac{1}{1+j\omega T_i}$ ha lo stesso andamento ma con segno opposto
+* $G_d(j\omega)=\left(1+2j\zeta _{i}\frac{\omega}{\alpha _{n,i}}-\frac{\omega ^2}{\alpha _{n,i}^2}\right)$ e, per quanto visto nel nota bene, $G_c(j\omega)=\frac{1}{1+2j\xi _{i}\frac{\omega}{\omega _{n,i}}-\frac{\omega ^2}{\omega _{n,i}^2}}$ ha lo stesso andamento ma con segno opposto
+
+#### Guadagno statico $\mu$
+
+$$ G_a(j\omega)=\mu \quad \quad \quad |G_a(j\omega)|_{dB}=20\log{|\mu|} \quad \quad \quad \arg{(G(j\omega))}=\arg{(\mu)} $$ 
+```{=latex}
+\begin{center}
+```
+
+![](bodeMU.png){height=220px}
+
+```{=latex}
+\end{center}
+```
+**_Ampiezza_**: se $\mu\ge 1$ allora $20\log{|\mu|}\ge 0$ e si ha amplificazione, mentre se $\mu <1$ allora $20\log{|\mu|}<0$ e si ha attenuazione.\
+**_Fase_**: se $\mu \ge 0$ allora $\arg{(\mu)}=0$, se $\mu <0$ allora $\arg{(\mu)}=-180^{\circ}$
+
+\newpage
+
+#### Zeri nell'origine
+
+\
+Consideriamo uno zero nell'origine ($g=-1$) $$ G_b(j\omega)=\frac{1}{(j\omega)^g}=j\omega \quad \quad \quad |G_b(j\omega)|_{dB}=20\log{(\omega)} \quad \quad \quad \arg{(G_b(j\omega))}=\arg{(j\omega)} $$ 
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeroOrigine.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+In scala logaritimica $\log{\omega}\mapsto 20\log{\omega}$ corrisponde ad una retta di pendenza $20$ dB/decade.\
+Quindi se ho $g$ zeri nell'origine, la pendenza della retta sarà $20g$ dB/decade.\
+$j\omega$ è un punto sul semiasse immaginario positivo $\forall\omega >0$, quindi ha fase $90^{\circ}\quad \forall\omega >0$.\
+La fase sarà uguale, quindi, a $\arg{(j\omega)^g}=g90^{\circ}$.\
+Sostanzialmente una funzione di trasferimento del genera è un derivatore, che amplifica le alte frequenze e quindi anche il rumore (che solitamente si trova ad alta frequenza).
+
+#### Poli nell'origine
+
+\
+Si consideri, ora, un polo nell'origine ($g=1$) $$ G_b(j\omega)=\frac{1}{(j\omega)^g}=\frac{1}{j\omega} \quad \quad \quad |G_b(j\omega)|_dB=-20\log{(\omega)} \quad \quad \quad \arg{(G_b(j\omega))}=-\arg{(j\omega)} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodePoloOrigine.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Sostanzialmente valgono li stessi discorsi fatti in precedenza per lo zero, ma col segno opposto.\
+Quindi, in scala logaritmica $\log{\omega}\mapsto -20\log{\omega}$ corrisponde ad una retta di pendenza $-20$ dB/decade.\
+Quando ho $g$ poli nell'origine la pendenza diventa $-20g$ dB/decade.\
+$-j\omega$ è un punto sul semiasse immaginario positivo $\forall\omega >0$, quindi ha fase $-90^{\circ}\quad \forall\omega >0$.\
+Più in generale, la fase è uguale a $\arg{(j\omega)^g}=g90^{\circ}\ \ g<0$.\
+Questo tipo di funzione di trasferimento rappresenta un integratore, che attenua le alte frequenze ma introduce ritardo.\
+
+#### Zero reale
+
+\
+Ora si consideri $G_c(j\omega)=1+j\omega\tau$ 
+\begin{equation*}
+    \begin{aligned}
+        |G_c(j\omega)|_dB=20\log{(\sqrt{1+\omega^2\tau^2})}&\approx\begin{cases} 20\log{1}=0 \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \quad \omega\ll\frac{1}{|\tau|} \\ 20\log{\omega |\tau|}=20\log{(\omega)}+20\log{|\tau|} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases} \\
+        &\approx \begin{cases} 20\log{1}=0 \quad \quad \quad \quad \quad \ \omega\ll\frac{1}{|\tau|} \\ 20\log{(\omega)}-20\log{\frac{1}{|\tau|}} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+$$ \left|G_d(j\omega)\bigg|_{\omega=\frac{1}{|\tau|}}\right|=\left|G\left(j\frac{1}{|\tau|}\right)\right|=\left|1+j\frac{1}{|\tau|}\tau\right|=|1\pm j|=\sqrt{2} $$
+$$ \left|G_d\left(j\frac{1}{|\tau|}\right)\right|_{dB}=20\log{\sqrt{2}}=10\log{2}\approx 3\textrm{ dB} $$ In verde è rappresentato il grafico asintotico (approssimazione).\
+In blu vi è rappresentato il diagramma reale.
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeroReale.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Il riferimento per l'approssimazione è 1 decade, quindi: $$ \omega\ll\frac{1}{|\tau|}\Longrightarrow\omega <\frac{1}{|\tau|}\cdot~10^{-1} $$ $$ \omega\gg\frac{1}{|\tau|}\Longrightarrow\omega >\frac{1}{|\tau|}\cdot~10^{1} $$ Fino alla **_pulsazione di taglio_** $\omega=\frac{1}{|\tau|}$ l'andamento dell'approssimazione è costante a $0$ dB. \
+Sempre in riferimento alla pulsazione di taglio $\omega=\frac{1}{|\tau|}$ entra in gioco la retta $\log{\omega}\mapsto -20\log{\frac{1}{|\tau|}}+20\log{\omega}$ con pendenza $20$ dB/dec.\
+Per quanto riguarda. invece, il grafico reale ha un discostamento massimo proprio alla pulsazione di taglio $\omega=\frac{1}{|\tau|}$, tale scostamento vale proprio $3$ dB (come visto in precedenza).
+\newpage
+Per la fase, invece, considerando uno zero reale negativo ($\tau >0$):
+\begin{equation*}
+    \begin{aligned}
+        \arg{\left(G_c(j\omega)\right)}=\arg{(1+j\omega\tau)}\approx \begin{cases} 0 \quad \quad \ \omega\ll\frac{1}{|\tau|} \\ 90^{\circ} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+```{=latex}
+\begin{center}
+```
+
+![Fase di uno zero reale negativo $\tau >0$](bodeZeroRealeFase1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Se, invece, si prende in considerazione uno zero positivo ($\tau <0$) si ha:
+\begin{equation*}
+    \begin{aligned}
+        \arg{\left(G_c(j\omega)\right)}=\arg{(1+j\omega\tau)}\approx \begin{cases} 0 \quad \quad \ \ \ \omega\ll\frac{1}{|\tau|} \\ -90^{\circ} \quad \ \omega\gg\frac{1}{|\tau|} \end{cases}
+    \end{aligned}
+\end{equation*}
+```{=latex}
+\begin{center}
+```
+
+![Fase di uno zero reale positivo $\tau >0$](bodeZeroRealeFase2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Come si evince da entrambe le immagini, il cambio di fase inizia circa una decade prima ($\frac{1}{5}\cdot~\frac{1}{|\tau|}$) e finisce circa una decade dopo ($5\cdot~\frac{1}{|\tau|}$) la pulsazione di taglio $\omega=\frac{1}{|\tau|}$.
+
+#### Polo reale
+
+\
+Considerando $G_c(j\omega)=\frac{1}{1+j\omega T}$ (polo reale): $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+\omega^2T^2}} \quad \quad \quad \arg{(G_c(j\omega))}=-\arg{(1+j\omega T)} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodePoloReale.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+A destra il diagramma di Bode di un polo reale negativo ($T>0$), mentre a sinistra di un polo reale positivo ($T<0$).\
+Il diagramma è ottenuto da quello dello zero ribaltando rispetto all'asse reale: fino alla pulsazione di taglio ha sempre andamento costante a $0$ dB, dopo $\omega=\frac{1}{|T|}$ si ha la retta $\log{\omega}\mapsto 20\log{\frac{1}{|T|}}-20\log{\omega}$ di pendenza $-20$ dB/dec.\
+Anche lo scostamento massimo è uguale ma di segno opposto rispetto a quello dello zero: $$ |G_c(j\omega)|_{dB}=-20\log{\sqrt{1+1}}=-20\log{\sqrt{2}}\approx -3 \textrm{ dB} $$ Il cambio di fase inizia circa una decade prima e finisce circa una decade dopo la pulsazione di taglio $\omega =\frac{1}{|T|}$
+
+#### Zeri complessi coniugati
+
+\
+Considerando $G_d(j\omega)=1+2j\zeta\frac{\omega}{\alpha _n}-\frac{\omega ^2}{\alpha _n^2}$ (coppia di zeri complessi coniugati): $$ |G_d(j\omega)|_{dB}=20\log{\sqrt{(1-\frac{\omega ^2}{\alpha _n^2})^2+4\zeta ^2\frac{\omega ^2}{\alpha _n^2}}}\approx \begin{cases} 20\log{(1)}=0 \quad \quad \quad \quad \quad \quad \quad \quad \quad \ \  \omega \ll \alpha _n \\ 20\log{\frac{\omega ^2}{\alpha _n^2}}=-40\log{\alpha _n}+40\log{\omega} \quad \omega \gg \alpha _n \end{cases} $$
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeriCC.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Fino alla pulsazione di taglio $\omega =\alpha _n$ l'andamento è costante a $0$ dB. \
+A partire dalla pulsazione di taglio ($\omega =\alpha _n$) si passa ad una retta $\log{\omega}\mapsto -40\log{\alpha _n}+40\log{\omega}$ di pendenza $40$ dB/dec.\
+Si ha uno scostamento significativo nella zona tratteggiata del grafico che dipende dal valore di $\zeta$.
+```{=latex}
+\begin{center}
+```
+
+![](bodeZeriCCZeta.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Quello in blu rappresenta $\zeta = 0.01$ e così a salire. Al crescere di $\zeta$ il discostamento diminuisce.\
+Se ideale, questo tipo di rappresentazione ha un nome: filtro di Notch, che, sempre a livello ideale, elimina solo una frequenza detta $\omega _r =\alpha _n\sqrt{1-2\zeta ^2}$.\
+A tale pulsazione, $\omega _r =\alpha _n\sqrt{1-2\zeta ^2}$, $|G_d(j\omega _r)|_{dB}=2|\zeta|\sqrt{1-\zeta ^2}$.\
+\
+Per quanto riguarda la fase invece di zeri c.c. a parte reale negativa ($\zeta >0$) $$ \arg{(G_d(j\omega))} \approx \begin{cases} 0 \quad \quad \omega \ll \alpha _n \\ 180^{\circ} \ \ \omega \gg \alpha _n \end{cases} $$ 
+```{=latex}
+\begin{center}
+```
+
+![Zeri c.c. a parte reale negativa ($\zeta >0$)](bodeZeriCCFase1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Invece per zeri c.c. a parte reale positiva ($\zeta <0$): $$ \arg{(G_d(j\omega))} \approx \begin{cases} 0 \quad \quad \quad \omega \ll \alpha _n \\ -180^{\circ} \ \ \omega \gg \alpha _n \end{cases} $$ In entrambi i casi il cambio di fase dipende in modo significativo dal valore di $\zeta$.
+```{=latex}
+\begin{center}
+```
+
+![Zeri c.c. a parte reale positiva ($\zeta <0$)](bodeZeriCCFase2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+$$ \omega _a = \frac{\alpha _n}{5^{\zeta}} \quad \quad \quad \omega _b = 5^{\zeta}\alpha _n $$ 
+Questo tipo di effetto si chiama: effetto bloccante degli zeri.\
+Esempio: 
+
+> $$ \zeta =0 $$ $$ G(s)=\mu\frac{1+\frac{s^2}{\alpha _n^2}}{(1+T_1s)(1+T_2s)}=\frac{\mu}{\alpha _n^2T_1T_2}\frac{s^2+\alpha _n^2}{(s+\frac{1}{T_1})(s+\frac{1}{T_2})} \quad \quad T_{1,2} > 0 $$ Sistema a zeri puramente immaginari $$ u(t)=U\cos{(\alpha _nt)}1(t) \Longrightarrow U(s)=U\cdot\frac{s}{s^2+\alpha _n^2} $$ $$ Y(s)=G(s)U(s)=U\frac{\mu}{\alpha _n^2T_1T_2}\frac{s}{(s+\frac{1}{T_1})(s+\frac{1}{T_2})} = \frac{r_1}{s+\frac{1}{T_1}} + \frac{r_2}{s+\frac{1}{T_2}} $$ Che nel dominio del tempo corrisponde a $$ y(t)=r_1e^{-\frac{t}{T_1}}1(t)+r_2e^{-\frac{t}{T_2}}1(t) $$ La cosa da osservare è che dato un coseno in ingresso, non ci sono coseni in uscita.
+\newpage 
+
+#### Poli complessi coniugati
+
+\
+Considerando $|G_d(j\omega)|_{dB}=\frac{1}{1+2j\xi\frac{\omega}{\omega _n}+\frac{\omega ^2}{\omega _n^2}}$ con $\xi >0$ (coppia di poli c.c. a parte reale negativa)
+```{=latex}
+\begin{center}
+```
+
+![](bodePoliCCXiPos.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Si ha un picco di risonanza alla pulsazione di risonanza $\omega _r = \omega _n\sqrt{1-2\xi^2}$ con $|G_d(j\omega _r)|=\frac{1}{2|\xi|\sqrt{1-\xi^2}}$, conseguentemente alla frequenza $\omega _n$ si ha $|G_d(j\omega _n)|=\frac{1}{s|\xi|}$.\
+\
+Per quanto riguarda i poli c.c. con parte reale positiva ($\xi <0$)
+```{=latex}
+\begin{center}
+```
+
+![](bodePoliCCXiNeg.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+Si noti che il grafico è ottenuto dal ribaltamento rispetto all'asse reale del diagramma visto per gli zeri (il caso $\xi <0$ corrisponde al caso $\zeta <0$).\
+$\xi$ è detto coefficiente di smorzamento, in più d'ora in poi si approssimerà $$ \omega _r\approx\omega _n \Longrightarrow |G_d(\omega _n)|=\frac{1}{|\xi|} $$
+
+#### Ritardo temporale
+
+\
+Considerando una $G(s)=e^{-\tau s}$ e quindi $G(j\omega)=e^{-j\omega\tau}$ si ha $$ |G(j\omega)|_{dB}=20\log{|1e^{-j\omega\tau}|}=20\log{1}=0 $$ $$ \arg{(G(j\omega))}=\arg{(e^{-j\omega\tau})}=-\omega\tau $$ 
+\newpage
+Che in termini di diagrammi di Bode si traduce in 
+```{=latex}
+\begin{center}
+```
+
+![](bodeRitardoTemp.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+
+### PROPRIETÀ BLOCCANTE DEGLI ZERI
+
+Si supponga di avere $G(s)=\mu\frac{s^2+\alpha _n^2}{(1+T_1s)(1+T_2s)}$, con $T_1,T_2 >0$ (asintoticamente stabile). Si calcoli l'uscita del sistema all'ingresso $u(t)=U\cos{(\omega _uT)}$ che ha trasformata $U(s)=U\frac{s}{s^2+\omega _u^2}$. Si distinguono 2 casi
+
+#### Caso $\omega _u \ne \alpha _n$
+
+\
+La trasformata dell'uscita sarà $$ Y(s)=U\mu\frac{s(s^2+\alpha _n^2)}{(1+T_1s)(1+T_2s)(s^2+\omega _u^2)} $$ In base al denominatore i modi presenti nell'uscita sono: 
+
+* $e^{-\frac{t}{T_1}}$, dovuto al termine $1+T_1s$
+* $e^{-\frac{t}{T_2}}$, dovuto al termine $1+T_2s$
+* $|G(j\omega _u)|U\cos{(\omega _ut+\arg{(G(j\omega _u))})}$, dovuto al termine $s^2+\omega _u^2$
+
+#### Caso $\omega _u =\alpha _n$
+
+\
+La trasformata dell'uscita sarà $$ Y(s)=U\mu\frac{s(s^2+\alpha _n^2)}{(1+T_1s)(1+T_2s)(s^2+\omega _u^2)}=U\mu\frac{s}{(1+T_1s)(1+T_2s)} $$ In base al denominatore, i modi presenti nell'uscita saranno:
+
+* $e^{-\frac{t}{T_1}}$, dovuto al termine $1+T_1s$
+* $e^{-\frac{t}{T_2}}$, dovuto al termine $1+T_2s$
+
+Pertanto, in questo caso l'uscita **non presenta** i modi corrispondenti agli zeri del sistema.
+
+### RISONANZA
+
+Si supponga di avere un sistema con poli immaginari coniugati $\pm j\omega$, ovvero $G(s)=\mu\frac{\omega _n^2}{s^2+\omega _n^2}$.\
+Si è visto che il diagramma di bode ha un picco di risonanza infinito alla pulsazione $\omega _n$.\
+Ma cosa significa?\
+Per capirlo si calcola l'uscita del sistema in corrispondeza dell'ingresso $u(t)=U\cos{(\omega _nt)}$ che ha trasformata $U(s)=U\frac{s^2}{s^2+\omega _n^2}$. Quindi l'uscita è $$ Y(s)=G(s)U(s)=\mu\frac{U\omega _n^2 s}{(s^2+\omega _n^2)^2}=\frac{r_1}{s-j\omega _n}+\frac{\bar r_1}{s+j\omega _n}+\frac{r_2}{(s-j\omega _n)^2}+\frac{\bar r_2}{(s+j\omega _n)^2} $$ A causa dei termini al quadrato a denominatore avremo un'uscita del tipo $$ y(t)=A_1t\cos{(\omega _nt+\varphi _1)}+A_2\cos{(\omega _nt+\varphi _2)} $$ il cui valore assoluto tende ad infinito per $t\rightarrow\infty$.\
+Conseguentemente si tornerebbe ad un grafico dell'uscita nel tempo simile a quello per i modi naturali di poli a parte reale positiva.\
+Nella realtà non esistono sistemi con $\xi=0$ ma per valori molto piccoli del coefficiente di smorzamento il picco di risonanza può essere considerato infinito.
+
+### AZIONE FILTRANTE DEI SISTEMI DINAMICI
+
+Quanto visto fin'ora mostra che un sistema dinaminco si comporta come un filtro per l'ingresso "modellandolo" per produrre l'uscita.
+```{=latex}
+\begin{center}
+```
+
+![](filtri1.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](filtri2.PNG){height=220px}
+
+```{=latex}
+\end{center}
+```
+
+# SISTEMI DI CONTROLLO: STABILITÀ e PRESTAZIONI
+
+Si consideri il seguente sistema in retroazione
+```{=latex}
+\begin{center}
+```
+
+![](retroazione.PNG){height=400px}
+
+```{=latex}
+\end{center}
+```
+L'obiettivo è garantire che l'uscita $y(t)$ segua il riferimento $w(t)$ in presenza di:
+
+* disturbi non misurabili in uscita $d(t)$ e disturbi di misura $n(t)$
+* incertezze sul modello $G(s)$ del sistema fisico (impianto) considerato
+
+soddisfacendo opportune specifiche di prestazione.\
+A questo scopo si definisce la **funzione d'anello** $$ L(s)=R(s)G(s) $$ $$ \textrm{(funzione di trasferimento in anello aperto)} $$ Lo schema precedente cattura anche strutture più complesse che includono attuatori e trasduttori
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneComplicata.PNG){height=400px}
+
+```{=latex}
+\end{center}
+```
+**N.B.**: il riferimento $w$ viene filtrato con una replica della dinamica del sensore $T(s)$ in modo che sia "compatibile" con la dinamica dell'uscita $y$ retroazionata.
+\newpage
+Usando le proprietà degli schemi a blocchi interconnessi si può riscrivere lo schema precedente come
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneComplicata2.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+Riferendo in maniera opportuna i vari blocchi, lo schema semplificato cattura anche lo schema generale:
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneMenoComplicata.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+Sistemi:
+
+* $R(s)=T(s)\tilde R(s)$
+* $G(s)=A(s)\tilde G(s)$
+
+Segnali:
+
+* $W(s)=\tilde W(s)$
+* $N(s)=T^{-1}(s)\tilde N(s)$
+* $D(s)=D_a(s)\tilde G(s)+D_u(s)$
+
+**N.B.** il disturbo sull'attuatore $d_a(t)$ viene filtrato dal sistema. Bisogna tenerne conto quando si fanno considerazioni sul disturbo in uscita $d(t)$.
+\newpage
+Nelle applicazioni di carattere ingegneristico tipicamente le bande dei segnali di ingresso $w(t)$, $d(t) e $n(t)$ sono limitate in opportuni range
+```{=latex}
+\begin{center}
+```
+
+![](bandaSegnali.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+* $w(t)$ e $d(t)$ hanno bande a "basse frequenze" (e.g. posizioni, rotazioni, velocità, etc. di sistemi meccanici)
+* $n(t)$ hanno bande ad "alte frequenze" (e.g. disturbi termici in componenti elettronici, accoppiamenti con cambi elettromagretici etc.)
+
+#### Stabilità nominale
+
+\
+Requisito fondamentale è l'asintotica stabilità o stabilità BIBO (esterna) se solo rappresentazione ingresso-uscita.
+
+#### Stabilità robusta
+
+\
+La stabilità dev'essere garantita anche in situazioni perturbate (errori di modello o incertezze nei parametri).
+
+#### Prestazioni statiche
+
+\
+Prestazioni a transitorio esaurito ($t\rightarrow\infty$): tipicamente $e(t)$ limitato o nullo a fronte di ingressi $w$, $d$, $n$ con determinate caratteristiche. Ad esempio:
+
+* errore in risposta ad un ingresso a gradino (transizione ad un nuovo riferimento o disturbi costanti su attuatori/sensori) o rampa
+* risposta ad un ingresso sinusoidale ad alte frequenze (disturbi con certe componenti frequenziali)
+
+#### Prestazioni dinamiche
+
+\
+Prestazioni del sistema in transitorio relative a:
+
+* risposta ad un riferimento $w$, date in termini di tempo di assestamento $T_{\alpha,\epsilon}$ e sovraelongazione $S\%$ massimi
+* risposta a disturbi $d$ ed $n$, date in termini di attenuazione in certi range di frequenze (bande di frequenza dei disturbi)
+* moderazione della variabile di controllo $u$, date in termini di contenimento dell'ampiezza (per evitare la saturazione degli attuatori, uscita dal range in cui la linearizzazione è valida, costi eccessivi)
+
+```{=latex}
+\begin{center}
+```
+
+![](prestazioni.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+## STABILITÀ ROBUSTA DEL SISTEMA RETROAZIONATO
+
+Poichè la stabilità di un sistema lineare non dipende dagli ingressi, si consideri il seguente schema a blocchi
+```{=latex}
+\begin{center}
+```
+
+![](sistemaRetroazionato.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Per studiare la stabilità robusta (in presenza di incertezze) del sistema retroazionato si enuncerà un risultato fondamentale: il **criterio di bode** che lega la stabilità del sistema retroazionato a quella del sistema in anello aperto.\
+Prima di introdurre tale teorema è necessario introdurre un altro paio di concetti.
+
+### MARGINE DI FASE E AMPIEZZA
+
+Con $\omega _c$ detta pulsazione critica.
+
+#### Margine di fase:
+
+$M_f=180^{\circ}+\arg{(L(j\omega))}$ con $\omega _c$ tale che $|L(j\omega)|_{dB}=0$\
+**N.B.** $M_f=\arg{(L(j\omega))}-(-180^{\circ})=180^{\circ}+\arg{(L(j\omega))}$
+
+#### Margine di ampiezza:
+
+$M_a=-|L(j\omega _{\pi})|_{dB}$ con $\omega _{\pi}$ tale che $\arg{(L(j\omega _{\pi}))}=-180^{\circ}$
+
+```{=latex}
+\begin{center}
+```
+
+![](margineFaseAmpiezza.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Si possono riscontrare alcuni casi in cui $M_f$ e $M_a$ non sono definiti o non sono informativi:
+
+* _Intersezioni multiple_: il diagramma delle ampiezze $|L(j\omega)|_{dB}$ interseca l'asse a $0$ dB più di una volta
+* _Assenza di intersezioni_: il diagramma delle ampiezze $|L(j\omega)|_{dB}$ non attraversa l'asse a $0$ dB
+* _Segni discordi_: margini di fase e ampiezza $M_f$ e $M_a$ hanno segno discorde (per essere informativi $M_f$ ed $M_a$ devono avere lo stesso segno)
+
+### CRITERIO DI BODE
+
+**Teorema**
+
+> Si supponga che:\
+\ \ \ \ 1. $L(s)$ non abbia poli a parte reale (strettamente positiva) \
+\ \ \ \ 2. il diagramma di Bode del modulo di $L(j\omega)$ attraversi una sola volta l'asse a $0$ dB\
+Allora condizione necessaria e sufficiente perchè il sistema retroazionato sia asintoticamente stabile è che risulti $\mu >0$ (con $\mu$ guadagno statico di $L(j\omega)$) e $M_f >0$
+
+Si osservino le seguenti:
+
+* la stabilità del sistema in retroazione è determinata dalla lettura di un solo punto sul diagramma di Bode di $L(j\omega)$
+* $M_f$ e $M_a$ in genere vanno considerati simultaneamente e forniscono una misura della robustezza rispetto ad incertezze su $L(s)$.
+
+#### Robustezza rispetto a ritardi temporali
+
+\
+Un sistema che ritarda di $\tau$ ha funzione di trasferimento $G(s)=e^{-s\tau}$.\
+Il diagramma di Bode delle ampiezze di un ritardo è costante a $0$ dB.\
+Lo sfasamento è $\arg{G(j\omega)}=-\omega\tau$ che nel diagramma di Bode delle fasi, in scala semi-logaritmica, ha un andamento di tipo esponenziale.\
+A questo punto ci sono un paio di osservazioni da fare:
+
+* se $L(s)=e^{-s\tau}\tilde L(s)$ la pulsazione critica $\omega _c$ non cambia, ovvero quella di $L(s)$ è la stessa di $\tilde L(s)$
+* un ritardo riduce quindi il margine di fase in quanto per $\omega=\omega _c$ riduce la fase, ovvero $$ \arg{(L(j\omega _c))} = \arg{(\tilde L(j\omega _c))} -\tau\omega _c $$ Quindi il massimo ritardo tollerabile $\tau _{\textrm{max}}$ deve soddisfare $$ \tau _{\textrm{max}} < \frac{M_f}{\omega _c} $$ 
+
+Considerando il sistema $\tilde L(s)=\frac{1}{s(s+1)(s+10)}$\
+Tale sistema con un ritardo di $\tau$ sarà $L(s)=e^{-s\tau}\tilde L(s)$ 
+```{=latex}
+\begin{center}
+```
+
+![](ritardiTemporali.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### Robustezza rispetto ad incertezze sul guadagno
+
+\
+Il margine di ampiezza $M_a$ rappresenta la massima incertezza tollerabile sul guadagno statico $\mu$.\
+È importante notare che variazioni di $\mu$ determinano solo traslazioni del diagramma delle ampiezze e non alterano il diagramma delle fasi.\
+Ecco alcuni esempi:
+```{=latex}
+\begin{center}
+```
+
+![](incertezzeGuadagno.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+## FUNZIONI DI SENSITIVITÀ
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazione.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+Ingressi:
+
+* $w(t)$ riferimento (andamento desiderato per la $y(t)$)
+* $d(t)$ disturbo in uscita
+* $n(t)$ disturbo di misura
+
+Uscite di interesse:
+
+* $e(t)=w(t)-y(t)$ errore di inseguimento
+* $y(t)$ uscita controllata
+* $u(t)$ ingresso di controllo del sistema in anello aperto (impianto)
+
+Le **funzioni di sensitività** sono funzioni di trasferimento tra ingressi ed uscite di interesse.\
+$$ S(s)=\frac{1}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività} $$ 
+$$ F(s)=\frac{R(s)G(s)}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività complementare} $$
+$$ Q(s)=\frac{R(s)}{1+R(s)G(s)} \quad \quad \textbf{Funzione di sensitività del controllo} $$
+Le relazioni che le legano ad ingressi ed uscite sono:
+$$ \left[ {\begin{array}{c} Y(s)\\ U(s)\\ E(s)\\ \end{array} } \right] = \left[ {\begin{array}{ccc} F(s) & S(s) & -F(s)\\ Q(s) & -Q(s) & -Q(s)\\ S(s) & -S(s) & F(s)\\ \end{array} } \right]\left[ {\begin{array}{c} W(s)\\ D(s)\\ N(s)\\ \end{array} } \right] $$
+
+```{=latex}
+\begin{center}
+```
+
+![](funzioniSensitivita.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+La funzione di sensitività $S(s)$ descrive, sostanzialmente, quanto l'uscita è sensibile ai disturbi quindi la si vuole "nulla" (la più piccola possibile).\
+La $F(s)$ è detta funzione di sensitività complementare perchè: $S(s)+F(s)=1$.\
+Il denominatore di tutte le funzioni di sensitività e lo stesso. Si ricordi che la stabilità e
+determinata dai poli della funzione di trasferimento. Questo è consistente con il fatto che la stabilità del sistema (retroazionato) non dipende dal particolare ingresso considerato.
+Dalle definizioni e dallo schema tramite sovrapposizione degli effetti $$ Y(s)=Y_w(s)+Y_d(s)+Y_n(s) $$ 
+con
+
+* $Y_w(s)$ uscita con ingresso $W(s)$ e ponendo $D(s)=0$ e $N(s)=0$
+* $Y_d(s)$ uscita con ingresso $D(s)$ e ponendo $W(s)=0$ e $N(s)=0$
+* $Y_n(s)$ uscita con ingresso $N(s)$ e ponendo $D(s)=0$ e $W(s)=0$
+
+E allo stesso modo si possono definire $$ E(s)=E_w(s)+E_d(s)+E_n(s) $$ $$ U(s)=U_w(s)+U_d(s)+U_n(s) $$
+È interessante notare, quindi che se avessi $S(s)=0$ (per complementarietà) allora $F(s)=1$, ma ciò vorrebbe dire $$ Y_n(s)=-F(s)N(s)\ne 0 $$ quindi mi ritroverei disturbo in uscita, quindi non si può annullare completamente $S(s)$. Quanto descritto è un motivo in più per passare a lavorare sempre nel dominio di $\omega$.\
+Sostanzialmente l'obiettivo è arrivare ad avere:
+
+* $|S(j\omega)|\approx 0$ per $\omega$ basse
+* $|F(j\omega)|\approx 1$ per $\omega$ basse
+* $|F(j\omega)|\approx 0$ per $\omega$ alte
+
+perchè $d(t)$ ed $w(t)$ sono a basse $\omega$ mentre $n(t)$ è ad alte $\omega$. Per ottenre ciò è necessario progettare $R(j\omega)$ in modo tale che:
+
+* $|L(s)| \gg 1$ per $\omega$ basse
+* $|L(s)| \ll 1$ per $\omega$ alte
+
+Quindi, facendo tale scelta di design, le approssimazioni che si possono fare sono:
+
+* Ricordando che $F(j\omega)=\frac{L(j\omega)}{1+L(j\omega)}$ e che per $\omega=\omega _c$, $|L(j\omega _c)|_{dB}\Longrightarrow |L(j\omega _c)|=0$ si può approssimare $$ |F(j\omega)|\approx \begin{cases} 1 \quad \quad \quad \quad \omega\ll\omega _c \\ |L(j\omega)| \quad \ \omega\gg\omega _c \end{cases} \quad \quad \Longrightarrow \quad \quad |F(j\omega)|_{dB}\approx\begin{cases} 0 \textrm{ dB} \quad \quad \quad \quad \omega\ll\omega _c \\ |L(j\omega)|_{dB} \quad \quad \omega\gg\omega _c \end{cases} $$
+* Ricordando $S(j\omega)=\frac{1}{1+L(j\omega)}$, si può approssimare $$ |S(j\omega)|\approx\begin{cases} \frac{1}{|L(j\omega)|} \quad \quad \omega\ll\omega _c \\ 1 \quad \quad \quad \quad \ \omega\gg\omega _c \end{cases} \quad \quad \Longrightarrow \quad \quad |S(j\omega)|_{dB}\approx\begin{cases} -|L(j\omega)|_{dB} \quad \ \ \omega\ll\omega _c \\ 0 \textrm{ dB} \quad \quad \quad \quad \ \ \omega\gg\omega _c \end{cases} $$
+
+È utile, a questo punto, effettuare un'analisi in frequenza delle funzioni di sensitività.
+
+#### Funzione di sensitività complementare
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivitaComplementare.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+
+#### Funzione di sensitività
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivita.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+
+#### Funzione di sensitività di controllo
+
+A basse frequenze il modulo di $Q(j\omega)$ dipende da $G(j\omega)$, quindi non possiamo influenzarlo con il regolatore. Occore, inoltre, evitare valori di $\omega _c$ "troppo elevati". La parte fondamentale è progettare regolatori che attenuino a frequenze alte.
+
+```{=latex}
+\begin{center}
+```
+
+![](sensitivitaControllo.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### POLI COMPLESSI CONIUGATI DI $F(s)$ E MARGINE DI FASE
+
+La funzione di sensitività può presentare una coppia di poli complessi coniugati dominanti, quindi l'obiettivo, ora, è mettere in relazione il picco di risonanza di $F(j\omega)$ con lo smorzamento $\xi$ associato, assumendo che $\omega _n\approx\omega _c$ $$ F(j\omega)=\frac{1}{1+2j\frac{\xi}{\omega _n}\omega-\frac{\omega^2}{\omega _n^2}} $$ La risposta al gradino di tale funzione di sensitività è la classica risposta al gradino vista nel capitoli precedenti.
+
+```{=latex}
+\begin{center}
+```
+
+![](rispostaGradSistIIOrdine.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Si ha un picco di risonanzadi $F(j\omega)$ per $\omega\approx\omega _c$ ($\omega _c$ pulsazione critica tale che $|L(j\omega _c)|=1\Rightarrow |L(j\omega)|_{dB}=0 \textrm{ dB}$).\
+Si ricorda inoltre che si assume $$ \omega _c\approx\omega _n\approx\omega _r $$ $\omega _c$ pulsazione critica\
+$\omega _n$ pulsazione naturale dei poli c.c.\
+$\omega _r$ pulsazione di risonanza.\
+Inoltre si ricorda l'approssimazione $$ |F(j\omega) _c|\approx |F(j\omega _n)|=\frac{1}{2\xi} $$ Però dalla definizione di funzione di sensitività $$ |F(j\omega _c)|=\frac{|L(j\omega _c)|}{|1+L(j\omega _c)|}=\frac{1}{|1+e^{j\arg{(L(j\omega _c))}}|} $$ Si pone $\arg{(L(j\omega _c))}=\varphi _c$\
+Quindi si ha 
+\begin{equation*}
+    \begin{aligned}
+        |F(j\omega _c)|=\frac{1}{|1+e^{j\arg{(L(j\omega _c))}}|}&=\frac{1}{\sqrt{(1+\cos{(\varphi _c)})^2+\sin^2(\varphi _c)}} \\
+        &=\frac{1}{\sqrt{1+2\cos{(\varphi _c)}+\cos^2(\varphi _c)+\sin^2(\varphi _c)}}=\frac{1}{\sqrt{2(1+\cos{(\varphi _c)})}}
+    \end{aligned}
+\end{equation*}
+Ricordando $$ \cos{(\varphi _c)}=-\cos{(\pi+\varphi _c)} $$ $$ M_f=180^{\circ}+\arg{(L(j\omega _c))} $$ $$ M_f^{\textrm{rad}}=\pi+\varphi _c $$ Quindi si arriva ad avere $$ |F(j\omega _c)|=\frac{1}{\sqrt{2(1+\cos{(\varphi _c)})}}=\frac{1}{\sqrt{2\left(1-\cos{\left(M_f^{\textrm{rad}}\right)}\right)}} $$ Grazie alla seguente regola trigonometrica $$ 1-\cos{(x)}=2\sin^2\left(\frac{x}{2}\right) $$ Si può scrivere $$ |F(j\omega _c)|=\frac{1}{\sqrt{2\left(1-\cos{\left(M_f^{\textrm{rad}}\right)}\right)}}=\frac{1}{\sqrt{4\sin^2\left(\frac{M_f^{\textrm{rad}}}{2}\right)}}=\frac{1}{2\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}} $$ A questo punto si possono uguagliare le due forme di $|F(j\omega _c)|$: $$ \frac{1}{2\xi}=\frac{1}{2\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}} $$ Conseguentemente si può scrivere $$ \xi=\sin{\left(\frac{M_f^{\textrm{rad}}}{2}\right)}\approx\frac{M_f^{\textrm{rad}}}{2}=\frac{M_f}{2}\frac{\pi}{180}\approx\frac{M_f}{100} $$ Quindi, riassumendo $$ \xi\approx\frac{M_f}{100} $$
+
+### ANALISI STATICA
+
+#### Errore a regime ad un gradino
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ con $e(t)=w(t)-y(t)$ errore in risposta ad un gradino $w(t)=W1(t)$.\
+Utilizzando il teorema del valore finale (sistema in anello chiuso asintoticamente stabile, BIBO stabile) $$ e_{\infty}=\lim_{s\to 0}sE(s)=\lim_{s\to 0}sS(s)W(s)=\lim_{s\to 0}sS(s)\frac{W}{s}=W\lim_{s\to 0}S(s)=W\lim_{s\to 0}\frac{1}{1+L(s)} $$ Sia $L(s)=\mu\frac{N_L(s)}{D_L(s)}=\mu\frac{N_L(s)}{s^gD_L'(s)}$ con $N_L(0)=1$ e $D_L'(0)=1$ abbiamo $$ \lim_{s\to 0}S(s)=\lim_{s\to 0}\frac{D_L(s)}{\mu N_L(s)+D_L(s)}=\lim_{s\to 0}\frac{s^gD_L'(s)}{\mu N_L(s)+s^gD_L'(s)}=\lim_{s\to 0}\frac{s^g}{\mu+s^g} $$ Quindi, si ha $$ e_{\infty}=W\lim_{s\to 0}\frac{s^g}{\mu+s^g}=\begin{cases} \frac{W}{1+\mu} \quad \quad g=0 \\ 0 \quad \quad \quad g>0 \end{cases} $$
+
+#### Errore a ingressi $\frac{W}{s^k}$
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ con $e(t)=w(t)-y(t)$ errore in risposta ad un segnale di trasformata $W(s)=\frac{W}{s^k}$ $$ e_{\infty}=\lim_{s\to 0}sS(s)\frac{W}{s^k}=W\lim_{s\to 0}\frac{s^{g-(k-1)}}{\mu+s^g}=\begin{cases} \infty \quad \  g<k-1 \\ \frac{W}{\mu} \quad \ g=k-1 \\ 0 \quad \quad g>k+1\ \ [g\ge k] \end{cases} $$ 
+Quindi
+
+* se $g<k-1$ l'errore a regime diverge
+* se $g=k-1$ l'errore a regime è finito e diminuisce all'aumentare di $\mu$
+* se $g>k-1$ l'errore a regime è nullo
+
+**N.B.** il sistema in anello chiuso deve esere asintoticamente stabile.\
+**N.B.** affinchè l'errore a regime a $W(s)=\frac{W}{s^k}$ sia nullo occorre che $L(s)$ abbia un numero di poli almeno pari a $k$ (pricipio del modello interno)\
+\
+**_Osservazione_**: 
+
+> $L(s)=R(s)G(s)$\
+Se $g>0$ c'è almeno un polo nell'orgine\
+Se $R(s)$ o $G(s)$ hanno almeno un polo nell'origine non c'è bisogno di introdurlo conil regolatore
+
+Perchè se ho un polo nell'origine l'errore è nullo?
+
+> Perchè se voglio un $\frac{1}{s}$ in uscita ed $e(t)=0$ (idealmente) ho un anello spezzato, quindi, anche con ingresso nullo il sistema deve essere comunque in grado di produrre un $\frac{1}{s}$ in uscita.
+
+#### Principio del modello interno
+
+Il risultato precedentemente trovato può essere generalizzato come segue:\
+Affinchè un segnale di riferimento (risposta ad un disturbo di misura) con una componente spettrale alla frequenza $\omega _0$ sia inseguito (risposta al neutralizzato) a regime perfettamente in uscita è necessario e sufficiente che:
+
+1. il sistema chiuso in retroazione sia asintoticamente stabile
+2. il guadagno d'anello $L(s)$ abbia una coppia di poli complessi coniugati sull'asse immaginario con pulsazione naturale pari a $\omega _0$
+
+```{=latex}
+\begin{center}
+```
+
+![](principioModInterno.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+
+# SISTEMI DI CONTROLLO: PROGETTO DEL REGOLATORE
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneConDipendezeTempo.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+L'obiettivo, ora, è progettare $R(s)$ in modo che $y(t)$ sia "più vicina possibile" a $w(t)$
+
+## RIEPILOGO SPECIFICHE
+
+#### Stabilità robusta
+
+rispetto a incertezze.\
+\
+Stabilità in presenza di errori di modello o incertezze di parametri, ad esempio: massimo ritardo temporale $\tau _{\textrm{max}}$ o massima incertezza sul guadagno statico $\Delta\mu _{\textrm{max}}$
+
+#### Precisione statica
+
+\
+Sia $e_{\infty}=\lim_{t\to\infty}e(t)$ il valore a regime dell'errore in risposta a riferimenti $w(t)$ o disturbi in uscita $d(t)$ "canonici" (gradino $w(t)=W1(t)$, $d(t)=D1(t)$, o rampa $w(t)=t1(t)$, $d(t)=t1(t)$).\
+\
+Specifica: $|e_{\infty}|\le e^{\star}$ oppure $e_{\infty}=0$
+
+#### Precisione dinamica
+
+\
+Tipicamente specifiche in termini di sovraelongazione e tempo di assestamento massimi:\
+\
+Specifiche: $S\%\le S^{\star}$ e $T_{\alpha,\epsilon}\le T^{\star}$
+
+#### Attenuazione disturbo in uscita $d(t)$
+
+\
+Il disturbo in uscita $d(t)$, con banda limitata in un range di pulsazioni $[\omega _{d,\textrm{min}},\omega _{d,\textrm{max}}]$, deve essere attenuato di $A_d$ dB ($A_d>0$).
+
+#### Attenuazione disturbo di misura $n(t)$
+
+\
+Il disturbo di misura $n(t)$, con banda limitata in un range di pulsazioni $[\omega _{n,\textrm{min}},\omega _{n,\textrm{max}}]$, deve essere attenuato di $A_n$ dB ($A_n>0$).\
+\
+**N.B.** in applicazioni ingegneristiche in genere $\omega _{d,\textrm{max}}\ll\omega _{n,\textrm{min}}$
+
+#### Moderazione variabile di controllo $u(t)$
+
+\
+Contenimento dell'ampiezza della variabile di controllo $u$ in ingresso al sistema fisico (impianto).
+
+#### Fisica realizzabilità del regolatore $R(s)$
+
+\
+Il regolatore dev'essere un sistema proprio, quindi il grado relativo (differeza poli-zeri) deve essere maggiore o uguale a zero (grado del denominatore maggiore o uguale al grado del numeratore).\
+\
+\
+\
+Esempio: attenuazione di $d(t)$ di $A_d=40$ dB\
+
+> $$ A_d=40 \textrm{ dB} \quad A_d=20\log{\bar A_d} \Rightarrow \bar A_d=10^{\frac{40}{20}}=10^2 $$ $$ d(t)=D\sin{(\omega t)} \longrightarrow y_d(t)=Y_d\sin{(\omega t+\varphi)} \quad \quad \textrm{con } Y_d\le\frac{D}{\bar A_d}=\frac{D}{10^2} $$
+
+## SPECIFICHE IN TERMINI DI GUADAGNO D'ANELLO
+
+### STABILITÀ ROBUSTA
+
+Stabilità robusta rispetto alle incertezze significa stabilità in presenza di errori di modello o incertezze di parametri, ad esempio: massimo ritardo temporale $\tau _{\textrm{max}}$ o massima incertezza sul guadagno statico $\Delta\mu _{\textrm{max}}$\
+\
+**Specifica su $L(j\omega)$**: $M_f\ge M_f^{\star}$
+
+### PRECISTIONE STATICA
+
+Per soddisfare tali specifiche va considerata l'analisi statica effettuata sulla funzione di sensitività $S(s)$.\
+\
+Un **esempio di specifica** è: 
+
+> $|e_{\infty}|\le e^{\star}$ in risposta a un gradino $w(t)=W1(t)$, $d(t)=D1(t)$ con $W\le W^{\star}$ e $|D|\le D^{\star}$.\
+Quindi $$ e_{\infty}=\frac{W}{1+\mu}+\frac{D}{1+\mu}=\frac{D+W}{1+\mu}\approx\frac{D+W}{\mu} $$ e per rispettare la specifica si necessita, quindi, di $$ \mu=L(0)\ge\frac{D^{\star}+W^{\star}}{e^{\star}} $$
+
+Un altro **esempio di specifica** può essere:
+
+> $e_{\infty}=0$ in risposta a $W(s)=\frac{W}{s^k}$ e/o $D(s)=\frac{D}{s^k}$ quindi $L(s)$ deve avere $k$ poli nell'origine.
+
+Mettendo insieme i precedenti due esempi si ha un qualcosa del tipo:
+
+> se $|e_{\infty}|\le e^{\star}$ in risposta a $W(s)=\frac{W}{s^k}$ e/o $D(s)=\frac{D}{s^k}$ allora $k-1$ poli in $L(s)$ e $\mu\ge\frac{D^{\star}+W^{\star}}{e^{\star}}$.
+
+**N.B.** notare che la specifiche sono sulla $L(s)$ quindi se per esempio avessi $G(s)=\frac{1}{s(s+2)}$ e avessi la specifica di errore a regime nullo in risposta al gradino $w(t)=W1(t)$, il regolatore non necessiterebbe di poli nell'origine in quanto è già presente il polo necessario in $G(s)$.\
+\
+**N.B.** se $e_{\infty}=0$ in risposta ad un disturbo sull'attuatore $D_a(s)=\frac{D_a}{s^k}$ allora $D(s)=D_a(s)G(s)$ ed $E(s)=S(s)G(s)D_a(s)$ quindi $$ \textrm{IMPORTANTE} $$ $$ k\textrm{ poli nell'origine in } R(s) $$ 
+
+### PRECISIONE DINAMICA
+
+**Specifiche**: $S\%\le S^{\star}$ e $T_{\alpha,\epsilon}\le T^{\star}$.\
+\
+Se si progettasse $L(j\omega)$ in modo che $F(j\omega)$ abbia una coppia di poli complessi coniugati dominanti in $\omega _n\approx \omega _c$ con coefficiente di smorzamento $\xi$ allora $$ \xi\approx\frac{M_f}{100} $$ Perchè $S\%\le S^{\star}$ allora $$ \xi\ge\xi^{\star}=\frac{\left|\ln{\left(\frac{S^{\star}}{100}\right)}\right|}{\sqrt{\pi ^2+\ln^2\left(\frac{S^{\star}}{100}\right)}} $$ con $$ S^{\star}=\frac{-\pi\xi^{\star}}{\sqrt{1-(\xi^{\star})^2}} $$ e quindi $$ M_f\ge M_f^{\star}=100\xi^{\star} $$ Perchè $T_{a,1}\le T^{\star}$ allora $\xi\omega _n\ge\frac{4.6}{T^{\star}}$ e quindi $$ M_f\omega _c\ge\frac{460}{T^{\star}} $$ Volendo mettere insieme le due specifiche: $$ M_f^{\star}\omega _c\ge\frac{460}{T^{\star}} \Longrightarrow \omega _c\ge\frac{460}{M_f^{\star}T^{\star}}=\omega _c^{\star} $$ $$ \omega _c^{\star}=\omega _{c,\textrm{min}} $$ **N.B.** $L(j\omega)$ può attraversare $0$ dB solo una volta.
+```{=latex}
+\begin{center}
+```
+
+![](precisioneDinamica.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+### ATTENUAZIONE DISTURBO IN USCITA $d(t)$
+
+Il disturbo in uscita $d(t)$, con una banda limitata in un range di pulsazioni $[\omega _{d,\textrm{min}},\omega _{d,\textrm{max}}]$ (solitamente $\omega _{d,\textrm{min}}$ presa uguale a 0), dev'essere attenuato di $A_d$ dB ($A_d>0$).\
+\
+Si ricordi che se $d(t)=D\cos{(\omega t+\varphi)}$ allora $$ Y_D(s)=S(s)D(s)\Longrightarrow y(t)=|S(j\omega)|D\cos{(\omega t+\varphi+\arg{(S(j\omega))})} $$ e che $$ |S(j\omega)|_{\textrm{dB}}\approx\begin{cases} -|L(j\omega)|_{\textrm{dB}} \quad \omega\le\omega _c \\ 0 \quad \quad \quad \quad \quad \ \ \omega>\omega _c \end{cases} $$ Da specifica vogliamo $|S(j\omega)|_{\textrm{dB}}\le -A_d$ dB. Poichè $\omega _{d,\textrm{max}}\ll\omega _c$, si ha $$ |L(j\omega)|_{\textrm{dB}}\ge A_d\textrm{ dB} $$ Ad esempio se $d(t)$ dev'essere attenuato di $20$ dB allora $|L(j\omega)|_{\textrm{dB}}\ge 20\textrm{ dB}$
+```{=latex}
+\begin{center}
+```
+
+![](disturboUscita.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### ATTENUAZIONE DISTURBO DI MISURA $n(t)$
+
+Il disturbo di misura $n(t)$, con banda limitata in un range di pulsazioni $[\omega _{n,\textrm{min}},\omega _{n,\textrm{max}}]$ ($\omega _{n,\textrm{max}}$ spesso considerata $+\infty$), deve essere attenuato di $A_n$ dB ($A_n>0$).\
+\
+Ricordando che se $n(t)=N\cos{(\omega t+\varphi)}$ allora $$ Y_N(s)=-F(s)N(s)\Longrightarrow y(t)=|F(j\omega)|N\cos{(\omega t+\varphi-\arg{(F(j\omega))})} $$ e che $$ |F(j\omega)|_{\textrm{dB}}\approx\begin{cases} 0 \quad \quad \quad \quad \quad \quad \omega\le\omega _c \\ |L(j\omega)|_{\textrm{dB}} \quad \quad \ \omega>\omega _c \end{cases} $$ Da specifica si vuole $|F(j\omega)|_{\textrm{dB}}\le -A_n$ dB. Poichè $\omega _{c,\textrm{min}}\gg\omega _c$ si ha $$ |L(j\omega)|_{\textrm{dB}}\le -A_n\textrm{ dB} $$ Ad esempio se $n(t)$ dev'essere attenuato di $20$ dB allora $|L(j\omega)|_{\textrm{dB}}\le -20$ dB.\
+**N.B.** se non ho specifiche particolari su $\omega _{c,\textrm{max}}$ sostanzialmente si prende $\omega _{c,\textrm{max}}=\omega _{n,\textrm{min}}$.
+```{=latex}
+\begin{center}
+```
+
+![](disturboMisura.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### MODERAZIONE DELLA VARIABILE DI CONTROLLO $u(t)$
+
+Contenimento dell'ampiezza della variabile di controllo $u$ in ingresso al sistema fisico (impianto).\
+Ricordiamo che se $w(t)=W\cos{(\omega t+\varphi)}$ allora $$ U(s)=Q(s)U(s)\Longrightarrow u(t)=|Q(j\omega)|W\cos{(\omega t+\varphi+\arg{(Q(j\omega))})} $$ e che $$ |Q(j\omega)|_{\textrm{dB}}\approx\begin{cases} -|G(j\omega)|_{\textrm{dB}}  \quad \quad \omega\le\omega _c \\ |R(j\omega)|_{\textrm{dB}} \quad \quad \quad \omega>\omega _c \end{cases} $$ Poichè si vuole contenere $|Q(j\omega)|_{\textrm{dB}}$ e non abbiamo controllo su $G(j\omega)$ si deve:
+
+* limitare $\omega _c$
+* realizzare $R(j\omega)$ passa-basso
+
+```{=latex}
+\begin{center}
+```
+
+![](moderazioneControllo.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+**N.B.** il limite superiore su $\omega _c$ può essere determinato dalle specifiche sulla variabile di controllo, in caso contrario si prende $\omega _{c,\textrm{max}}=\omega _{n,\textrm{min}}$.
+
+### FISICA REALIZZABILITÀ DEL REGOLATORE $R(s)$
+
+Il regolatore dev'essere un sistema proprio, quindi il grado relativo (differeza poli-zeri) deve essere maggiore o uguale a zero (grado del denominatore maggiore o uguale al grado del numeratore).\
+A pulsazioni elevate la pendenza $-k_L$ dB/dec di $|L(j\omega)|_{\textrm{dB}}$ è determinata dalla differenza tra poli (ciascuno contribuisce con pendenza $-20$ dB/dec) e zeri (ciascuno contribuisce con pendenza $20$ dB/dec). Se a pulsazioni elevate $|G(j\omega)|_{\textrm{dB}}$ ha pendenza $-k_G$ dB/dec allora $$ -k_L\le-k_G $$ In parole povere se $$ R(s)=\frac{N(s)}{D(s)} $$ perchè il regolatore sia fisicamente realizzabile si deve avere $$ \textrm{grado di }D(s)\ge\textrm{grado di }N(s) $$
+```{=latex}
+\begin{center}
+```
+
+![](fisicaRealizzabilita.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+
+### RIEPILOGO
+
+Avendo $$ L(j\omega)=R(j\omega)G(j\omega) \quad \quad G(j\omega)\textrm{ data} $$
+```{=latex}
+\begin{center}
+```
+
+![](specificheGuadagnoAnello.PNG)
+
+```{=latex}
+\end{center}
+```
+\newpage
+
+## SINTESI DEL REGOLATORE
+
+### SINTESI PER TENTATVI O "LOOP SHAPING"
+
+Consiste nel dare forma alla $L(j\omega)$ in modo che:
+
+* il diagramma della ampiezze non attraversi le "regioni proibite" in bassa e alta frequenza
+* per $\omega=\omega _c$ rispetti il vincolo sul margine di fase
+
+procedendo per tentativi basati su opportune considerazioni.
+
+### STRUTTURA
+
+È conveniente dividere il progetto in 2 fasi fattorizzando $R(s)$ come $$ R(s)=R_s(s)R_d(s) $$
+
+#### Regolatore statico
+
+$$ R_s(s)=\frac{\mu _s}{s^k} $$ progettato per soddisfare precisione statica e attenuazione dei disturbi $d$.
+
+#### Regolatore dinamico
+
+$$ R_d(s)=\mu _d\frac{\prod_{i}(1+\tau _{i}s) \prod_{i}(1+\frac{2\zeta _i}{\alpha _{ni}}s + \frac{s^2}{\alpha _{ni}^2})}{s^g \prod_{i}(1+T_i s) \prod_{i} (1+\frac{2\xi _{i}}{\omega _{ni}} s +\frac{s^2}{\omega _{ni}^2})} $$ progettato per soddisfare stabilità robusta, precisione dinamica, attenuazione disturbi $n$, moderazione del controllo e fisica realizzabilità.\
+\
+**N.B.** $\mu _d$ può essere scelto **solo se** $\mu _s$ non è stato imposto.\
+\
+**N.B.** posso inserire $\frac{1}{s}$ per avere $e_{\infty}=0$ anche se la specifica è $e_{\infty}<e_{\textrm{max}}$ ma introduco uno sfasamento di $-90^{\circ}$.
+
+### SINTESI DEL REGOLATORE STATICO
+
+Il guadagno $\mu _s$ e il numero di poli nell'origine in $R_s(s)$ dipende dalla specifica sull'errore a regime $e_{\infty}$ in risposta a segnali canonici.\
+Ad esempio: $|e_{\infty}|\le e^{\star}$ in risposta al gradino su $w$ e $d$, con $G(s)$ senza poli nell'origine.\
+Progetto: si può scegliere $$ R(s)=\mu _s\ge\mu ^{\star} $$ oppure $$ R(s)=\frac{\mu _s}{s} $$ Nel secondo caso possiamo scegliere $\mu _s$ "liberamente" purchè consenta di rispettare i vincoli dell'attenuazione di $d$.
+
+### SINTESI DEL REGOLATORE DINAMICO 
+
+La progettazione di $R_d(s)$ mira a 
+
+1. imporre $\omega _c$ in un certo intervallo
+2. garantire un dato margine di fase $M_f$ (ovvero garantire che $\arg{L(j\omega _c)}\ge-180+M_f$, vedi criterio di Bode)
+3. garantire una certa attenuazione e pendenza di $L(j\omega)$ (e $R(j\omega)$) a pulsazioni elevate
+
+**N.B.** Per soddisfare il terzo punto basta introdurre poli del regolatore ad alte frequenze.\
+\
+Si procederà individuando dei possibili scenari in base al diagramma di $$ G_e(s)=R_s(s)G(s) $$ detto **sistema esteso**.
+
+### SINTESI DEL REGOLATORE DINAMICO: SCENARIO A
+
+Supponiamo scenario A come uno scenario in cui nell'intervallo ("centrale") di pulsazioni ammissibili per la pulsazione di attraversamento $\omega _c$ esiste un sotto-intervallo in cui la fase di $G_e(j\omega)$ rispetta il vincolo sul margine di fase.
+```{=latex}
+\begin{center}
+```
+
+![](scenarioA.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+Gli obiettivi da raggiungere sono:
+
+* attenuare (selettivamente) il diagramma delle ampiezze (traslarlo in basso) in modo che $\omega _c$ ricada nel sotto-intervallo in cui il vincolo sul margine di fase è rispettato
+* alterare il meno possibile la fase
+
+Le possibili azioni sono:
+
+1. Se $\mu _d$ libero, allora scegliere $R_d(s)=\mu _d$ con $\mu _d<1$
+2. Se $\mu _d$ bloccato (vincolato dalla scelta di $\mu _s$), allora attenuare mediante l'inserimento di poli e zeri in $R_d(s)$ 
+
+#### $\mu _d$ LIBERO
+
+```{=latex}
+\begin{center}
+```
+
+![](scenarioAMuLibero.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### $\mu_d$ VINCOLATO
+
+\
+Per attenuare solo nel range di pulsazioni selezionato si progetta una **_rete ritardatrice_** $$ R_d(s)=\frac{1+\alpha\tau s}{1+\tau s}\quad\quad 0<\alpha<1 $$ $$ s_p=-\frac{1}{\tau}\quad\quad s_z=-\frac{1}{\alpha\tau} $$
+
+```{=latex}
+\begin{center}
+```
+
+![](reteRitardatrice.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](effettoReteRitardatrice.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![](bodeRitardatrice.PNG){height=270px}
+
+```{=latex}
+\end{center}
+```
+Per trovare $\omega ^{\star}$ si procede nel seguente modo 
+\begin{equation*}
+    \begin{aligned}
+        \log{\left(\omega ^{\star}\right)}&=\frac{1}{2}\left[\log{\left(\frac{1}{\tau}\right)}+\log{\left(\frac{1}{\alpha\tau}\right)}\right] \\
+        &=\frac{1}{2}\log{\left(\frac{1}{\tau}\frac{1}{\alpha\tau}\right)} \\
+        &=\log{\left(\frac{1}{\alpha\tau ^2}\right)^{\frac{1}{2}}} \\
+        &=\log{\frac{1}{\tau\sqrt{\alpha}}} \\
+        &\Longrightarrow \omega ^{\star}=\frac{1}{\tau\sqrt{\alpha}}
+    \end{aligned}
+\end{equation*}
+L'obiettivo è, quindi, calcolare $\alpha$ e $\tau$ in modo che $L(j\omega)$ abbia una pulsazione di attraversamento $\omega _c^{\star}$ e valga $\arg{(L(j\omega _c^{\star}))}\approx\arg{(G_e(j\omega _c^{\star}))}$.\
+Si procederà:
+
+* scegliendo $\alpha$ tale che $20\log{\alpha}\approx -|G_e(j\omega _c^{\star})|_{\textrm{dB}}$ 
+* scegliendo $\tau$ tale che $\frac{1}{\alpha\tau}\le\frac{\omega _c^{\star}}{10}$
+
+Quindi si avrà 
+\begin{equation*}
+    \begin{aligned}
+        |R_d(j\omega _c^{\star})G_e(j\omega _c^{\star})|_{\textrm{dB}}&=0 \\
+        20\log{|R_d(j\omega _c^{\star})|}+20\log{|G_e(j\omega _c^{\star})|}&=0 \\
+        20\log{|R_d(j\omega _c^{\star})|}&=-20\log{|G_e(j\omega _c^{\star})|}
+    \end{aligned}
+\end{equation*}
+Supponendo $|R_d(j\omega _c^{\star})|_{\textrm{dB}}\approx 20\log{\alpha}$ si avrà $$ 20\log{\alpha}=-|G_e(j\omega _c^{\star})|_{\textrm{dB}}\Longrightarrow\alpha=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$
+
+#### Rete ritardatrice: formule di inversione
+
+\
+Obiettivo 1: calcolare $\alpha$ e $\tau$ in modo che alla pulsazione $\omega _c^{\star}$ la rete ritardatrice abbia un'attenuazione di $0<M^{\star}<1$ e uno sfasamento $-\frac{\pi}{2}<\varphi ^{\star}<0$, ovvero $$ R_d(j\omega _c^{\star})=\frac{1+j\alpha\tau\omega _c^{\star}}{1+j\tau\omega _c^{\star}}=M^{\star}e^{j\varphi ^{\star}} $$ $$ M^{\star}=|R_d(j\omega _c^{\star})| \quad\quad \varphi ^{\star}=\arg{(R_d(j\omega _c^{\star}))} $$ Si pone $$ \frac{1+j\alpha\tau\omega _c^{\star}}{1+j\tau\omega _c^{\star}}=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right) $$
+\begin{equation*}
+    \begin{aligned}
+        1+j\alpha\tau\omega _c^{\star}&=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right)(1+j\tau\omega _c^{\star}) \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}+j\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}-\tau\omega _c^{\star}\sin{(\varphi ^{\star})}\right] \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}-\tau\omega _c^{\star}\sin{(\varphi ^{\star})}+j\left(\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+\sin{(\varphi ^{\star})}\right)\right]
+    \end{aligned}
+\end{equation*}
+Uguagliando parte reale ed immaginaria si ottiene
+\begin{equation*}
+    \begin{aligned}
+        1&=M^{\star}\cos{(\varphi ^{\star})}-M^{\star}\tau\omega _c^{\star}\sin{(\varphi ^{\star})} \\
+        \alpha\tau\omega_c^{\star}&=M^{\star}\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+M^{\star}\sin{(\varphi ^{\star})}
+    \end{aligned}
+\end{equation*}
+Quindi le formule di inversione sono:
+\begin{equation*}
+    \begin{aligned}
+        \tau&=\frac{\cos{(\varphi ^{\star})}-\frac{1}{M^{\star}}}{\omega_c^{\star}\sin{(\varphi ^{\star})}} \\
+        \alpha\tau&=\frac{M^{\star}-\cos{(\varphi ^{\star})}}{\omega_c^{\star}\sin{(\varphi ^{\star})}}
+    \end{aligned}
+\end{equation*}
+Si noti che per avere $\alpha >0$ occorre $M^{\star}<\cos{(\varphi ^{\star})}$.\
+\
+Obiettivo 2: imporre $|L(j\omega)|_{\textrm{dB}}=0$ per $\omega=\omega _c^{\star}$.\
+Si procede: 
+
+1. scegliendo $\omega _c^{\star}$ e ricavare $M_f^{\star}$ dalle specifiche
+2. calcolare $M^{\star}$ e $\varphi ^{\star}$ imponendo $$ |G_e(j\omega _c^{\star})|_{\textrm{dB}}-20\log{M^{\star}} $$ $$ M_f^{\star}=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} $$ Ottenendo $M^{\star}$ dalla prima (o da quanto visto in precedenza): $$ M^{\star}=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$ E per il margine di fase:  $$: $$
+\begin{equation*}
+    \begin{aligned}
+        M_f^{\star}&=180^{\circ}+\arg{(L(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\arg{(R_d(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} \\
+        \varphi^{\star}&=M_f^{\star}-180^{\circ}-\arg{(G_e(j\omega _c^{\star}))}
+    \end{aligned}
+\end{equation*}
+3. si verifica che $0<M^{\star}<1$, $-\frac{\pi}{2}<\varphi ^{\star}<0$ e $M^{\star}<\cos{(\varphi ^{\star})}$
+4. si calcolano $\alpha$ e $\tau$ tramite le formule inverse viste nel paragrafo precedente.
+
+### SINTESI DEL REGOLATORE DINAMICO: SCENARIO B
+
+Si suppone, invece, scenario B la situazione in cui nell'intervallo ("centrale") di pulsazioni ammissibili per la pulsazione di attraversamento $\omega _c$ NON esistono pulsazioni in cui la fase di $G_e(j\omega)$ rispetti il vincolo sul margine di fase.
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB.PNG){height=300px}
+
+```{=latex}
+\end{center}
+```
+Gli obiettivi da raggiungere sono: 
+
+* modificare il diagramma delle fasi (aumentare la fase) nell'intervallo in modo che il vincolo sul margine di fase sia rispettato
+* amplificare il meno possibile l'ampiezza
+
+Le possibili azioni da compiere sono:
+
+1. aggiungere uno o più zeri (a pulsazioni precedenti quella di attraversamento desiderata) per aumentare la fase
+2. aggiungere uno o più poli a pulsazioni più alte per la fisica realizzabilità e per evitare una
+eccessiva amplificazione
+
+Aggiungendo 1 solo zero si avrebbe
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB1Zero.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+Aggiungendone 2 invece
+```{=latex}
+\begin{center}
+```
+
+![](scenarioB2Zeri.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+**N.B.** il massimo incremento di fase dato da uno zero è $90^{\circ}$ per $\omega\to\infty$ quindi il guadagno di fase per uno zero è $<90$.\
+\
+Tenendo conto dell'aggiunta di uno o più poli si può progettare $R_d(s)$ come segue.
+
+#### Rete anticipatrice
+
+$$ R_d(s)=\frac{1+\tau s}{1+\alpha\tau s} \quad \quad 0<\alpha<1 $$ Nel caso in cui si necessiti di un anticipo maggiore di fase (ad esempio 2 zeri): $$ R_d(s)=\frac{1+\tau _1 s}{1+\alpha _1\tau _1s}\frac{1+\tau _2 s}{1+\alpha _2\tau _2s} \quad \quad 0<\alpha _1<1, 0<\alpha _2<1 $$ $$ s_z=-\frac{1}{\tau} \quad\quad s_p=-\frac{1}{\alpha\tau} $$ 
+\
+\
+Una volta realizzata la rete anticipatrice (singola o multipla) si possono verificare 2 casi:
+
+* **_B1_**: $\omega _c$ è nell'intervallo di specifica e il vincolo sul margine di fase è rispettato. In questo caso il progetto è terminato
+* **_B2_**: $\omega _c$ è fuori dall'intervallo di specifica o in un intervallo in cui il vincolo di margine di fase non è rispettato.\
+In ogni caso ci si è ricondotti ad uno scenario A (esiste un sotto-intervallo in cui il vincolo sul margine di fase è rispettato).
+
+#### Caso B2
+
+* Se $\mu _d$ libero allora scegliamo $\mu _d<1$ per attenuare $$ R_d(s)=\mu _d\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$
+* Se $\mu _d$ bloccato $$ R_d(s)=\frac{1+\alpha _a\tau _a s}{1+\tau _a s}\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$
+
+#### Rete ritardo-anticipo
+
+$$ R_d(s)=\frac{1+\alpha _a\tau _a s}{1+\tau _a s}\frac{1+\tau _b s}{1+\alpha _b\tau _b s} $$ 
+
+* Rete anticipatrice: polo e zero a più alte frequenze
+* Rete ritardatrice: polo e zero a più basse frequenze
+
+```{=latex}
+\begin{center}
+```
+
+![](reteRitardoAnticipo.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+#### Rete anticipatrice: diagramma di Bode
+
+```{=latex}
+\begin{center}
+```
+
+![](reteAnticipatrice.PNG){height=270px}
+
+```{=latex}
+\end{center}
+```
+
+#### Rete anticipatrice: formule di inversione
+
+\
+Obiettivo 1: calcolare $\alpha$ e $\tau$ in modo che alla pulsazione $\omega _c^{\star}$ la rete ritardatrice abbia un'attenuazione di $M^{\star}>1$ e uno sfasamento $0<\varphi ^{\star}<\frac{\pi}{2}$, ovvero $$ R_d(j\omega _c^{\star})=\frac{1+j\tau\omega _c^{\star}}{1+j\alpha\tau\omega _c^{\star}}=M^{\star}e^{j\varphi ^{\star}} $$ $$ M^{\star}=|R_d(j\omega _c^{\star})| \quad\quad \varphi ^{\star}=\arg{(R_d(j\omega _c^{\star}))} $$ Si pone $$ \frac{1+j\tau\omega _c^{\star}}{1+j\alpha\tau\omega _c^{\star}}=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right) $$
+\begin{equation*}
+    \begin{aligned}
+        1+j\tau\omega _c^{\star}&=M^{\star}\left(\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}\right)(1+j\alpha\tau\omega _c^{\star}) \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}+j\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+j\sin{(\varphi ^{\star})}-\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})}\right] \\
+        &=M^{\star}\left[\cos{(\varphi ^{\star})}-\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})}+j\left(\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+\sin{(\varphi ^{\star})}\right)\right]
+    \end{aligned}
+\end{equation*}
+Uguagliando parte reale ed immaginaria si ottiene
+\begin{equation*}
+    \begin{aligned}
+        1&=M^{\star}\cos{(\varphi ^{\star})}-M^{\star}\alpha\tau\omega _c^{\star}\sin{(\varphi ^{\star})} \\
+        \tau\omega_c^{\star}&=M^{\star}\alpha\tau\omega _c^{\star}\cos{(\varphi ^{\star})}+M^{\star}\sin{(\varphi ^{\star})}
+    \end{aligned}
+\end{equation*}
+Quindi le formule di inversione sono:
+\begin{equation*}
+    \begin{aligned}
+        \tau&=\frac{M^{\star}-\cos{(\varphi ^{\star})}}{\omega_c^{\star}\sin{(\varphi ^{\star})}} \\
+        \alpha\tau&=\frac{\cos{(\varphi ^{\star})}-\frac{1}{M^{\star}}}{\omega_c^{\star}\sin{(\varphi ^{\star})}}
+    \end{aligned}
+\end{equation*}
+Si noti che per avere $\alpha >0$ occorre $\frac{1}{M^{\star}}<\cos{(\varphi ^{\star})}$.\
+\
+Obiettivo 2: imporre $|L(j\omega)|_{\textrm{dB}}=0$ per $\omega=\omega _c^{\star}$.\
+Si procede: 
+
+1. scegliendo $\omega _c^{\star}$ e ricavare $M_f^{\star}$ dalle specifiche
+2. calcolare $M^{\star}$ e $\varphi ^{\star}$ imponendo $$ |G_e(j\omega _c^{\star})|_{\textrm{dB}}-20\log{M^{\star}} $$ $$ M_f^{\star}=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} $$ Ottenendo $M^{\star}$ dalla prima (o da quanto visto in precedenza): $$ M^{\star}=10^{-\frac{|G_e(j\omega _c^{\star})|_{\textrm{dB}}}{20}} $$ E per il margine di fase:
+\begin{equation*}
+    \begin{aligned}
+        M_f^{\star}&=180^{\circ}+\arg{(L(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\arg{(R_d(j\omega _c^{\star}))} \\
+        M_f^{\star}&=180^{\circ}+\arg{(G_e(j\omega _c^{\star}))}+\varphi^{\star} \\
+        \varphi^{\star}&=M_f^{\star}-180^{\circ}-\arg{(G_e(j\omega _c^{\star}))}
+    \end{aligned}
+\end{equation*}
+3. verificare $M^{\star}>1$, $0<\varphi ^{\star}<\frac{\pi}{2}$ e $\frac{1}{M^{\star}}<\cos{(\varphi ^{\star})}$
+4. si calcolano $\alpha$ e $\tau$ tramite le formule inverse viste nel paragrafo precedente.
+
+## CONTROLLORI PID
+
+Un controllore PID (Proporzionale Integrale Derivativo) "ideale" è della forma $$ R(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right) \quad \quad T_i=\textrm{ Tempo integrale} \quad T_d=\textrm{ Tempo derivativo} $$
+```{=latex}
+\begin{center}
+```
+
+![](retroazionePID.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+Ingresso di controllo: 
+\begin{equation*}
+    \begin{aligned}
+        U(s)&=R(s)E(s) \\
+        &= K_pE(s)+\frac{K_p}{T_i}\frac{E(s)}{s}+K_pT_dsE(s)
+    \end{aligned}
+\end{equation*}
+Che nel dominio del tempo risulta $$ u(t)=\mathcal{L}[U(s)]=K_pe(t)+\frac{K_p}{T_i}\int_{0}^{t}e(\tau)d\tau+K_pT_d\frac{de(t)}{dt} $$ 
+Di cui:
+
+* $K_pe(t)$ termine **P**roporzionale
+* $\frac{K_p}{T_i}\int_{0}^{t}e(\tau)d\tau$ termine **I**ntegrale
+* $K_pT_d\frac{de(t)}{dt}$ termine **D**erivativo (**N.B.** non causale)
+
+ATTENZIONE!!\
+Il PID ideale non è fisicamente realizzabile. Infatti, sviluppando i calcoli, si vede che la funzione di trasferimento del controllore ha un numeratore con grado più elevato del denominatore: $$ R(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right)=\frac{K_pT_is+K_p+K_pT_iT_ds^2}{T_is} $$ il PID "reale" (fisicamente realizzabile) richiede di aggiungere un polo in alta frequenza $$ R^{\textrm{fr}}(s)=K_p\left(1+\frac{1}{T_is}+T_ds\right)\frac{1}{1+T_ps} $$
+\
+\
+Raccogliendo i termini e definendo opportunamente $\tau _1$, $\tau _2$ si può vedere che il PID reale è una combinazione di una rete anticipatrice e di una ritardatrice:
+\begin{equation*}
+    \begin{aligned}
+        R^{\textrm{fr}}(s)&=\frac{K_p}{T_i}\frac{T_is+1+T_iT_ds^2}{s}\frac{1}{1+T_ps} \\
+        &=\mu\frac{(1+\tau _1s)(1+\tau _2s)}{s}\frac{1}{1+T_ps} \quad \quad \mu := \frac{K_p}{T_i}
+    \end{aligned}
+\end{equation*}
+\
+Casi particolari:
+
+* **Regolatori P**: se $T_i\to\infty$ e $T_d=0$ (no termine integrale e derivativo), si ottiene un regolatore proporzionale $R(s)=K_p$
+* **Regolatori I**: in assenza di termine proporzionale e derivativo, si ottiene un regolatore puramente integrale $R(s)=\frac{K_i}{s}$. Si può interpretare come una rete ritardatrice con il polo posto nell'origine e con lo zero all'infinito
+* **Regolatori PI**: se $T_d=0$ (no termine derivativo), si ottiene un regolatore proporzionale integrale $R(s)=K_p\left(1+\frac{1}{T_is}\right)$. Possono essere visti come reti ritardatrici con polo nell'oricine e zero in $-1/T_i$.
+* **Regolatori PD**: se $T_i\to\infty$ (no termine integrale), si ottiene un regolatore proporzionale derivativo $R(s)=K_p(1+T_ds)$. Possono essere visti come reti anticipatrici con zero in $-1/T_d$ e polo posto all'infinito (nel caso ideale)
+
+# LUOGO DELLE RADICI
+
+Considerando il seguente schema in retroazione
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadici.PNG){height=150px}
+
+```{=latex}
+\end{center}
+```
+in cui si mette in evidenza il guadagno $k$. La funzione di trasferimento in anello chiuso è $$ F(s)=\frac{kR(s)G(s)}{1+kR(s)G(s)}=\frac{kL(s)}{1+kL(s)} $$ L'obiettivo è studiare come variano nel piano complesso i poli di $F(s)$ al variare di $k$.
+
+#### Esempio
+
+Prendendo in esempio un sistema del prim'ordine $L(s)=\frac{1}{s+1}$ (polo in $-1)
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+La funzione di trasferimento in anello chiuso è $$ F(s)=\frac{kL(s)}{1+kL(s)}=\frac{k\frac{1}{s+1}}{1+k\frac{1}{s+1}}=\frac{k}{s+1+k} \quad \quad \quad \textrm{polo in $-1-k$} $$ **_Luogo delle radici_**: posizione nel piano complesso del polo di $F(s)$ al variare di $k\ge 0$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+
+## DEFINIZIONE DI LUOGO DELLE RADICI
+
+Sia $$ L(s)=\frac{N(s)}{D(s)} $$ si ha $$ F(s)=\frac{kL(s)}{1+kL(s)}=\frac{kN(s)}{D(s)+kN(s)} $$
+
+* Gli zeri di $F(s)$ sono le radici di $kN(s)$ e quindi sono gli zeri di $L(s)$
+* I poli di $F(s)$ sono le radici di $D(s)+kN(s)$ e quindi dipendono da poli e zeri di $L(s)$
+
+**N.B.** la retroazione non sposta gli zeri del sistema, ma solo i poli
+
+#### Luogo diretto:
+
+posizione dei poli di $F(s)$ al variare di $k\ge 0$ (ci si concentrerà su questo)
+
+#### Luogo inverso:
+
+posizione dei poli di $F(s)$ al variare di $k\le 0$
+
+## EQUAZIONE CARATTERISTICA
+
+```{=latex}
+\begin{center}
+```
+
+![](retroazioneLuogoRadiciEs1.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+I poli del sistema retroazionato sono le soluzioni dell'**equazione caratteristica** $$ D(s)+kN(s)=0 $$
+
+* $k=0 \longrightarrow D(s)=0$ I poli di $F(s)$ coincidono con quelli di $L(s)$
+* $k\to\infty \longrightarrow N(s)=0$ I poli di $F(s)$ coincidono con gli zeri di $L(s)$
+
+**N.B.** Per sistemi propri il polinomio $D(s)$ ha grado maggiore o uguale a quello di $N(s)$, l'ordine del polinomio $D(s)+kN(s)$ è lo stesso di quello di $D(s)$\
+$\Longrightarrow$ il numero di poli del sistema retroazionato è uguale a quello del sistema ad anello aperto.
+
+### OSSERVAZIONI
+
+Fissato un valore di $k$ le soluzioni dell'equazione caratteristica determinano $n$ punti nel piano complesso, con $n$ ordine di $L(s)$ $$ D(s)+kN(s)=0 $$
+
+#### Esempio:
+
+sistema del terz'ordine $$ L(s)=\frac{1}{(s+1)^3} \quad \quad \textrm{3 poli in -1} $$ Il luogo delle radici è costituito da $n$ "rami" parametrizzati nel valore di $k$. Una volta fissato, gli $n$ punti sugli $n$ rami identificano i poli del sistema retroazionato per quel $k$.\
+Se i coefficienti dell'equazione caratteristica sono reali allora il luogo è simmetrico rispetto all'asse reale.
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs2.PNG){height=100px}
+
+```{=latex}
+\end{center}
+```
+
+## REGOLE DI TRACCIAMENTO
+
+Sia $n$ il numero di poli e $m$ il numero di zeri di $L(s)$ (con $n\ge m$).\
+Le regole sono:
+
+1. Il luogo ha tanti rami quanti sono i poli del sistema in catena aperta
+2. Ogni ramo parte da un polo di $L(s)$ e termina in uno zero di $L(s)$ o all'infinito. In particolare, $m$ rami terminano negli zeri di $L(s)$ e $n-m$ rami terminano all'infinito
+3. Il luogo è simmetrico rispetto all’asse reale 
+4. I punti dell'asse reale che appartengono al luogo sono quelli che lasciano alla propria destra un numero dispari di singolarità (cioè poli o zeri) di $L(s)$.
+
+Siano ora $-p_1,\ldots,-p_n$ i poli e $-z_1,\ldots,-z_m$ gli zeri di $L(s)=\frac{(s+z_1)\cdots(s+z_m)}{(s+p_1)\cdots(s+p_n)}$
+
+5. I rami che tendono all'infinito lo fanno lungo asintoti che si intersecano sull'asse reale nel punto con ascissa pari a $$ x_a=\frac{1}{n-m}\left(\sum_{i=1}^{m}z_i-\sum_{i=1}^{n}p_i\right) $$
+6. Gli asintoti dividono il piano complesso in parti uguali. In particolare l'angolo che il $j$-esimo asintoto forma con l'asse reale è $$ \theta _{a,j}=\frac{(2j+1)\pi}{n-m}, \quad \quad \quad j=0,\ldots,n-m-1 $$
+7. Quando il grado relativo del sistema è maggiore di 1 (cioè $n-m\ge 2$), la somma dei poli è costante al variare di $k$, quindi il baricentro del luogo è il punto dell’asse reale con ascissa $$ x_b=-\frac{1}{n}\sum_{i=1}^{n}p_i $$ 
+
+```{=latex}
+\begin{center}
+```
+
+![](asintoti.PNG){height=250px}
+
+```{=latex}
+\end{center}
+```
+
+Le regole che si enuncieranno in seguito si applicano ai poli semplici di $L(s)$ (per i poli multipli le regole sono più complesse)
+
+8. La tangente al ramo uscente da un polo semplice $-p_j$ forma con l'asse reale l'angolo $$ \alpha _j=180^{\circ}+\sum_{i=1}^{m}\theta _i-\sum_{i\ne j} \varphi _i $$ dove $\theta _i$ (e rispettivamente $\varphi _i$) è l'angolo formato con il semiasse reale positivo dal vettore che congiunge il polo in considerazione con lo zero $-z_i$ (rispettivamente con il polo $-p_i$)
+9. La tangente del ramo entrante in uno zero semplice $-z_j$ forma con l'asse reale l'angolo $$ \beta _j=180^{\circ}-\sum_{i\ne j}\theta _i+\sum_{i=1}^{n}\varphi _i $$ dove gli angoli $\theta _i$ e $\varphi _i$ sono definiti in modo analogo alla precedente regola
+
+Ad esempio: determinare l'angolo di uscita $\alpha _3$ del ramo che parte dal polo in $-p_3$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs3.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+Oppure, un altro esempio: determinare l'angolo d'ingresso $\beta _2$ del ramo che entra nello zero in $-z_2$
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciEs4.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+
+10. Eventuali punti di incrocio di rami sull'asse reale si possono determinare trovando i massimi e i minimi relativi della funzione $$ \gamma (x)=-\frac{D(x)}{N(x)} $$ Nello specifico, se $\bar x$ è un punto di minimo e $s=\bar x$ appartiene al luogo, esistono due rami complessi che confluiscono sull'asse reale in $\bar x$; se $\bar x$ è, invece, un punto di massimo e $s=\bar x$ appartiene al luogo, esistono due rami reali che si incontrano in $\bar x$ e poi si semparano diventando complessi.
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciReg10.PNG){height=180px}
+
+```{=latex}
+\end{center}
+```
+
+## SISTEMI DEL PRIM'ORDINE
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIordine.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
+
+## SISTEMI DEL SECOND'ORDINE 
+
+### CON POLI REALI
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIIordineReali.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+### CON POLI COMPLESSI CONIUGATI
+
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciIIordineComplCC.PNG){height=230px}
+
+```{=latex}
+\end{center}
+```
+
+## ESEMPIO CON MATLAB
+
+Luogo delle radici di un sistema del secondo ordine con zero $$ G(s)=\frac{s+2}{s^2+2s+2} $$
+```matlab
+s = tf('s');
+G = zpk([-2], [-1+j,-1-j], 1);
+rlocus(G);
+```
+```{=latex}
+\begin{center}
+```
+
+![](luogoRadiciMatlab.PNG){height=200px}
+
+```{=latex}
+\end{center}
+```
