@@ -134,3 +134,72 @@ Un tool di installazione (come quelli elencati sopra) può farsi carico delle ve
 ```{=latex}
 \end{center}
 ```
+
+### PACCHETTI
+
+Le distribuzioni Linux organizzano il software in pacchetti che dispongono di un package manager per la loro gestione.\
+Un pacchetto si presenta sotto forma di singolo file che contiene in forma compatta un insieme di:
+
+* software precompilato
+* criteri per la verifica della compatibilità e dei prerequisiti
+* procedure pre/post installazione
+
+La verifica della compatibilità con un determinato sistema può essere data solo a patto di vincolare con precisione i seguenti parametri:
+
+1. architettura
+2. versione della disto
+3. versione del software contenuto nel pacchetto
+
+### DISTRIBUZIONI: criteri per la scelta
+
+#### Architetture supportate
+
+\
+Tutte le distribuzioni supportano i processori Intel a 32 bit, la maggior parte anche quelli a 64 bit, alcune sono disponibili per tutte le varietà di processori su cui è stato portato il kernel. È bene ricordare che i pacchetti di terze parti potrebbero, tuttavia, non essere disponibili per le architetture supportate.
+
+#### Stabilità vs. aggiornamento
+
+\
+Il processo di rilascio frequente e continuo del software nel mondo GNU/Linux ha come conseguenza inevitabile che le versioni più aggiornate possano essere meno stabili. Vi sono distribuzioni che hanno come filosofia l'inclusione dei pacchetti più recenti (e quindi con funzionalità maggiori e meno bug) anche a costo di una minor robustezza, ed altre che garantiscono l'inclusione solo di software ben collaudato.
+
+#### Version vs rolling
+
+\
+Alcune distribuzioni sono "versionate": durante il ciclo di vita di una versione vengono forniti solo aggiornamenti correttivi, tutte le novità vengono testate e accumulate per la pubblicazione in una nuova versione (che andrebbe installata sovrascrivendo la versione precedente).\
+Altre sono "rolling": ogni volta che c'è una nuova funzionalità viene testata e distribuita, quindi in ogni momento il sistema è alla versione più recente.\
+Un esempio di distribuzione versionata è Ubuntu: viene rilasciata ogni 6 mesi (ad aprile ed ottobre) e il supporto per la versione precedente è interrotto al rilascio della nuova versione, tuttavia le versioni dispari degli anni pari che vengono etichettate come LTS (Long Term Support) che hanno un supporto per gli aggiornamenti di 5 anni.
+
+#### Supporto e durata
+
+\
+La disponibilità di supporto garantito è tipica delle distribuzioni commerciali, ma anche con le distribuzioni gratuite più diffuse, in virtù della dimensione della relativa comunità di utenti, è semplice risolvere eventuali problemi.\
+Per installazioni di tipo server esistono varianti LTS: per 5/7 anni chi cura la distro garantisce che gli aggiornamenti non modifichino le API (tipicamente viene garantito solo il backporting dei security fix, non quello di tutti i bug fix).
+
+#### Ampiezza del set di pacchetti
+
+\
+Si va dai 1500 delle distro minimali ai 26000 di Debian.\
+Una scelta intelligente mette tutto l'essenziale in 1 CD.
+
+### DEBIAN e REDHAT
+
+Due distribuzioni capostipite da cui sono state derivate quasi tutte le varianti più diffuse di Linux sono proprio Debian e Red Hat.\
+Hanno 2 sistemi di gestione dei pacchetti con molte somiglianze:
+
+* Tool di basso livello per la gestione dei singoli pacchetti
+* Tool intermedi per la gestione coordinata di pacchetti e dipendenze
+* Tool per il riempimento automatico da repository dei pacchetti necessari
+
+#### Pacchetti
+
+\
+I pacchetti per le distro Debian e derivate (es. Ubuntu) sono in formato `.deb`: `aptitude-0.2.15.9-2_i386.deb`\
+\
+I pacchetti per le distribuzioni RedHat e derivate (es. CentOS, Fedora) sono in formato `.rpm`: `httpd-2.4.6-45.el7.centos.x86_64.rpm`\
+\
+I nomi hanno una semantica specifica:
+
+* `aptitude` e `httpd` sono i nomi dei pacchetti
+* `0.2.15.9` e `2.4.6` sono le versioni del software
+* `2` e `-45.el7.centos` sono le versioni del pacchetto
+* `i386` e `x86_64` sono le architetture
