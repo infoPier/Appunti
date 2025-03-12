@@ -267,3 +267,65 @@ Altrimenti si utilizzano i framework per lo sviluppo e l'esecuzione di exploit.
 Reconnaissance ed enumeration sono svolte da una postura esterna al perimetro di difesa dell'obiettivo, ciò è giusto perchè è più fedele alla postura dell'attaccante, ma potrebbero non catturare un metodo di intrusione.\
 Una possibilità è anche auto-attaccarsi dalla posizione più vantaggiosa possibile: dall'interno. Infatti, attaccandosi dall'interno, FW e Network IDS (NIDS) sono scavalcati e si possono raggiungere i sistemi più facilmente senza ostacoli, da ciò risulta un miglior test per Host-based Intrusion Detection System e una maggior efficienza.\
 Da dentro, inoltre, è possibile fare le verifiche tipiche come l'esposizione dei servizi in rete, controllo dell'accesso (utenti e permessi) e iniezione di software e occultamento di processi.
+
+### RETI
+
+Le reti wireless sono un modo eccellente di guadagnare una postura interna se ci si trova fisicamente a portata del segnale. Grazie ad esse si può avere l'accesso alle comunicazioni e la possibilità di attaccare sistemi raggiungibili.\
+Sulle reti Wi-Fi si possono:
+
+* catturare i pacchetti per l'analisi successiva
+* effettuare attacchi di tipo replay e deauthentication
+* creare finti access point
+* crackare le chiavi per WEP, WPA1-PSK, WPA2-PSK
+
+Ovviamente le reti wireless non sono solo Wi-Fi ma la maggior parte degli attacchi elencati si possono effettuare su reti bluetooth, NFC e SDR in generale.\
+Dopo aver avuto l'accesso wireless o fisico esistono dei tool per l'esecuzione di attacchi Man In The Middle (MITM).\
+Per analizzare i file e le socket accessibili si può utlizzare il comando `lsof`, che ha lo scopo di elencare tutti i file aperti (in Unix tutto è file).
+
+#### Punti di accesso via rete
+
+\
+In generale si può utilizzare `netstat` per mostrare lo stato delle socket Unix e di rete, di default mostra quelle già connesse ad un altro endpoint ma se si aggiungesse l'opzione `-l` si potrebbero elencare solo quelle in stato di listening, mentre se si mettesse l'opzione `-a` elenca entrambe le categorie. Altre opzioni possibili sono:
+
+* `-p` specifica il processo in ascolto
+* `-n` produce un output numerico
+* `-t` seleziona solo le tcp socket
+* `-u` seleziona solo le udp socket
+
+Un'alternativa più recente è `ss` che, però, non è SELinux-aware.
+
+#### SELinux
+
+sta per Security Enhanced Linux. è un codice che viene eseguito nello spazio utente sfruttando il codice kernel (i moduli di sicurezza di Linux) per fornire MAC (Mandatory Access Control) sulle risorse del sistema.
+
+```{=latex}
+\begin{center}
+```
+
+![`netstat` output](netstat.png){#due height=200px}
+
+```{=latex}
+\end{center}
+```
+
+### Strumenti di ricerca completi
+
+Esistono scanner di vulnerabilità completi, configurabili per eseguire la scansione di una combinazione arbitraria di host e porte. Questi tool possono testare l'esistenza di vulnerabilità a livello di rete, sistema operativo ed applicazione tramite plug-in scaricabili, inoltre possono collegare ogni vulnerabilità alla documentazione pertinente. Il più noto di questi scanner è **Nessus**, un prodotto commerciale di Tenable. L'equivalente nato dal passaggio di Nessus a licenza proprietaria e sviluppato attivamente dal 2008 in poi da Greenbone (ora evoluto in Greenbone Community Edition, GCE) e parte della loro linea Enterprise è **OpenVAS**.
+
+#### OpenVAS
+
+si appoggia su un vulnerability DB aggiornato ogni giorno che contiene i Network Vulnerability Tests, composti a loro volta da:
+
+* descrizione della vulnerabilità
+* piattaforme colpite
+* processo di verifica
+
+```{=latex}
+\begin{center}
+```
+
+![Architettura GCE](gceArch.png){height=250px}
+
+```{=latex}
+\end{center}
+```
