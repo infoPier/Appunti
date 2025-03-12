@@ -320,11 +320,22 @@ si appoggia su un vulnerability DB aggiornato ogni giorno che contiene i Network
 * piattaforme colpite
 * processo di verifica
 
+Il link per il sito di Greenbone: https://www.greenbone.net/en/feed-comparison/
+
 ```{=latex}
 \begin{center}
 ```
 
-![Architettura GCE](gceArch.png){height=250px}
+![Architettura GCE](gceArch.png){height=300px}
+
+```{=latex}
+\end{center}
+```
+```{=latex}
+\begin{center}
+```
+
+![Creazione del Feed di GCE](gce2.png){height=300px}
 
 ```{=latex}
 \end{center}
